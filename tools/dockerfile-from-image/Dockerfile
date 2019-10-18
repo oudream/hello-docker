@@ -8,8 +8,7 @@ RUN apk --update add ruby-dev ca-certificates && \
     rm /var/cache/apk/*
 
 ADD dockerfile-from-image.rb /usr/src/app/dockerfile-from-image.rb
+RUN chmod +x /usr/src/app/dockerfile-from-image.rb
 
 ENTRYPOINT ["/usr/src/app/dockerfile-from-image.rb"]
 CMD ["--help"]
-
-
