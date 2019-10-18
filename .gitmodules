@@ -1,0 +1,12 @@
+[submodule "referto/docker-images"]
+	path = referto/docker-images
+	url = https://github.com/oracle/docker-images.git
+[submodule "referto/dockerfiles"]
+	path = referto/dockerfiles
+	url = https://github.com/jessfraz/dockerfiles.git
+[submodule "referto/dockerfile"]
+	path = referto/dockerfile
+	url = https://github.com/mritd/dockerfile.git
+[submodule "referto/gozap"]
+	path = referto/gozap
+	url = https://github.com/Gozap/dockerfile.git
