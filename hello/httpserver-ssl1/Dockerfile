@@ -1,8 +1,14 @@
 FROM httpsserver-flask1:latest
 
-COPY . /code
+ADD . /code
 
-RUN pip install pyopenssl && \
-    chmod +x httpsserver.py
+RUN apk add --no-cache \
+        libressl-dev \
+        musl-dev \
+        libffi-dev \
+    pip install --no-cache-dir pyopenssl && \
+    apk del libressl-dev \
+        musl-dev \
+        libffi-dev
 
 ENTRYPOINT ["python", "httpsserver.py"]
