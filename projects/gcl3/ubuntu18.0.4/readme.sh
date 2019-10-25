@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-docker build -t ubuntu18.0.4-gcl3 .
+docker build -t gcl3-ubuntu .
 
 docker run -d python3a
