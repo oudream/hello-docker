@@ -1,16 +1,19 @@
-FROM ubuntu
+FROM alpine
 
 ## 一次性安装
-RUN apt-get update -y ; apt-get upgrade -y && \
-    apt-get install -y apt-utils wget openssh-server telnet vim passwd ifstat unzip iftop htop telnet git \
-    samba net-tools lsof rsync gcc g++ cmake build-essential gdb gdbserver \
-    unixodbc unixodbc-dev libcurl4-openssl-dev uuid uuid-dev \
-    qt5-default libqt5svg5 libqt5svg5-dev
+RUN apk upgrade && \
+    apk update && \
+    apk add --update alpine-sdk && \
+    apk add cmake git gdb vim unixodbc-dev unixodbc libuuid && \
+    apk add libffi-dev openssl-dev && \
+    apk add nodejs && \
+    apk add python3 && \
+    apk add qt5-qtbase-dev qt5-qtsvg-dev && \
+    apk add qt5-qtbase qt5-qtsvg
 
-RUN apt update \
-    && apt install -y openssh-server \
-                      xauth \
-                      x11-apps \
+RUN apk add openssh-server \
+            xauth \
+            xclock \
     && mkdir /var/run/sshd \
     && mkdir /root/.ssh \
     && chmod 700 /root/.ssh \
