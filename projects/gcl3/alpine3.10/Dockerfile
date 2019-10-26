@@ -11,14 +11,13 @@ RUN apk upgrade && \
     apk add qt5-qtbase-dev qt5-qtsvg-dev && \
     apk add qt5-qtbase qt5-qtsvg
 
-RUN apk add openssh-server \
-            xauth \
+RUN apk add openssh-server openssh-keygen xauth\
             xclock \
     && mkdir /var/run/sshd \
     && mkdir /root/.ssh \
     && chmod 700 /root/.ssh \
     && ssh-keygen -A \
-    && sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config \
+    && sed -i "s/^#PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config \
     && sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config \
     && sed -i "s/^.*X11UseLocalhost.*$/X11UseLocalhost no/" /etc/ssh/sshd_config \
     && grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
