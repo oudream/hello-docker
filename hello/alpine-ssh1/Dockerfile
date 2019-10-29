@@ -13,7 +13,7 @@ RUN apk add --no-cache openssh \
     && chmod 755 /root/.ssh \
     && ssh-keygen -A \
     && touch /root/.ssh/authorized_keys \
-    && chmod 600 /root/.ssh/authorized_keys
+    && chmod 600 /root/.ssh/authorized_keys \
     && echo "ssh_pub_key" > /root/.ssh/authorized_keys
 
 CMD exec /usr/sbin/sshd -D -e "$@"
