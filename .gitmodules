@@ -10,3 +10,6 @@
 [submodule "referto/gozap"]
 	path = referto/gozap
 	url = https://github.com/Gozap/dockerfile.git
+[submodule "referto/docker-alpine-sshd"]
+	path = referto/docker-alpine-sshd
+	url = https://github.com/sickp/docker-alpine-sshd.git
