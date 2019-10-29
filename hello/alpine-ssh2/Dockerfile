@@ -1,19 +1,14 @@
 FROM alpine
 
-ARG ssh_pub_key
-
 RUN apk update && \
     apk upgrade
 
 RUN apk add --no-cache openssh \
     && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
     && echo "root:root" | chpasswd \
-    && passwd -d root \
-    && mkdir /root/.ssh \
-    && chmod 600 /root/.ssh \
-    && touch /root/.ssh/authorized_keys \
-    && chmod 600 /root/.ssh/authorized_keys \
-    && echo "$ssh_pub_key" > /root/.ssh/authorized_keys
+    && passwd -d root
+
+COPY identity.pub /root/.ssh/authorized_keys
 
 RUN ssh-keygen -A
 
