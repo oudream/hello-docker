@@ -11,7 +11,7 @@ RUN apk add --no-cache openssh \
     && passwd -d root \
     && mkdir /root/.ssh \
     && chmod 731 /root/.ssh \
-    && ssh-keygen -A
+    && ssh-keygen -A \
     && touch /root/.ssh/authorized_keys \
     && chmod 600 /root/.ssh/authorized_keys \
     && echo "$ssh_pub_key" > /root/.ssh/authorized_keys \
