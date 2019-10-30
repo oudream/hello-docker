@@ -1,8 +1,22 @@
-FROM alpine
+FROM alpine:3.10
 
-## 一次性安装
-RUN apk upgrade && \
-    apk update && \
-    apk add nginx libuuid
+LABEL maintainer="oudream - https://github.com/oudream"
 
-ENTRYPOINT ["sh", "-c", "/usr/sbin/sshd >>/root/sshd_out.txt 2>>/root/sshd_err.txt && tail -f /dev/null"]
+ENTRYPOINT ["/opt/entrypoint.sh"]
+
+EXPOSE 22
+
+COPY rootfs /opt/
+
+RUN apk update && \
+    apk upgrade
+
+RUN apk add --no-cache openssh \
+  && sed -i s/#PermitRootLogin.*/PermitRootLogin\ yes/ /etc/ssh/sshd_config \
+  && echo "root:root" | chpasswd \
+  && passwd -d root \
+  && ssh-keygen -A
+
+COPY identity.pub /root/.ssh/authorized_keys
+
+RUN apk add nginx libuuid
