@@ -2,10 +2,10 @@ FROM ubuntu
 
 ## 一次性安装
 RUN apt-get update -y ; apt-get upgrade -y && \
-    apt-get install -y apt-utils wget openssh-server telnet vim passwd ifstat unzip iftop htop git \
+    apt-get install -y apt-utils wget openssh-server telnet screen vim passwd ifstat unzip iftop htop git \
     samba net-tools lsof rsync gcc g++ cmake build-essential gdb gdbserver \
     unixodbc unixodbc-dev libcurl4-openssl-dev uuid uuid-dev \
-    qt5-default libqt5svg5 libqt5svg5-dev
+    qt5-default libqt5svg5 libqt5svg5-dev nginx python3 nodejs
 
 RUN apt update \
     && apt install -y openssh-server \
@@ -13,7 +13,7 @@ RUN apt update \
                       x11-apps \
     && mkdir /var/run/sshd \
     && mkdir /root/.ssh \
-    && chmod 700 /root/.ssh \
+    && chmod 755 /root/.ssh \
     && ssh-keygen -A \
     && sed -i "s/^.*PasswordAuthentication.*$/PasswordAuthentication no/" /etc/ssh/sshd_config \
     && sed -i "s/^#PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config \
