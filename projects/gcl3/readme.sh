@@ -1,33 +1,34 @@
 #!/usr/bin/env bash
 
-
-### build
-cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc"
 # cmake . -G "Xcode" --build "/ddd/communication/protobuf/protobuf/cmake" -B"/ddd/communication/protobuf/protobuf/cmake-xcode"
 
+rm -rf /opt/ddd/ccpp/gcl3/build/cmake-gcc && \
+cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc" && \
 cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
 
 
 
-### run
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/business
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/config
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/data
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/db
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/describe
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/log
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/measure
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/model
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/report
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/script
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/temp
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/terminal
-rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/ui
+### delete config log
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/business
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/config
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/data
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/db
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/describe
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/log
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/measure
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/model
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/report
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/script
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/temp
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/terminal
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/ui
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_sdk
 
+### copy config
 cp -r /opt/ddd/ccpp/gcl3/deploy/config /opt/ddd/ccpp/gcl3/build/deploy/
 cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/
 
-
+### run
 cd /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d
 
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_bus
@@ -43,6 +44,8 @@ cd /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d
 cp -r /opt/ddd/ccpp/gcl3/deploy/assets /opt/fff/gcl3.1.1/
 
 nginx -c /opt/fff/nginx/nginx.conf
+
+http://localhost:8821/bus/
 
 # clion
 # error,msg="Error while executing Python code.
