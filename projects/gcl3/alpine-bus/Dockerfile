@@ -21,7 +21,7 @@ COPY identity.pub /root/.ssh/authorized_keys
 
 RUN apk add nginx libuuid
 
-ADD /opt/ddd/ccpp/gcl3/build/deploy /opt/ddd/ccpp/gcl3/build/deploy
-ADD /opt/ddd/ccpp/gcl3/deploy/assets /opt/ddd/ccpp/gcl3/deploy/assets
-ADD /opt/ddd/ccpp/gcl3/deploy/nginx /opt/ddd/ccpp/gcl3/deploy/nginx
+COPY deploy /opt/ddd/ccpp/gcl3/build/deploy
+COPY assets /opt/ddd/ccpp/gcl3/deploy/assets
+COPY nginx /opt/ddd/ccpp/gcl3/deploy/nginx
 

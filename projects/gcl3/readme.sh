@@ -7,6 +7,9 @@ cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/op
 cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
 
 
+ln -s /opt/ddd/ccpp/gcl3/build/deploy /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus/deploy
+ln -s /opt/ddd/ccpp/gcl3/deploy/assets /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus/assets
+ln -s /opt/ddd/ccpp/gcl3/deploy/nginx /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus/nginx
 
 ### delete config log
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/business
