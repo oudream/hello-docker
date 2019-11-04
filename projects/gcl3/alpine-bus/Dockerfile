@@ -17,8 +17,11 @@ RUN apk add --no-cache openssh \
   && passwd -d root \
   && ssh-keygen -A
 
-COPY /opt/ddd/ccpp/gcl3/build/deploy /opt/ddd/ccpp/gcl3/build/
-
 COPY identity.pub /root/.ssh/authorized_keys
 
 RUN apk add nginx libuuid
+
+COPY /opt/ddd/ccpp/gcl3/build/deploy /opt/ddd/ccpp/gcl3/build/deploy
+COPY /opt/ddd/ccpp/gcl3/deploy/assets /opt/ddd/ccpp/gcl3/deploy/assets
+COPY /opt/ddd/ccpp/gcl3/deploy/nginx /opt/ddd/ccpp/gcl3/deploy/nginx
+
