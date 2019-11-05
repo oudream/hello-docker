@@ -2,16 +2,30 @@
 
 # cmake . -G "Xcode" --build "/ddd/communication/protobuf/protobuf/cmake" -B"/ddd/communication/protobuf/protobuf/cmake-xcode"
 
+### build
+# real pc
+cd /opt/ddd/ccpp/ccxx && \
+git reset --hard origin/master && \
+git pull origin master && \
+cd /opt/ddd/ccpp/gcl3 && \
+git reset --hard origin/master && \
+git pull origin master && \
+cd /opt/ddd/web/limi3 && \
+git reset --hard origin/master && \
+git pull origin master && \
+rm -rf /opt/ddd/ccpp/gcl3/build/cmake-gcc && \
+cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc" && \
+cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
+
+# docker
 rm -rf /opt/ddd/ccpp/gcl3/build/cmake-gcc && \
 cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc" && \
 cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
 
 
-ln -s /opt/ddd/ccpp/gcl3/build/deploy /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus/deploy
-ln -s /opt/ddd/ccpp/gcl3/deploy/assets /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus/assets
-ln -s /opt/ddd/ccpp/gcl3/deploy/nginx /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus/nginx
 
-### delete config log
+
+## delete config log
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/business
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/config
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/data
@@ -27,14 +41,12 @@ rm -r /opt/ddd/ccpp/gcl3/build/deploy/terminal
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/ui
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_sdk
 
+
 ### delete all binary buf [ gcl_svr_bus liblibccxx.so gcl_svr_fastcgi_rtdata ]
 arr1=$(find . -type f)
 for a in ${arr1[@]};do [[ ${a} =~ '_d/gcl_svr_bus' || ${a} =~ '_d/liblibccxx.so' || ${a} =~ '_d/gcl_svr_fastcgi_rtdata' ]] && (echo "null ${a}") || (echo "rm ${a}" `rm ${a}` ) ; done
 for a in ${arr1[@]};do [[ ${a} =~ gcl_svr_bus$ || ${a} =~ liblibccxx.so || ${a} =~ gcl_svr_fastcgi_rtdata$ ]] && (echo "null ${a}") || (echo "rm ${a}" `rm ${a}`) ; done
 
-### copy config
-cp -r /opt/ddd/ccpp/gcl3/deploy/config /opt/ddd/ccpp/gcl3/build/deploy/
-cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/
 
 ### run
 cd /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d
