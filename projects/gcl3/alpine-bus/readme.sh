@@ -24,7 +24,7 @@ cp /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_rtdata ${dk_gcl_bu
 
 ### copy config
 cp -r /opt/ddd/ccpp/gcl3/deploy/config ${dk_gcl_bus_p}/deploy/
-cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk ${dk_gcl_bus_p}/bin_unix_d/
+#cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk ${dk_gcl_bus_p}/deploy/bin_unix_d/
 
 
 
