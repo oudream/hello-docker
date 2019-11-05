@@ -6,9 +6,9 @@ docker run -d -p 2235:22 -v /opt/ddd:/opt/ddd gcl3-ubuntu
 
 docker run -d -p 2235:22 gcl3-ubuntu
 
-ssh root@34.70.120.90 -AXY -v
+ssh root@35.232.43.174 -AXY -v
 
-ssh root@34.70.120.90 -p 2235 -AXY -v
+ssh root@35.232.43.174 -p 2235 -AXY -v
 
 
 

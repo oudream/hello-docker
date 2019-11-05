@@ -18,4 +18,4 @@ docker run -d -p 2292:22 alpine-ssh2
 
 ssh root@localhost -p 2292 # or $(docker-machine ip default)
 
-ssh -AXY -p 2292 root@34.70.120.90
+ssh -AXY -p 2292 root@35.232.43.174
