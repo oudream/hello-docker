@@ -12,7 +12,7 @@ ssh root@35.232.43.174 -p 2235 -AXY -v
 
 
 
-docker run -d -p 2235:22 -p 8821:8821 -p 8841:8841 -p 8861:8861 084
+docker run -d -p 2235:22 -p 8821:8821 -p 8841:8841 -p 8861:8861 5ed
 
 ssh root@localhost -p 2235 -AXY -v
 

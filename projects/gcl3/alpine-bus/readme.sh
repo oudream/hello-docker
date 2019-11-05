@@ -33,15 +33,13 @@ cd /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus
 ## ssh ca RSA
 cat ./../../../assets/ssh/identity.pub > ./identity.pub
 
-docker build -t gcl3-bus-alpine .
+docker build -t oudream/gcl3-bus-alpine:1.1 .
 
 ### run docker bus
 # local
-docker run -p 2233:22 -p 2281:8821 -d gcl3-bus-alpine
+docker run -p 2233:22 -p 2281:8821 -d oudream/gcl3-bus-alpine:1.1
 # local debug
-docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' gcl3-bus-alpine /bin/sh
-# docker hub
-docker run -d -p 2233:22 -p 2281:8821 oudream/gcl3-bus-alpine
+docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.1 /bin/sh
 
 ### ssh
 # remote
@@ -61,3 +59,4 @@ docker login
 docker tag gcl3-bus-alpine oudream/gcl3-bus-alpine:1.1
 docker push oudream/gcl3-bus-alpine:1.1
 docker pull oudream/gcl3-bus-alpine
+

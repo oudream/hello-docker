@@ -2,30 +2,9 @@
 
 # cmake . -G "Xcode" --build "/ddd/communication/protobuf/protobuf/cmake" -B"/ddd/communication/protobuf/protobuf/cmake-xcode"
 
-### build
-# real pc
-cd /opt/ddd/ccpp/ccxx && \
-git reset --hard origin/master && \
-git pull origin master && \
-cd /opt/ddd/ccpp/gcl3 && \
-git reset --hard origin/master && \
-git pull origin master && \
-cd /opt/ddd/web/limi3 && \
-git reset --hard origin/master && \
-git pull origin master && \
-rm -rf /opt/ddd/ccpp/gcl3/build/cmake-gcc && \
-cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc" && \
-cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
+#gcl_deploy_p=/opt/ddd/ccpp/gcl3/build/deploy
 
-# docker
-rm -rf /opt/ddd/ccpp/gcl3/build/cmake-gcc && \
-cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc" && \
-cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
-
-
-
-
-## delete config log
+## delete config
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/business
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/config
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/data
@@ -41,6 +20,27 @@ rm -r /opt/ddd/ccpp/gcl3/build/deploy/terminal
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/ui
 rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_sdk
 
+## git update
+cd /opt/ddd/ccpp/ccxx && \
+git reset --hard origin/master && \
+git pull origin master && \
+cd /opt/ddd/ccpp/gcl3 && \
+git reset --hard origin/master && \
+git pull origin master && \
+cd /opt/ddd/web/limi3 && \
+git reset --hard origin/master && \
+git pull origin master
+
+## build clear
+rm -r /opt/ddd/ccpp/gcl3/build/cmake-gcc && \
+rm -r /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/*
+## build make
+cmake . -DCMAKE_BUILD_TYPE=Debug --build "/opt/ddd/ccpp/gcl3/build/cmake" -B"/opt/ddd/ccpp/gcl3/build/cmake-gcc" && \
+cd /opt/ddd/ccpp/gcl3/build/cmake-gcc && make
+
+## copy config
+cp -r /opt/ddd/ccpp/gcl3/deploy/config /opt/ddd/ccpp/gcl3/build/deploy/
+cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/
 
 ### delete all binary buf [ gcl_svr_bus liblibccxx.so gcl_svr_fastcgi_rtdata ]
 arr1=$(find . -type f)
@@ -61,7 +61,7 @@ cd /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_bus_viewer &
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_rtdata &
 
-nginx -c /opt/fff/nginx/nginx.conf
+nginx -c /opt/ddd/ccpp/gcl3/deploy/nginx/nginx.conf
 
 http://localhost:8821/bus/
 
