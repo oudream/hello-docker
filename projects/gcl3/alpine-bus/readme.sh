@@ -29,11 +29,12 @@ cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk ${dk_gcl_bus_p}/bin_unix_d/
 
 
 
+
 cat ~/../../../assets/ssh/identity.pub > ./identity.pub
 
-docker build -t gcl3-bus-alpine1 .
+docker build -t gcl3-bus-alpine .
 
-docker run -d -p 2233:22 gcl3-bus-alpine1
+docker run -d -p 2233:22 -p 2281:8821 gcl3-bus-alpine
 
 ssh root@localhost -p 2233 # or $(docker-machine ip default)
 
