@@ -96,3 +96,4 @@ scp -P 2201 -r /Applications/CLion.app/Contents/bin/gdb/renderers root@localhost
 echo "alias python=python3" >> ~/.bashrc
 
 limi.135246
+
