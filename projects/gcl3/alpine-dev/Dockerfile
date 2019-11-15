@@ -28,8 +28,8 @@ RUN apk add xauth \
     && chmod 600 /root/.Xauthority
 
 RUN apk add --update alpine-sdk && \
-    apk add cmake git gdb rsync vim screen unixodbc-dev unixodbc libuuid && \
-    apk add libffi-dev openssl-dev && \
+    apk add autoconf cmake git gdb rsync vim screen unixodbc-dev unixodbc libuuid ncurses-dev && \
+    apk add libffi-dev openssl-dev python3-dev && \
     apk add nodejs && \
     apk add python3 && \
     apk add qt5-qtbase-dev qt5-qtsvg-dev && \
