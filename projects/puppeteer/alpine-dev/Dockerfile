@@ -32,4 +32,6 @@ RUN set -x \
     udev \
     ttf-freefont \
     chromium \
+    vim \
+    git \
     && npm install puppeteer
