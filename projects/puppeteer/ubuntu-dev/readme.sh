@@ -7,6 +7,9 @@
 #
 # https://github.com/nodesource/distributions/blob/master/README.md
 #
+# chrome
+# https://stackoverflow.com/questions/50942353/e-repository-http-dl-google-com-linux-chrome-deb-stable-release-changed-its
+
 
 
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
