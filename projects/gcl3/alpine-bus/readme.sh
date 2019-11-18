@@ -37,9 +37,10 @@ docker build -t oudream/gcl3-bus-alpine:1.1 .
 
 ### run docker bus
 # local
-docker run -p 2233:22 -p 2281:8821 -d oudream/gcl3-bus-alpine:1.1
+docker run -p 2233:22 -p 2281:8821 -d --restart=always oudream/gcl3-bus-alpine:1.1
 # local debug
 docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.1 /bin/sh
+
 
 ### ssh
 # remote

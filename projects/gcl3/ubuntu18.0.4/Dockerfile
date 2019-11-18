@@ -5,7 +5,7 @@ RUN apt-get update -y ; apt-get upgrade -y && \
     apt-get install -y apt-utils wget openssh-server telnet screen vim passwd ifstat unzip iftop htop git \
     samba net-tools lsof rsync gcc g++ autoconf cmake build-essential gdb gdbserver \
     libncurses5-dev unixodbc unixodbc-dev libcurl4-openssl-dev uuid uuid-dev libssl-dev \
-    qt5-default libqt5svg5 libqt5svg5-dev nginx python3 python3-dev nodejs nodejs-dev node-gyp npm
+    qt5-default libqt5svg5 libqt5svg5-dev nginx python3 python3-dev
 
 RUN apt update \
     && apt install -y openssh-server \
