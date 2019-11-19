@@ -29,6 +29,13 @@ docker push oudream/puppeteer-dev-alpine:1.2
 docker pull oudream/puppeteer-dev-alpine
 
 
+### test
+docker run -itd -v /opt/ddd/ops/puppeteer/hello-puppeteer:/opt/ddd/ops/puppeteer/hello-puppeteer --restart=always --entrypoint="" \
+    oudream/puppeteer-dev-alpine:1.2 node /opt/ddd/ops/puppeteer/hello-puppeteer/projects/gcl3/bus/poster-enabled-timer.js
+
+docker run -itd -v /opt/ddd/ops/puppeteer/hello-puppeteer:/opt/ddd/ops/puppeteer/hello-puppeteer --entrypoint="" \
+    oudream/puppeteer-dev-alpine:1.2 /bin/sh
+
 
 # error
 # npm i puppeteer # error at launch
