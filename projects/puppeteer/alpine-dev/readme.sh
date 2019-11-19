@@ -30,6 +30,7 @@ docker pull oudream/puppeteer-dev-alpine
 
 
 ### test
+git clone https://github.com/oudream/hello-puppeteer.git /opt/ddd/ops/puppeteer/hello-puppeteer && \
 docker run -itd -v /opt/ddd/ops/puppeteer/hello-puppeteer:/opt/ddd/ops/puppeteer/hello-puppeteer --restart=always --entrypoint="" \
     oudream/puppeteer-dev-alpine:1.2 node /opt/ddd/ops/puppeteer/hello-puppeteer/projects/gcl3/bus/poster-enabled-timer.js
 
