@@ -44,14 +44,14 @@ docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1
 
 ### ssh
 # remote
-ssh root@35.232.43.174 -p 2233 -AXY -v # or $(docker-machine ip default)
+ssh root@34.69.117.39 -p 2233 -AXY -v # or $(docker-machine ip default)
 # local
 ssh root@localhost -p 2233 -AXY # or $(docker-machine ip default)
 
 ### brower
-35.232.43.174:2281
-http://35.232.43.174:2281/bus/viewer.html
-http://35.232.43.174:2281/bus/poster.html
+34.69.117.39:2281
+http://34.69.117.39:2281/bus/viewer.html
+http://34.69.117.39:2281/bus/poster.html
 122.51.12.151:2281
 
 

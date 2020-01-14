@@ -13,3 +13,9 @@
 [submodule "referto/docker-alpine-sshd"]
 	path = referto/docker-alpine-sshd
 	url = https://github.com/sickp/docker-alpine-sshd.git
+[submodule "referto/portainer"]
+	path = referto/portainer
+	url = https://github.com/portainer/portainer.git
+[submodule "referto/node-dockerode"]
+	path = referto/node-dockerode
+	url = https://github.com/apocas/dockerode.git

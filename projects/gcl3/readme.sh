@@ -56,6 +56,12 @@ cd /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_bus_viewer
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_rtdata
 
+
+/opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_database
+/opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_filesystem
+/opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_rtdata
+/opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_rtlog
+
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_bus &
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_sdk_tool &
 /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_bus_viewer &
