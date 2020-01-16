@@ -1,0 +1,33 @@
+{
+  "kind": "project.config.simple",
+  "metadata": {
+    "name": ""
+  },
+  "spec": {
+    "databases": [
+      {
+        "name": "mysql1",
+        "type": "mysql",
+        "connectionLimit": 10,
+        "database": "db1",
+        "host": "127.0.0.1",
+        "pwd": "123456",
+        "user": "root"
+      }
+    ],
+    "httpServers": [
+      {
+        "listeningPort": 2211,
+        "staticAssetsPath": "./../../../assets",
+        "routes": [
+          {
+            "specItem": "databases",
+            "name": "mysql1",
+            "url": "/mysql/"
+          }
+        ]
+      }
+    ]
+  }
+}
+
