@@ -6,15 +6,15 @@ if (!process.env.CVUEADMIN_CONFIG_P) {
   throw new Error('process.env.CVUEADMIN_CONFIG_P is invalid! ' + __filename);
 }
 
-var ora = require('ora')
-var rm = require('rimraf')
-var path = require('path')
-var chalk = require('chalk')
-var webpack = require('webpack')
-var config = require(process.env.CVUEADMIN_CONFIG_P)
-var webpackConfig = require('./webpack.prod.conf')
+let ora = require('ora')
+let rm = require('rimraf')
+let path = require('path')
+let chalk = require('chalk')
+let webpack = require('webpack')
+let config = require(process.env.CVUEADMIN_CONFIG_P)
+let webpackConfig = require('./webpack.prod.conf')
 
-var spinner = ora('building for production...')
+let spinner = ora('building for production...')
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {

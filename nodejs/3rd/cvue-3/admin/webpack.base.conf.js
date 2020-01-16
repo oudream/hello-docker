@@ -9,6 +9,8 @@ if (!process.env.CVUEADMIN_CONFIG_P) {
 let path = require('path')
 let utils = require('./utils')
 let config = require(process.env.CVUEADMIN_CONFIG_P)
+
+const {VueLoaderPlugin} = require("vue-loader");
 let vueLoaderConfig = require('./vue-loader.conf')
 
 function resolve(dir) {
@@ -63,5 +65,8 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new VueLoaderPlugin()
+  ]
 }
