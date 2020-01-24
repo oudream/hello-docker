@@ -1,21 +1,22 @@
-import Login from '../views/home/Login.vue'
+// import Login from '../views/home/Login.vue'
+import Login from './../views/example/odl1/validator/validator-a1'
 import NotFound from '../views/home/404.vue'
 import Home from '../views/home/Home.vue'
 import Main from '../views/main/Main.vue'
 
-import HelloOdlSimpleA1 from './../views/example/odl1/sample-a1.vue'
+import HelloOdlSimpleA1 from './../views/example/odl1/other/sample-a1.vue'
 import HelloSvg1 from './../views/example/svg1/svg1.vue'
 
 import sqlUser from './../views/example/sql1/user.vue'
 
-import SampleDaMaterial from './../views/example/book1/material.vue'
-import SampleDaPosition from './../views/example/book1/position.vue'
-import SampleDaReader from './../views/example/book1/reader.vue'
-import SampleDaStatus from './../views/example/book1/status.vue'
+import SampleDaMaterial from './../views/example/odl1/book/material.vue'
+import SampleDaPosition from './../views/example/odl1/book/position.vue'
+import SampleDaReader from './../views/example/odl1/book/reader.vue'
+import SampleDaStatus from './../views/example/odl1/book/status.vue'
 
-import SampleShopGoods from './../views/example/shop1/goods.vue'
-import SampleShopCart from './../views/example/shop1/cart.vue'
-import SampleShopPayment from './../views/example/shop1/payment.vue'
+import SampleShopGoods from './../views/example/vuex1/goods.vue'
+import SampleShopCart from './../views/example/vuex1/cart.vue'
+import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
 
 let routes = [

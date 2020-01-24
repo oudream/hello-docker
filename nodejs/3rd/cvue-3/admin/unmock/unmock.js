@@ -594,6 +594,63 @@ let dealOdl = function(app, httpMysqlServer) {
          state: {err:null, affectedRows: 1}
      }
      */
+
+    /** validate.req.token.json
+     {
+         session: Date.now(),
+         odc: 'odcName',
+         action: 'validate',
+         token: {
+            state: 'req',
+         },
+         conditions = {
+            index: 0,
+            count: 20,
+            attrs: [
+                {
+                    name: 'name',
+                    operation: '%',
+                    value: 'aa'
+                }
+            ]
+         }
+     }
+     // validate.resp.token.json
+     {
+         session: ^,
+         odc: 'odcName',
+         action: 'validate',
+         token: {
+            state: 'ing',
+            id: 'xxx',
+            duration: 'ms',
+            deadline: 'datetime',
+         },
+         data: [ {key: v11},{key: v21}],
+         state: {err:null}
+   }
+
+     // validate.req.json
+     {
+         session: Date.now(),
+         odc: 'odcName',
+         action: 'validate',
+         token: {
+            state: 'ing',
+            id: 'xxx',
+            duration: 'ms',
+            deadline: 'datetime',
+         },
+         data: [{f1: v11, f2: v12}],
+     }
+     // validate.resp.json
+     {
+         session: ^,
+         odc: 'odcName',
+         action: 'validate',
+         state: {err:null, affectedRows: 1}
+     }
+     */
     app.route('/odo/query')
         .post(function(req, res) {
             let body = '';
@@ -772,7 +829,67 @@ let dealOdl = function(app, httpMysqlServer) {
                     else {
                         respState('getDeleteSqlAry is empty!', 0);
                     }
+                } if (action === 'validate') {
+                    let {token, conditions} = reqBody;
+                    if (token && token.state === 'req') {
+                        let respToken = (err, data) => {
+                            let r = {
+                                session: session,
+                                odc: reqBody.odc,
+                                action: action,
+                                data: data,
+                                state: {err: err},
+                            };
+                            if (!err) {
+                                let ip = getRequestIp(req, res);
+                                let tk = odl.OpToken.reqToken({ip: ip}, odc, action);
+                                if (typeof tk === 'string') {
+                                    r.state.err = tk;
+                                } else {
+                                    r.token = tk;
+                                }
+                            }
+                            res.writeHead(200);
+                            res.end(JSON.stringify(r));
+                        };
+                        let sql = nMysql.getSelectSql(odc, conditions);
+                        // has key
+                        if (sql) {
+                            httpMysqlServer.query(sql, (err, values) => {
+                                respToken(err, values);
+                            });
+                        }
+                        else {
+                            respToken(null, [{key:Date.now()}]);
+                        }
+                    }
+                    else {
+                        let nLog = odl.OpLog;
+                        let respState = (err, affectedRows) => {
+                            let r = {
+                                session: session,
+                                odc: reqBody.odc,
+                                action: action,
+                                state: {err: null, affectedRows: affectedRows},
+                            };
+                            if (!err) {
+                                odl.OpToken.releaseToken(odc, action);
+                            }
+                            res.writeHead(200);
+                            res.end(JSON.stringify(r));
+                        };
+                        let sqlAry = nLog.getInsertLogSqlAry(odc, conditions);
+                        if (sqlAry) {
+                            httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
+                                respState(err, err ? 0 : 1);
+                            });
+                        }
+                        else {
+                            respState('getInsertLogSqlAry is empty!', 0);
+                        }
+                    }
                 }
+
             });
         });
 

@@ -23,6 +23,12 @@
                     isNull: false
                 },
                 {
+                    name: 'password',
+                    title: '密码',
+                    model: 'string',
+                    isNull: false
+                },
+                {
                     name: 'sex',
                     title: '性别',
                     model: 'enum',
@@ -83,7 +89,7 @@
             tree: {},
             ns: [
                 {
-                    kind: odl.UiVueTable ? odl.UiVueTable.kind : '',
+                    kind: odl.UiVueBase ? odl.UiVueBase.kind : '',
                     metadata:
                         {
                             name: '',
@@ -103,6 +109,10 @@
                                 required: true,
                             },
                             {
+                                name: 'password',
+                                required: true,
+                            },
+                            {
                                 name: 'departmentId',
                                 visible: false,
                             },
@@ -115,6 +125,71 @@
                                 name: 'roleGroupId',
                                 visible: false,
                             }
+                        ],
+                    }
+                },
+                { kind: odl.UiVueForm ? odl.UiVueForm.kind : '' },
+                { kind: odl.UiVueTable ? odl.UiVueTable.kind : '' },
+                {
+                    kind: odl.UiVueValidator ? odl.UiVueValidator.kind : '',
+                    metadata:
+                        {
+                            name: '',
+                        },
+                    spec: {
+                        title: {
+                            text: 'USER VALIDATOR',
+                        },
+                        attrs: [
+                            {
+                                name: 'id',
+                                readonly: true,
+                                visible: false,
+                            },
+                            {
+                                name: 'name',
+                                required: true,
+                            },
+                            {
+                                name: 'password',
+                                required: true,
+                            },
+                            {
+                                name: 'sex',
+                                visible: false,
+                            },
+                            {
+                                name: 'height',
+                                visible: false,
+                            },
+                            {
+                                name: 'birth',
+                                visible: false,
+                            },
+                            {
+                                name: 'departmentId',
+                                visible: false,
+                            },
+                            {
+                                name: 'department_name',
+                                visible: false,
+                            },
+                            {
+                                name: 'roleGroupId',
+                                visible: false,
+                            },
+                            {
+                                name: 'role_group_name',
+                                visible: false,
+                            },
+                            {
+                                name: 'add',
+                                visible: false,
+                            },
+                            {
+                                name: 'remark',
+                                visible: false,
+                            },
                         ]
                     }
                 },
@@ -135,7 +210,17 @@
                                     fieldType: 'text'
                                 }
                             }
-                        ]
+                        ],
+                        log: {
+                            attrs: [
+                                {
+                                    name: 'id',
+                                },
+                                {
+                                    name: 'name',
+                                }
+                            ],
+                        },
                     }
                 }
             ]

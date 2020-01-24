@@ -77,7 +77,8 @@
 
 <script>
     import util from './../../../../3rd/cvue-3/js/util'
-    import dbCommon from './../../../../3rd/cvue-3/js/dbCommon';
+	// todo:20200122
+    // import dbCommon from './../../../../3rd/cvue-3/js/dbCommon';
 
     import { getSqlQuery,getSqlTrans } from './../../../../3rd/cvue-3/api/api';
 
@@ -85,9 +86,7 @@
 		data() {
 			return {
 			    orgName:'',
-				sysName:'驻澳门部队珠海基地地图管理系统',
-//			    orgName:'ygct',
-//				sysName:'信息管理系统',
+				sysName:'BOOGOO客户管理系统',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',
@@ -167,7 +166,7 @@
                         t:Date.now(),
                         v:'退出',
                     };
-                    let r = dbCommon.sql.getInsert(this.cfg_const.log,this.cfg_ti_log,v_log);
+                    // let r = dbCommon.sql.getInsert(this.cfg_const.log,this.cfg_ti_log,v_log);
                     para.sqls.push(r.sql);
 
                     getSqlTrans(para).then((res) => {
@@ -221,7 +220,7 @@
                     t:Date.now(),
                     v:'登录',
                 };
-                let r = dbCommon.sql.getInsert(this.cfg_const.log,this.cfg_ti_log,v_log);
+                // let r = dbCommon.sql.getInsert(this.cfg_const.log,this.cfg_ti_log,v_log);
                 para.sqls.push(r.sql);
 
                 getSqlTrans(para).then((res) => {

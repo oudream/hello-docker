@@ -427,7 +427,6 @@
                 });
             },
 
-
             // submit edit
             editSubmit: function() {
                 this.$refs.editForm.validate((valid) => {

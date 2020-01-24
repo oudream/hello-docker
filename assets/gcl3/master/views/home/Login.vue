@@ -26,7 +26,7 @@
       components: {ElForm},
       data() {
       return {
-        sysName:'驻澳门部队珠海基地地图管理系统',
+        sysName:'微服务管理系统',
         logining: false,
         ruleForm2: {
           account: 'admin',

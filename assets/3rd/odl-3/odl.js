@@ -31,12 +31,18 @@
     odl._odcs = [];
     odl._nplugins = [];
 
+    const odlIsObject = function odlIsObject(val) {
+        // return (item && typeof item === 'object' && !Array.isArray(item));
+        return val === Object(val);
+    };
+    odl.isObject = odlIsObject;
+
     odl.clone = function odlClone(item) {
         if (!item) {
             return item;
         } // null, undefined values check
 
-        var types = [Number, String, Boolean],
+        let types = [Number, String, Boolean],
             result;
 
         // normalizing primitives if someone did new String('aaa'), or new Number('444');
@@ -65,7 +71,7 @@
                     else {
                         // it is an object literal
                         result = {};
-                        for (var i in item) {
+                        for (let i in item) {
                             result[i] = odlClone(item[i]);
                         }
                     }
@@ -88,6 +94,42 @@
         }
 
         return result;
+    };
+
+    odl.merge = function odlMerge(...objects) {
+        objects.reduce(
+            (obj1, obj2) => ({
+                ...obj1,
+                ...obj2,
+                ...Object.keys(obj2)
+                    .filter((key) => key in obj1 && odlIsObject(obj1[key]) && odlIsObject(obj2[key]))
+                    .map((key) => ({[key]: odlMerge(obj1[key], obj2[key])}))
+                    .reduce((n1, n2) => ({...n1, ...n2}), {})
+            }),
+            {}
+        );
+    };
+
+    odl.mergeExcepts = function mergeExcepts(target, ...sources) {
+        if (!sources.length) return target;
+        const source = sources.shift();
+
+        if (odlIsObject(target) && odlIsObject(source)) {
+            for (const key in source) {
+                if (key === 'attrs') {
+                    continue;
+                }
+                if (odlIsObject(source[key])) {
+                    if (!target[key]) Object.assign(target, {[key]: {}});
+                    mergeExcepts(target[key], source[key]);
+                }
+                else {
+                    Object.assign(target, {[key]: source[key]});
+                }
+            }
+        }
+
+        return mergeExcepts(target, ...sources);
     };
 
     odl.checkMeta = function(odc) {

@@ -3,8 +3,8 @@
 
     let odl = (typeof exports === 'object' && typeof global === 'object') ? global.odl : window.odl;
 
-    odl.UiVueTable = {
-        kind: 'ui.vue.table',
+    odl.UiVueBase = {
+        kind: 'ui.vue.base',
 
         _defaultWidth: {
             int: 80,
@@ -43,8 +43,18 @@
          * @returns {Error|null}
          */
         normalize: function(odc, nObj) {
-            if (nObj.kind !== this.kind) {
-                return new Error('nObj kind invalid!!');
+            // extend base
+            let base = odl.findNObj(odc, odl.UiVueBase.kind);
+            if (base) {
+                odl.mergeExcepts(nObj, base);
+                if (base.spec && base.spec.attrs) {
+                    if (nObj.spec && nObj.spec.attrs) {
+                        nObj.spec.attrs = odl.Attr.mergeAttrs(base.spec.attrs, nObj.spec.attrs);
+                    } else {
+                        if (!nObj.spec) nObj.spec = {};
+                        nObj.spec.attrs = odl.clone(base.spec.attrs);
+                    }
+                }
             }
             if (!nObj.spec) nObj.spec = {};
             let spec = nObj.spec;
@@ -163,7 +173,7 @@
          * @param nObj
          * @returns {[]}
          */
-        getTableFields: function(nObj) {
+        getFields: function(nObj) {
             let r = [];
             let push = (name, a) => {
                 let atr = {
@@ -342,7 +352,119 @@
                 return null;
             }
         }
+    };
+
+    odl.UiVueForm = {
+        kind: 'ui.vue.form',
+
+        getSimilar: odl.UiVueBase.getSimilar,
+
+        getSimilarByName: odl.UiVueBase.getSimilarByName,
+
+        completionAttr: odl.UiVueBase.completionAttr,
+
+        normalize: function(odc, nObj) {
+            if (nObj.kind !== this.kind) {
+                return new Error('nObj kind invalid!!');
+            }
+            return odl.UiVueBase.normalize(odc, nObj);
+        },
+
+        normalizeAfer: odl.UiVueBase.normalizeAfer,
+
+        getFormats: odl.UiVueBase.getFormats,
+
+        getSelects: odl.UiVueBase.getSelects,
+
+        getFields: odl.UiVueBase.getFields,
+
+        getFilterFields: odl.UiVueBase.getFilterFields,
+
+        getFilterOperations: odl.UiVueBase.getFilterOperations,
+
+        getAddForm: odl.UiVueBase.getAddForm,
+
+        getFormRules: odl.UiVueBase.getFormRules,
+
+        getEditSubmitObj: odl.UiVueBase.getEditSubmitObj
 
     };
+
+    odl.UiVueTable = {
+        kind: 'ui.vue.table',
+
+        getSimilar: odl.UiVueBase.getSimilar,
+
+        getSimilarByName: odl.UiVueBase.getSimilarByName,
+
+        completionAttr: odl.UiVueBase.completionAttr,
+
+        normalize: function(odc, nObj) {
+            if (nObj.kind !== this.kind) {
+                return new Error('nObj kind invalid!!');
+            }
+            return odl.UiVueBase.normalize(odc, nObj);
+        },
+
+        normalizeAfer: odl.UiVueBase.normalizeAfer,
+
+        getFormats: odl.UiVueBase.getFormats,
+
+        getSelects: odl.UiVueBase.getSelects,
+
+        getFields: odl.UiVueBase.getFields,
+
+        getTableFields: odl.UiVueBase.getFields,
+
+        getFilterFields: odl.UiVueBase.getFilterFields,
+
+        getFilterOperations: odl.UiVueBase.getFilterOperations,
+
+        getAddForm: odl.UiVueBase.getAddForm,
+
+        getFormRules: odl.UiVueBase.getFormRules,
+
+        getEditSubmitObj: odl.UiVueBase.getEditSubmitObj
+
+    };
+
+    odl.UiVueValidator = {
+        kind: 'ui.vue.validator',
+
+        getSimilar: odl.UiVueBase.getSimilar,
+
+        getSimilarByName: odl.UiVueBase.getSimilarByName,
+
+        completionAttr: odl.UiVueBase.completionAttr,
+
+        normalize: function(odc, nObj) {
+            if (nObj.kind !== this.kind) {
+                return new Error('nObj kind invalid!!');
+            }
+            return odl.UiVueBase.normalize(odc, nObj);
+        },
+
+        normalizeAfer: odl.UiVueBase.normalizeAfer,
+
+        getFormats: odl.UiVueBase.getFormats,
+
+        getSelects: odl.UiVueBase.getSelects,
+
+        getFields: odl.UiVueBase.getFields,
+
+        getFilterFields: odl.UiVueBase.getFilterFields,
+
+        getFilterOperations: odl.UiVueBase.getFilterOperations,
+
+        getAddForm: odl.UiVueBase.getAddForm,
+
+        getFormRules: odl.UiVueBase.getFormRules,
+
+        getEditSubmitObj: odl.UiVueBase.getEditSubmitObj
+
+    };
+
+    odl.registerNPlugin(odl.UiVueForm);
     odl.registerNPlugin(odl.UiVueTable);
+    odl.registerNPlugin(odl.UiVueValidator);
 })();

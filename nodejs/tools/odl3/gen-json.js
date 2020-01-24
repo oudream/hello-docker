@@ -25,8 +25,7 @@ const mysqlOption = {
     host: '127.0.0.1',
     user: 'root',
     password: '123456',
-    database2: 'db2',
-    database: 'mi3_arch',
+    database: 'db1',
 };
 
 let dtNow = Date.now();

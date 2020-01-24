@@ -142,6 +142,8 @@
             if (!spec.attrs) spec.attrs = [];
             let attrs = spec.attrs;
             let newAttrs = odl.Attr.mergeAttrs(supperAttrs, attrs);
+            let index = newAttrs.findIndex(a => a.notPersistence );
+            if (index >= 0) newAttrs.splice(index, 1);
             for (let i = 0; i < newAttrs.length; i++) {
                 let newAttr = newAttrs[i];
                 this.completionAttr(newAttr);
@@ -163,6 +165,10 @@
             }
             spec.table = table;
             spec.attrs = newAttrs;
+            // log
+            if (spec.log) {
+                this.log.normalize(odc, nObj);
+            }
 
             return null;
         },
@@ -189,39 +195,43 @@
         getCreateSql: function(odc) {
             let nObj = this.getSimilar(odc);
             if (nObj) {
-                let sPrimaryKey = '';
-                let keys = nObj.spec.table.keys;
-                if (Array.isArray(keys)) {
-                    let pks = keys.filter(x => typeof x === 'string');
-                    sPrimaryKey = pks.map(x => '`' + x + '`').join(',');
-                }
-                let sql = ['CREATE TABLE IF NOT EXISTS `'];
-                sql.push(nObj.spec.table.name);
-                sql.push('` (');
-                let attrs = nObj.spec.attrs;
-                if (Array.isArray(attrs)) {
-                    for (let i = 0; i < attrs.length; i++) {
-                        let attr = attrs[i];
-                        let fieldName = attr.fieldName;
-                        let fieldType = attr.fieldType;
-                        let sIsNull = attr.isNull ? 'DEFAULT NULL' : 'NOT NULL';
-                        let sItem = '`' + fieldName + '` ' + fieldType.fieldType + ' ' + sIsNull;
-                        if (i !== attrs.length - 1) {
-                            sItem += ',';
-                        }
-                        else if (sPrimaryKey) {
-                            sItem += ',';
-                        }
-                        sql.push(sItem);
-                    }
-                    if (sPrimaryKey) {
-                        sql.push('PRIMARY KEY (' + sPrimaryKey + ')');
-                    }
-                    sql.push(')');
-                    return sql.join('');
-                }
+                return this._createSql(nObj.spec.table, nObj.spec.attrs);
             }
             return '';
+        },
+
+        _createSql: function(table, attrs){
+            if (! Array.isArray(attrs)) {
+                return '';
+            }
+            let sPrimaryKey = '';
+            let keys = table.keys;
+            if (Array.isArray(keys)) {
+                let pks = keys.filter(x => typeof x === 'string');
+                sPrimaryKey = pks.map(x => '`' + x + '`').join(',');
+            }
+            let sql = ['CREATE TABLE IF NOT EXISTS `'];
+            sql.push(table.name);
+            sql.push('` (');
+            for (let i = 0; i < attrs.length; i++) {
+                let attr = attrs[i];
+                let fieldName = attr.fieldName;
+                let fieldType = attr.fieldType;
+                let sIsNull = attr.isNull ? 'DEFAULT NULL' : 'NOT NULL';
+                let sItem = '`' + fieldName + '` ' + fieldType.fieldType + ' ' + sIsNull;
+                if (i !== attrs.length - 1) {
+                    sItem += ',';
+                }
+                else if (sPrimaryKey) {
+                    sItem += ',';
+                }
+                sql.push(sItem);
+            }
+            if (sPrimaryKey) {
+                sql.push('PRIMARY KEY (' + sPrimaryKey + ')');
+            }
+            sql.push(')');
+            return sql.join('');
         },
 
         /**
@@ -424,34 +434,40 @@
             }
             let nObj = this.getSimilar(odc);
             if (nObj) {
-                let tableName = nObj.spec.table.name;
-                if (! tableName) return null;
-                let attrs = nObj.spec.attrs;
-                if (attrs.length < 1) return null;
-                let sqlAry = [];
-                objs.forEach(o => {
-                    let sql = [' INSERT INTO `', tableName, '`('].join('');
-                    let sFields = [];
-                    let sValues = [];
-                    for (let prop in o) {
-                        let attr = attrs.find(a => a.name === prop);
-                        if (attr) {
-                            sFields.push(['`', attr.fieldName, '`'].join(''))
-                            if (attr.type === 'string') {
-                                sValues.push("'" + o[prop] + "'");
-                            }
-                            else {
-                                sValues.push(String(o[prop]));
-                            }
-                        }
-                    }
-                    sql += sFields.join(',');
-                    sql += ') VALUES(';
-                    sqlAry.push(sql + sValues.join(',') + ')');
-                });
-                return sqlAry;
+                return this._insertSqlAry(nObj.spec.table, nObj.spec.attrs, objs);
             }
             return null;
+        },
+
+        _insertSqlAry: function(table, attrs, objs) {
+            if (!Array.isArray(objs) || objs.length < 1) {
+                return null;
+            }
+            let tableName = table.name;
+            if (! tableName) return null;
+            if (attrs.length < 1) return null;
+            let sqlAry = [];
+            objs.forEach(o => {
+                let sql = [' INSERT INTO `', tableName, '`('].join('');
+                let sFields = [];
+                let sValues = [];
+                for (let prop in o) {
+                    let attr = attrs.find(a => a.name === prop);
+                    if (attr) {
+                        sFields.push(['`', attr.fieldName, '`'].join(''))
+                        if (attr.type === 'string') {
+                            sValues.push("'" + o[prop] + "'");
+                        }
+                        else {
+                            sValues.push(String(o[prop]));
+                        }
+                    }
+                }
+                sql += sFields.join(',');
+                sql += ') VALUES(';
+                sqlAry.push(sql + sValues.join(',') + ')');
+            });
+            return sqlAry;
         },
 
         /**
@@ -766,6 +782,101 @@
             return null;
         },
 
+        log: {
+            prefix: 'log__',
+
+            fixFields: [
+                {
+                    name: 'log__id',
+                    type: 'int',
+                },
+                {
+                    name: 'log__time',
+                    type: 'date',
+                },
+                {
+                    name: 'log__operation',
+                    type: 'date',
+                },
+                {
+                    name: 'log__who',
+                    type: 'string',
+                },
+                {
+                    name: 'log__where',
+                    type: 'string',
+                },
+                {
+                    name: 'log__message',
+                    type: 'string',
+                },
+            ],
+
+            normalize: function(odc, nObj) {
+                let logAttrs = nObj.spec.log.attrs;
+                if (!Array.isArray(logAttrs)){
+                    return null;
+                }
+                let DbMysql = odl.DbMysql;
+                let attrs = [];
+                for (let i = 0; i < this.fixFields.length; i++) {
+                    let attr1 = this.fixFields[i];
+                    let attr2 = odl.clone(attr1);
+                    attr2.fieldName = attr1.name;
+                    attr2.fieldType = DbMysql.attrs[attr1.type];
+                    attrs.push(attr2);
+                }
+                for (let i = 0; i < nObj.spec.attrs.length; i++) {
+                    let attr1 = nObj.spec.attrs[i];
+                    let attr2 = logAttrs.find(a => a.name === attr1.name);
+                    if (attr2) {
+                        Object.assign(attr2, attr1);
+                        attrs.push(attr2);
+                    }
+                }
+                // table
+                if (!nObj.spec.log.table) nObj.spec.log.table = {};
+                let table = nObj.spec.log.table;
+                if (!table.name) table.name = this.prefix + nObj.spec.table.name;
+                // table.keys & table.key
+                if (!table.keys) {
+                    table.keys = [this.fixFields[0].name];
+                }
+                if (!table.sorts) {
+                    table.sorts = odl.clone(odc.spec.container.sorts);
+                }
+                if (Array.isArray(table.keys) && table.keys.length > 0) {
+                    let sKey = table.keys.find(ele => typeof ele === 'string' && ele.length > 0);
+                    table.key = attrs.find(ele => ele.name === sKey);
+                }
+                nObj.spec.log.table = table;
+                nObj.spec.log.attrs = attrs;
+
+                return null;
+            },
+
+            getCreateSql: function(odc) {
+                let DbMysql = odl.DbMysql;
+                let nObj = DbMysql.getSimilar(odc);
+                if (nObj && nObj.spec.log && nObj.spec.log.table && nObj.spec.log.attrs) {
+                    return DbMysql._createSql(nObj.spec.log.table, nObj.spec.log.attrs);
+                }
+                return '';
+            },
+
+            getInsertLogSqlAry: function(odc, objs) {
+                if (!Array.isArray(objs) || objs.length < 1) {
+                    return null;
+                }
+                let DbMysql = odl.DbMysql;
+                let nObj = DbMysql.getSimilar(odc);
+                if (nObj && nObj.spec.log && nObj.spec.log.table && nObj.spec.log.attrs) {
+                    return DbMysql._insertSqlAry(nObj.spec.log.table, nObj.spec.log.attrs, objs);
+                }
+                return null;
+            },
+        },
     };
+
     odl.registerNPlugin(odl.DbMysql);
 })();
