@@ -157,6 +157,9 @@ filetype = json
     }
 
     let rtdb = gcl.rtdb || {};
+    let monsbManager = rtdb.monsbManager;
+    let ycaddManager = rtdb.ycaddManager;
+    let strawManager = rtdb.strawManager;
 
     let rtlog = gcl.rtlog || {};
     gcl.rtlog = rtlog;
@@ -227,6 +230,7 @@ filetype = json
     rtdb.reqMeasures = reqMeasures;
 
     let startSyncMeasures = function() {
+        return;
         if (rtdb.getMeasureCount() > 0 && ! rtdb.startSyncMeasuresTm) {
             rtdb.startSyncMeasuresTm = setInterval(reqMeasures, 1000);
         }

@@ -149,10 +149,12 @@
                             {
                                 name: 'name',
                                 required: true,
+                                default: 'admin',
                             },
                             {
                                 name: 'password',
                                 required: true,
+                                default: 'admin',
                             },
                             {
                                 name: 'sex',
@@ -183,7 +185,7 @@
                                 visible: false,
                             },
                             {
-                                name: 'add',
+                                name: 'addr',
                                 visible: false,
                             },
                             {

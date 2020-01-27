@@ -864,7 +864,6 @@ let dealOdl = function(app, httpMysqlServer) {
                         }
                     }
                     else {
-                        let nLog = odl.OpLog;
                         let respState = (err, affectedRows) => {
                             let r = {
                                 session: session,
@@ -878,8 +877,28 @@ let dealOdl = function(app, httpMysqlServer) {
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
                         };
-                        let sqlAry = nLog.getInsertLogSqlAry(odc, conditions);
-                        if (sqlAry) {
+                        let {data} = reqBody;
+                        let objs = data;
+                        if (Array.isArray(objs)) {
+                            for (let i = 0; i < objs.length; i++) {
+                                let obj = objs[i];
+                            }
+                        }
+                        // let obj = {};
+                        // for (let i = 0; i < conditions.length; i++) {
+                        //     let condition = conditions[i];
+                        //     let attrs = condition.attrs;
+                        //     if (!Array.isArray(attrs)) continue;
+                        //     for (let j = 0; j < attrs.length; j++) {
+                        //         let attr = attrs[j];
+                        //         obj[attr.name] = attr.value;
+                        //     }
+                        // }
+                        // objs.push(obj);
+                        let ip = getRequestIp(req, res);
+                        let logEnv = {time: Date.now(), operation: 'validate', who: 'gcl3-master-node.js', where: ip, message: ''};
+                        let sqlAry = nMysql.log.getInsertSqlAry(odc, objs, logEnv);
+                        if (Array.isArray(sqlAry) && sqlAry.length>0) {
                             httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
                                 respState(err, err ? 0 : 1);
                             });

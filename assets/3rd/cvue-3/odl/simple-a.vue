@@ -341,7 +341,7 @@
                         // debugger;
                         this.addFormVisible = true;
                         this.addToken = rs.token;
-                        this.addForm = odl.UiVueTable.getAddForm(this.nObj);
+                        this.addForm = odl.UiVueTable.getFormDefault(this.nObj);
                         if (rs.data && rs.data.length > 0) {
                             Object.assign(this.addForm, rs.data[0]);
                         }

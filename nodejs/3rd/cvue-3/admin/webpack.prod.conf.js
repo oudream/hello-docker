@@ -34,15 +34,9 @@ let webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       'process.env': env
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      },
-      sourceMap: true
-    }),
     // extract css into its own file
     new ExtractTextPlugin({
-      filename: utils.assetsPath('css/[name].[contenthash].css')
+      filename: utils.assetsPath('css/[name].[md5:contenthash:hex:20].css')
     }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
@@ -55,8 +49,8 @@ let webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: config.build.index,
-      template: 'index.html',
+      filename: 'index.html',
+      template: process.env.CVUEADMIN_INDEX_PAGE_FP,
       inject: true,
       minify: {
         removeComments: true,
@@ -68,26 +62,6 @@ let webpackConfig = merge(baseWebpackConfig, {
       // necessary to consistently work with multiple chunks via CommonsChunkPlugin
       chunksSortMode: 'dependency'
     }),
-    // split vendor js into its own file
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: function (module, count) {
-        // any required modules inside node_modules are extracted to vendor
-        return (
-          module.resource &&
-          /\.js$/.test(module.resource) &&
-          module.resource.indexOf(
-            path.join(__dirname, '../node_modules')
-          ) === 0
-        )
-      }
-    }),
-    // extract webpack runtime and module manifest to its own file in order to
-    // prevent vendor hash from being updated whenever app bundle is updated
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      chunks: ['vendor']
-    }),
     // copy custom static assets
     new CopyWebpackPlugin([
       {
@@ -96,7 +70,25 @@ let webpackConfig = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ])
-  ]
+  ],
+  optimization: {
+    minimize: true,
+    splitChunks: {
+      // maxAsyncRequests: 1,                     // 最大异步请求数， 默认1
+      // maxInitialRequests: 1,                   // 最大初始化请求数，默认1
+      cacheGroups: {
+        // 抽离第三方插件
+        commons: {
+          // test: path.resolve(__dirname, '../node_modules'),
+          chunks: 'all',
+          minChunks: 2,
+          maxInitialRequests: 5, // The default limit is too small to showcase the effect
+          minSize: 0, // This is example is too small to create commons chunks
+          name: 'common'
+        }
+      }
+    },
+  }
 })
 
 if (config.build.productionGzip) {

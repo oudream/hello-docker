@@ -217,8 +217,9 @@
                 let attr = attrs[i];
                 let fieldName = attr.fieldName;
                 let fieldType = attr.fieldType;
-                let sIsNull = attr.isNull ? 'DEFAULT NULL' : 'NOT NULL';
-                let sItem = '`' + fieldName + '` ' + fieldType.fieldType + ' ' + sIsNull;
+                let sIsNull = attr.isNull ? ' DEFAULT NULL' : ' NOT NULL';
+                let sAutoIncrement = attr.autoIncrement && attr.autoIncrement > 0 ? ' AUTO_INCREMENT' : '';
+                let sItem = '`' + fieldName + '` ' + fieldType.fieldType + sIsNull + sAutoIncrement;
                 if (i !== attrs.length - 1) {
                     sItem += ',';
                 }
@@ -465,7 +466,9 @@
                 }
                 sql += sFields.join(',');
                 sql += ') VALUES(';
-                sqlAry.push(sql + sValues.join(',') + ')');
+                if (sValues.length > 0) {
+                    sqlAry.push(sql + sValues.join(',') + ')');
+                }
             });
             return sqlAry;
         },
@@ -789,6 +792,7 @@
                 {
                     name: 'log__id',
                     type: 'int',
+                    autoIncrement: 1,
                 },
                 {
                     name: 'log__time',
@@ -796,7 +800,7 @@
                 },
                 {
                     name: 'log__operation',
-                    type: 'date',
+                    type: 'string',
                 },
                 {
                     name: 'log__who',
@@ -864,13 +868,20 @@
                 return '';
             },
 
-            getInsertLogSqlAry: function(odc, objs) {
+            // logEnv: {time: Date.now(), operation: 'validate', who: 'me', where: 'there', message: ''}
+            getInsertSqlAry: function(odc, objs, logEnv) {
                 if (!Array.isArray(objs) || objs.length < 1) {
                     return null;
                 }
                 let DbMysql = odl.DbMysql;
                 let nObj = DbMysql.getSimilar(odc);
                 if (nObj && nObj.spec.log && nObj.spec.log.table && nObj.spec.log.attrs) {
+                    for (let i = 0; i < objs.length; i++) {
+                        let obj = objs[i];
+                        for (let prop in logEnv) {
+                            obj[this.prefix + prop] = logEnv[prop];
+                        }
+                    }
                     return DbMysql._insertSqlAry(nObj.spec.log.table, nObj.spec.log.attrs, objs);
                 }
                 return null;

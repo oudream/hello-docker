@@ -301,7 +301,7 @@
          * attrs
          * @param nObj
          */
-        getAddForm: function(nObj) {
+        getFormDefault: function(nObj) {
             let r = {};
             nObj.spec.attrs.forEach(a => {
                 r[a.name] = a.default;
@@ -357,6 +357,8 @@
     odl.UiVueForm = {
         kind: 'ui.vue.form',
 
+        _defaultWidth: odl.UiVueBase._defaultWidth,
+
         getSimilar: odl.UiVueBase.getSimilar,
 
         getSimilarByName: odl.UiVueBase.getSimilarByName,
@@ -382,7 +384,7 @@
 
         getFilterOperations: odl.UiVueBase.getFilterOperations,
 
-        getAddForm: odl.UiVueBase.getAddForm,
+        getFormDefault: odl.UiVueBase.getFormDefault,
 
         getFormRules: odl.UiVueBase.getFormRules,
 
@@ -392,6 +394,8 @@
 
     odl.UiVueTable = {
         kind: 'ui.vue.table',
+
+        _defaultWidth: odl.UiVueBase._defaultWidth,
 
         getSimilar: odl.UiVueBase.getSimilar,
 
@@ -420,7 +424,7 @@
 
         getFilterOperations: odl.UiVueBase.getFilterOperations,
 
-        getAddForm: odl.UiVueBase.getAddForm,
+        getFormDefault: odl.UiVueBase.getFormDefault,
 
         getFormRules: odl.UiVueBase.getFormRules,
 
@@ -430,6 +434,8 @@
 
     odl.UiVueValidator = {
         kind: 'ui.vue.validator',
+
+        _defaultWidth: odl.UiVueBase._defaultWidth,
 
         getSimilar: odl.UiVueBase.getSimilar,
 
@@ -456,7 +462,7 @@
 
         getFilterOperations: odl.UiVueBase.getFilterOperations,
 
-        getAddForm: odl.UiVueBase.getAddForm,
+        getFormDefault: odl.UiVueBase.getFormDefault,
 
         getFormRules: odl.UiVueBase.getFormRules,
 

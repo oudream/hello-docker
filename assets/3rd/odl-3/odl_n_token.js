@@ -25,7 +25,7 @@
                         }
                     }],
                 edit: [],
-                del: []
+                del: [],
             },
         ],
 
@@ -68,6 +68,7 @@
                     add: [],
                     edit: [],
                     del: [],
+                    validate: []
                 };
                 this._oTokens.push(ot);
             }

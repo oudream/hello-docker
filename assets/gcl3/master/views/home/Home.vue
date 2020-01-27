@@ -80,7 +80,7 @@
 	// todo:20200122
     // import dbCommon from './../../../../3rd/cvue-3/js/dbCommon';
 
-    import { getSqlQuery,getSqlTrans } from './../../../../3rd/cvue-3/api/api';
+    import { getOdoQuery } from './../../../../3rd/cvue-3/api/api';
 
 	export default {
 		data() {
@@ -90,47 +90,6 @@
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',
-				form: {
-					name: '',
-					region: '',
-					date1: '',
-					date2: '',
-					delivery: false,
-					type: [],
-					resource: '',
-					desc: ''
-				},
-               cfg_ti_log:{
-                   uuid:{name:'f_id'},
-                   pid:{name:'f_pid',desc:'父ID'},
-                   uri:{name:'f_uri'},
-                   class:{name:'f_class',def:'DA'},
-                   code:{name:'f_code',type:'number',def:0},
-                   user:{name:'f_user',def:'sys'},
-                   act:{name:'f_act',type:'number',def:0},
-                   t:{name:'f_t',type:'number',def:0},
-                   src:{name:'f_src'},
-                   dst:{name:'f_dest'},
-                   obj:{name:'f_obj'},
-                   type:{name:'f_type',type:'number',def:0},
-                   len:{name:'f_len',type:'number',def:0},
-                   v:{name:'f_v'},
-                   res0:{name:'f_res0',type:'number',def:0},
-                   res1:{name:'f_res1'},
-                   user_crt:{name:'f_user_crt',def:'sys'},
-                   t_crt:{name:'f_t_crt',type:'now_ms'},
-                   user_mod:{name:'f_user_mod',def:'sys'},
-                   t_mod:{name:'f_t_mod',type:'now_ms'},
-                   syn_flag:{name:'f_syn_flag',type:'number',def:1},
-                   dt_flag:{name:'f_dt_flag',type:'number',def:0},
-                   st_flag:{name:'f_st_flag',type:'number',def:0},
-               },
-              cfg_const:{
-				log:'ti_log_sys',
-				class:'SYSLOG',
-				user:'SYS',
-            },
-
 			}
 		},
 		methods: {
@@ -147,45 +106,35 @@
 			},
 			//退出登录
 			logout: function () {
-				var _this = this;
+				let _this = this;
 				this.$confirm('确认退出吗?', '提示', {
 					//type: 'warning'
 				}).then(() => {
-                    let para = {
-                        session: Date.now(),
-                        sqls:[]
-                    };
-                    let v_log = {
-                        uuid:util.uuid.create(0),
-                        pid:'',
-                        uri:'logout',
-                        class:this.cfg_const.class,
-                        code:2,
-                        user:localStorage.getItem('user-login'),
-                        act:0,
-                        t:Date.now(),
-                        v:'退出',
-                    };
-                    // let r = dbCommon.sql.getInsert(this.cfg_const.log,this.cfg_ti_log,v_log);
-                    para.sqls.push(r.sql);
-
-                    getSqlTrans(para).then((res) => {
-                        if (res.state.err) {
-                            this.$message({
-                                message: '写登录日志失败：' + res.state.err,
-                                type: 'error'
-                            });
-                        } else {
-                            sessionStorage.removeItem('user');
-                            _this.$router.push('/login');
-                            localStorage.removeItem('user-login');
-                        }
-                    });
+					let sUser = sessionStorage.getItem('user');
+					if (sUser) {
+						let user = JSON.parse(sUser);
+						getOdoQuery({
+							session: Date.now(),
+							odc: 'user',
+							action: 'validate',
+							token: {
+								state: '',
+							},
+							data: [user]
+						}).then((rs) => {
+							debugger;
+							if (rs && rs.state.err) {
+								this.$message({
+									message: '写日志失败..：' + rs.state.err,
+									type: 'error'
+								});
+							}
+						});
+						sessionStorage.removeItem('user');
+					}
+					_this.$router.push('/login');
 				}).catch(() => {
-
 				});
-
-
 			},
 			//折叠导航栏
 			collapse:function(){
@@ -198,39 +147,12 @@
 			}
 		},
 		mounted() {
-			var user = sessionStorage.getItem('user');
-			if (user) {
-				user = JSON.parse(user);
-				this.sysUserName = user.name || '';
-				this.sysUserAvatar = user.avatar || '';
-				localStorage.setItem('user-login',user.name);
-				//写登录日志
-                let para = {
-                    session: Date.now(),
-                    sqls:[]
-                };
-                let v_log = {
-                    uuid:util.uuid.create(0),
-                    pid:'',
-                    uri:'login',
-                    class:this.cfg_const.class,
-                    code:1,
-                    user:localStorage.getItem('user-login'),
-                    act:0,
-                    t:Date.now(),
-                    v:'登录',
-                };
-                // let r = dbCommon.sql.getInsert(this.cfg_const.log,this.cfg_ti_log,v_log);
-                para.sqls.push(r.sql);
-
-                getSqlTrans(para).then((res) => {
-                    if (res.state.err) {
-                        this.$message({
-                            message: '写登录日志失败：' + res.state.err,
-                            type: 'error'
-                        });
-                    }
-                });
+			let sUser = sessionStorage.getItem('user');
+			if (sUser) {
+				let user = JSON.parse(sUser);
+				this.sysUserName = user.name;
+			} else {
+				this.sysUserName = '我在这';
 			}
 		}
 	}

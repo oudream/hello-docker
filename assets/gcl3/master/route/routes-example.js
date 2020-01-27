@@ -1,5 +1,5 @@
-// import Login from '../views/home/Login.vue'
-import Login from './../views/example/odl1/validator/validator-a1'
+import Login from '../views/home/Login.vue'
+// import Login from './../views/example/odl1/validator/validator-a1'
 import NotFound from '../views/home/404.vue'
 import Home from '../views/home/Home.vue'
 import Main from '../views/main/Main.vue'

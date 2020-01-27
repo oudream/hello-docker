@@ -265,6 +265,16 @@ async function testSql(odc) {
     values = await querySqlPromise(sqlCreate);
     console.log('sqlCreate: ', values);
 
+    let sqlCreateLog = odl.DbMysql.log.getCreateSql(odc);
+    if (sqlCreateLog){
+        fp = path.resolve(savePath, odcName + ".create-log.sql");
+        fs.writeFileSync(fp, sqlCreateLog);
+        console.log('fs.writeFileSync(fp), fp: ', fp);
+        // execSql(sqlCreateLog);
+        values = await querySqlPromise(sqlCreateLog);
+        console.log('sqlCreateLog: ', values);
+    }
+
     fp = path.resolve(savePath, odcName + ".insert.sql");
     let strategies = insertStrategies[odcName];
     if (strategies) {
