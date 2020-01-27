@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const url = require('url');
 
-let FileServer = require('./../../../cjs-3/cjhttp_file_server');
+let FileServer = require('./../../../nodejs/3rd/cjs-3/cjhttp_file_server');
 const fileServer = new FileServer();
 fileServer.config.assetsPath = path.normalize(path.join(__dirname, './../../../../../'));
 
@@ -925,7 +925,7 @@ exports = module.exports = {
     /**
      * mock bootstrap
      */
-    initApp(app, httpMysqlServer) {
+    init(app, httpMysqlServer) {
         dealUser(app, httpMysqlServer);
         dealOdl(app, httpMysqlServer);
         dealSql(app, httpMysqlServer);

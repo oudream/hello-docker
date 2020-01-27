@@ -15,28 +15,13 @@ let express = require('express')
 let webpack = require('webpack')
 let proxyMiddleware = require('http-proxy-middleware')
 
-require('./../../../../assets/3rd/odl-3/odl')
-require('./../../../../assets/3rd/odl-3/odl_n_mysql')
-require('./../../../../assets/3rd/odl-3/odl_n_vue')
-require('./../../../../assets/3rd/odl-3/odl_n_token')
-require('./../../../../assets/projects/default/odl/department')
-require('./../../../../assets/projects/default/odl/role_group')
-require('./../../../../assets/projects/default/odl/user')
-require('./../../../../assets/projects/default/odl/material')
-require('./../../../../assets/projects/default/odl/position')
-require('./../../../../assets/projects/default/odl/reader')
-require('./../../../../assets/projects/default/odl/status')
-require('./../../../../assets/projects/default/odl/recording')
-
 let webpackConfig = require('./webpack.dev.conf')
-let unmock = require('./unmock/unmock')
 
 // default port where dev server listens for incoming traffic
 let port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
 let autoOpenBrowser = !!config.dev.autoOpenBrowser
 
-let app = express()
 let compiler = webpack(webpackConfig)
 
 let devMiddleware = require('webpack-dev-middleware')(compiler, {
@@ -55,58 +40,43 @@ compiler.hooks.compilation.tap('html-webpack-plugin-after-emit', () => {
     });
 });
 
-// suport mysql
-let HttpMysqlServer = require('./../../csm-3/http_mysql_server')
-let httpMysqlServer = null
-if (process.env.CVUEADMIN_MYSQL_CONFIG_FP) {
-    let mysqlConfig = require(process.env.CVUEADMIN_MYSQL_CONFIG_FP)
-    if (mysqlConfig.database && mysqlConfig.database.mysql1) {
-        httpMysqlServer = new HttpMysqlServer(mysqlConfig.database.mysql1)
-    }
-    else {
-        console.log('CVUEADMIN_MYSQL_CONFIG_FP is invalid : ', process.env.CVUEADMIN_MYSQL_CONFIG_FP)
-    }
-}
+let DevServer = function() {
+    let _resolve;
+    let readyPromise = new Promise(resolve => {
+        _resolve = resolve
+    });
 
-unmock.initApp(app, httpMysqlServer)
+    this._resolve = _resolve;
+    this.ready = readyPromise;
+};
 
-// handle fallback for HTML5 history API
-app.use(require('connect-history-api-fallback')())
+DevServer.prototype.init = function(httpServer, db) {
 
-// serve webpack bundle output
-app.use(devMiddleware)
+    // handle fallback for HTML5 history API
+    httpServer.use(require('connect-history-api-fallback')());
 
-// enable hot-reload and state-preserving
-// compilation error display
-app.use(hotMiddleware)
+    // serve webpack bundle output
+    httpServer.use(devMiddleware)
 
-// serve pure static assets
-let staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-app.use(staticPath, express.static('./static'))
+    // enable hot-reload and state-preserving
+    // compilation error display
+    httpServer.use(hotMiddleware)
 
-let uri = 'http://localhost:' + port
+    // serve pure static assets
+    let staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
+    httpServer.use(staticPath, express.static('./static'))
 
-let _resolve
-let readyPromise = new Promise(resolve => {
-    _resolve = resolve
-})
+    let uri = 'http://localhost:' + port;
 
-console.log('> Starting dev server...')
-devMiddleware.waitUntilValid(() => {
-    console.log('> Listening at ' + uri + '\n')
-    // when env is testing, don't need open it
-    if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-        opn(uri)
-    }
-    _resolve()
-})
+    console.log('> Starting dev server...');
+    devMiddleware.waitUntilValid(() => {
+        console.log('> Listening at ' + uri + '\n')
+        // when env is testing, don't need open it
+        if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+            opn(uri)
+        }
+        this._resolve()
+    });
+};
 
-// GET method route
-let server = app.listen(port)
-
-module.exports = {
-    ready: readyPromise,
-    close: () => {
-        server.close()
-    }
-}
+exports = module.exports = DevServer;

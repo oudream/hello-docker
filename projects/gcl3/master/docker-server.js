@@ -163,3 +163,11 @@ setInterval(()=>{
     _timeOutIsList = !_timeOutIsList;
 }, 3000);
 
+let DockerServer = function() {
+};
+
+DockerServer.prototype.init = function(httpServer, db) {
+
+};
+
+exports = module.exports = DockerServer;

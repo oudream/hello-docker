@@ -348,6 +348,9 @@ HttpMysqlServer.prototype.dealRequest = function(req, res) {
                 callback(err)
             }
         });
+    } else if (req.method === 'GET') {
+        res.writeHead(404);
+        res.end();
     } else {
         res.writeHead(404);
         res.end();

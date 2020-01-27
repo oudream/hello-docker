@@ -18,6 +18,8 @@ import SampleShopGoods from './../views/example/vuex1/goods.vue'
 import SampleShopCart from './../views/example/vuex1/cart.vue'
 import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
+import HelloCross1 from './../views/example/cross1/hello1.vue'
+
 
 let routes = [
     {
@@ -50,6 +52,16 @@ let routes = [
         iconCls: 'fa fa-id-card-o',
         children: [
             { path: '/sampleA1', component: HelloOdlSimpleA1, name: 'Sample A' },
+            { path: '/svg1', component: HelloSvg1, name: 'HelloSvg1' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: 'CROSS ',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/cross1', component: HelloCross1, name: 'Hello Cross 1' },
             { path: '/svg1', component: HelloSvg1, name: 'HelloSvg1' },
         ]
     },
