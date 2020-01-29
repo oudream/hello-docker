@@ -12,14 +12,10 @@ gcl.rtdb.setRtServer(window.location.hostname+':8821');
 import './../../3rd/odl-3/odl'
 import './../../3rd/odl-3/odl_n_vue'
 import './../../3rd/odl-3/odl_n_mysql'
-import './../../projects/default/odl/department'
-import './../../projects/default/odl/role_group'
-import './../../projects/default/odl/user'
-import './../../projects/default/odl/material'
-import './../../projects/default/odl/position'
-import './../../projects/default/odl/reader'
-import './../../projects/default/odl/status'
-import './../../projects/default/odl/recording'
+import './config/odc_bureau'
+import './config/odc_department'
+import './config/odc_role_group'
+import './config/odc_user'
 
 // vue
 import Vue from 'vue'

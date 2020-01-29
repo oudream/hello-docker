@@ -457,7 +457,8 @@
                                             value: this.editOld[this.nObj.spec.key.name]
                                         }
                                     ]
-                                }]
+                                }],
+                                old: [this.editOld],
                             };
                             getOdoQuery(params).then((rs) => {
                                 this.editLoading = false;

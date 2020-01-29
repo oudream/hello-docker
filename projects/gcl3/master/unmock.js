@@ -669,11 +669,22 @@ let dealOdl = function(app, httpMysqlServer) {
                 let reqBody = parseBody(req, res, body);
                 if (!reqBody) return;
                 let {session, action, odc, token} = reqBody;
-                odc = odl.findOdc(odc);
+                let odcName = odc;
+                odc = odl.findOdc(odcName);
                 if (!odc) {
                     respError('can not findOdc: ' + reqBody.odc);
                     return;
                 }
+
+                let dispatchOdcEvent = (data, old) => {
+                    if (! global.EventBus) return;
+                    EventBus.dispatch(odcName, {action: action, data: data, old: old});
+                };
+                let hasEventBus = () => {
+                    if (! global.EventBus) return;
+                    EventBus.hasEventListener(odcName);
+                };
+
                 let nMysql = odl.DbMysql;
                 if (action === 'ls') {
                     let {queryCounter, conditions} = reqBody;
@@ -722,6 +733,9 @@ let dealOdl = function(app, httpMysqlServer) {
                             }
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
+                            if (!err && hasEventBus()) {
+                                dispatchOdcEvent(data);
+                            }
                         };
                         let sql = nMysql.getSelectKeySql(odc);
                         // has key
@@ -780,7 +794,7 @@ let dealOdl = function(app, httpMysqlServer) {
                         res.end(JSON.stringify(r));
                     }
                     else {
-                        let {data, conditions} = reqBody;
+                        let {data, conditions, old} = reqBody;
                         let respState = (err, affectedRows) => {
                             let r = {
                                 session: session,
@@ -793,6 +807,9 @@ let dealOdl = function(app, httpMysqlServer) {
                             }
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
+                            if (!err && hasEventBus()) {
+                                dispatchOdcEvent(data, old);
+                            }
                         };
                         let sqlAry = nMysql.getUpdateSqlAry(odc, data, conditions);
                         if (sqlAry) {
@@ -824,6 +841,9 @@ let dealOdl = function(app, httpMysqlServer) {
                     if (sqlAry) {
                         httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
                             respState(err, err ? 0 : 1);
+                            if (!err && hasEventBus()) {
+                                dispatchOdcEvent(conditions);
+                            }
                         });
                     }
                     else {

@@ -166,8 +166,24 @@ setInterval(()=>{
 let DockerServer = function() {
 };
 
-DockerServer.prototype.init = function(httpServer, db) {
+DockerServer.prototype.eventBusCallback = function(event) {
+    if (event.action === 'add') {
 
+    }
+    else if (action === 'edit') {
+
+    }
+    else if (action === 'del') {
+
+    }
+};
+
+DockerServer.prototype.init = function(httpServer, db) {
+    this.db = db;
+    this.httpServer = httpServer;
+    if (global.EventBus) {
+        EventBus.addEventListener('bureau', this.eventBusCallback, this);
+    }
 };
 
 exports = module.exports = DockerServer;

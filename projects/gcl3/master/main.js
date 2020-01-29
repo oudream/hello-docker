@@ -1,6 +1,5 @@
 const path = require('path');
 const fs = require('fs');
-let express = require('express')
 
 // vue admin package filepath
 process.env.CVUEADMIN_PROJECT_P = path.resolve(__dirname, './../../../assets/gcl3/master');
@@ -16,6 +15,9 @@ const odlLoader = require('./odl-loader');
 const unmock = require('./unmock');
 const DockerServer = require('./docker-server');
 
+global.EventBus = global.EventBus || require('./event-bus');
+
+let express = require('express')
 let app = express()
 
 const HttpMysqlServer = require('./../../../nodejs/3rd/csm-3/http_mysql_server')
@@ -41,7 +43,7 @@ devServer.init(httpServer, db);
 dockerServer.init(httpServer, db);
 
 // default port where dev server listens for incoming traffic
-let port = process.env.PORT || config.dev.port
+let port = process.env.PORT || config.dev.port;
 
 // GET method route
-let server = httpServer.listen(port)
+let server = httpServer.listen(port);
