@@ -1,33 +1,27 @@
+let fs = require('fs');
 let Docker = require('dockerode');
 
-let fs     = require('fs');
+let DockerServer = function() {
+    let socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
+    let stats = fs.statSync(socket);
 
-let socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
-let stats  = fs.statSync(socket);
+    if (!stats.isSocket()) {
+        throw new Error('Are you sure the docker is running?');
+    }
 
-if (!stats.isSocket()) {
-    throw new Error('Are you sure the docker is running?');
-}
-
-let _docker = new Docker({
-    socketPath: '/var/run/docker.sock',
-    // timeout: 100
-});
+    this.docker = new Docker({
+        socketPath: '/var/run/docker.sock',
+        // timeout: 100
+    });
 
 // you may specify a timeout (in ms) for all operations, allowing to make sure you don't fall into limbo if something happens in docker
-// let _docker = new Docker({host: 'http://127.0.0.1', port: 2375, timeout: 100});
+// this.docker = new Docker({host: 'http://127.0.0.1', port: 2375, timeout: 100});
 
-let _configs = [];
-for (let i = 0; i < 5; i++) {
-    let c = {
-        "Name": 'gcl3-' + i,
-    };
-    _configs.push(c);
-}
+    this.configContainers = [];
 
-/**
- [
- {
+    /**
+     [
+     {
     Id: 'f99a23a41972b68ce64cc86cb4d36bdf71867d75e5ecac4418be7a49bf53580d',
     Names: [ '/gallant_mcclintock' ],
     Image: 'alpine',
@@ -42,7 +36,7 @@ for (let i = 0; i < 5; i++) {
     NetworkSettings: { Networks: [Object] },
     Mounts: []
   },
- {
+     {
     Id: '5df5f1351abc326ac11e89d614d5513896d2a6c394879e163ed7cc7eb2dba900',
     Names: [ '/heuristic_bardeen' ],
     Image: 'alpine',
@@ -57,13 +51,38 @@ for (let i = 0; i < 5; i++) {
     NetworkSettings: { Networks: [Object] },
     Mounts: []
   }
- ]
- */
-let _list = [];
+     ]
+     */
+    this.memoryContainers = [];
 
-let fnRun = function(config) {
-// docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;"
-    _docker.run('alpine', [], undefined, {
+    this.timeOutIsList = true;
+};
+
+DockerServer.prototype.eventBusCallback = function(event) {
+    if (event.action === 'add') {
+
+    }
+    else if (action === 'edit') {
+
+    }
+    else if (action === 'del') {
+
+    }
+    this.lsConfigContainers();
+};
+
+DockerServer.prototype.init = function(httpServer, db) {
+    this.db = db;
+    this.httpServer = httpServer;
+    if (global.EventBus) {
+        EventBus.addEventListener('bureau', this.eventBusCallback, this);
+    }
+};
+
+
+DockerServer.prototype.run = function(config) {
+// this.docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;"
+    this.docker.run('alpine', [], undefined, {
         "Cmd": [
             "/bin/sh",
             "-c",
@@ -86,58 +105,95 @@ let fnRun = function(config) {
     });
 };
 
-let fnRemove = function(id) {
-    let container = docker.getContainer(id);
+DockerServer.prototype.remove = function(id) {
+    let container = this.docker.getContainer(id);
     if (!container) {
         return;
     }
 
     function removeHandler(err, data) {
         if (err) {
-            console.log('remove error! err= ', err, ', data= ', data);
+            console.log('DockerServer: remove error! err= ', err, ', data= ', data);
         }
         else {
-            console.log('remove success! data= ', data);
+            console.log('DockerServer: remove success! data= ', data);
         }
     }
 
     function stopHandler(err, data) {
         if (err) {
-            console.log('Stop: err= ', err);
+            container.kill(killHandler);
+            console.log('DockerServer: Stop: err= ', err);
         }
         else {
             container.remove(removeHandler);
         }
     }
 
+    function killHandler(err, data) {
+        if (err) {
+            console.log('DockerServer: kill: err= ', err);
+        }
+        container.remove(removeHandler);
+    }
+
     container.stop(stopHandler);
 };
 
-let fnValidator = function() {
-    for (let i = 0; i < _configs.length; i++) {
-        let config = _configs[i];
+DockerServer.prototype.validator = function() {
+    let configContainers = this.configContainers;
+    let memoryContainers = this.memoryContainers;
+    for (let i = 0; i < configContainers.length; i++) {
+        let config = configContainers[i];
         let bRun = true;
-        for (let j = 0; j < _list.length; j++) {
-            let container = _list[j];
+        for (let j = 0; j < memoryContainers.length; j++) {
+            let container = memoryContainers[j];
             if (container.Labels && container.Labels.Name === config.Name) {
                 if (container.State !== 'running') {
-                    fnRemove(container.Id);
-                } else {
+                    this.remove(container.Id);
+                }
+                else {
                     bRun = false;
                     continue;
                 }
             }
         }
         if (bRun) {
-            fnRun(config);
+            this.run(config);
         }
     }
 };
-fnValidator();
 
+DockerServer.prototype.lsConfigContainers = function(callback) {
+    if (this.db) {
+        this.db.query('select * from bureau', (err, values, fields) => {
+            if (!err){
+                if (Array.isArray(values) && values.length > 0) {
+                    let containers = [];
+                    for (let i = 0; i < values.length; i++) {
+                        let row = values[i];
+                        let id = row['id'];
+                        if (id >= 0) {
+                            let c = {
+                                "Name": 'gcl3-' + id,
+                            };
+                            containers.push(c);
+                        }
+                    }
+                    this.configContainers = containers;
+                } else {
+                    this.configContainers = [];
+                }
+                if (callback) {
+                    callback();
+                }
+            }
+        });
+    }
+};
 
-let fnListContainers = function() {
-    _docker.listContainers(
+DockerServer.prototype.lsMemoryContainers = function() {
+    this.docker.listContainers(
         {
             filters: {
                 "label": [
@@ -146,43 +202,32 @@ let fnListContainers = function() {
             }
         },
         function(err, containers) {
-            _list = containers;
-            console.log(_list);
+            this.memoryContainers = containers;
+            console.log(containers);
         });
 };
 
-let _timeOutIsList = true;
-setInterval(()=>{
-    if (_timeOutIsList) {
-        fnListContainers();
-        console.log('fnListContainers');
-    } else {
-        fnValidator();
-        console.log('fnValidator');
-    }
-    _timeOutIsList = !_timeOutIsList;
-}, 3000);
+DockerServer.prototype.start = function() {
+    this.lsConfigContainers(() => {
+        this.validator();
+    });
 
-let DockerServer = function() {
+    this.timeOut3000 = setInterval(() => {
+        if (this.timeOutIsList) {
+            this.listContainers();
+            console.log('DockerServer: listContainers');
+        }
+        else {
+            this.validator();
+            console.log('DockerServer: validator');
+        }
+        this.timeOutIsList = this.timeOutIsList;
+    }, 3000);
 };
 
-DockerServer.prototype.eventBusCallback = function(event) {
-    if (event.action === 'add') {
-
-    }
-    else if (action === 'edit') {
-
-    }
-    else if (action === 'del') {
-
-    }
-};
-
-DockerServer.prototype.init = function(httpServer, db) {
-    this.db = db;
-    this.httpServer = httpServer;
-    if (global.EventBus) {
-        EventBus.addEventListener('bureau', this.eventBusCallback, this);
+DockerServer.prototype.stop = function() {
+    if (this.timeOut3000) {
+        clearInterval(this.timeOut3000)
     }
 };
 
