@@ -41,6 +41,7 @@ unmock.init(httpServer, db);
 odlLoader.init(httpServer, db);
 devServer.init(httpServer, db);
 dockerServer.init(httpServer, db);
+dockerServer.start();
 
 // default port where dev server listens for incoming traffic
 let port = process.env.PORT || config.dev.port;

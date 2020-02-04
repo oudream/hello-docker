@@ -31,4 +31,4 @@ exports = module.exports = {
     init(httpServer, db) {
 
     }
-}
+};

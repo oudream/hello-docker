@@ -22,31 +22,16 @@ let DockerServer = function() {
     /**
      [
      {
-    Id: 'f99a23a41972b68ce64cc86cb4d36bdf71867d75e5ecac4418be7a49bf53580d',
-    Names: [ '/gallant_mcclintock' ],
+    Id: '9debfec99555264a992a9a9aaf658a9c3d897da667ffc0f90671fc987a695daa',
+    Names: [ '/brave_mccarthy' ],
     Image: 'alpine',
     ImageID: 'sha256:cc0abc535e36a7ede71978ba2bbd8159b8a5420b91f2fbc520cdf5f673640a34',
-    Command: "/bin/sh -c 'while sleep 2;do printf aaabbbccc134\\\\\\n; done;'",
-    Created: 1579016503,
+    Command: "/bin/sh -c 'while sleep 2;do printf aaabbbccc134\\\n; done;'",
+    Created: 1580450783,
     Ports: [],
-    Labels: {},
+    Labels: { Name: 'gcl3-7', Project: 'gcl3' },
     State: 'running',
-    Status: 'Up 3 minutes',
-    HostConfig: { NetworkMode: 'default' },
-    NetworkSettings: { Networks: [Object] },
-    Mounts: []
-  },
-     {
-    Id: '5df5f1351abc326ac11e89d614d5513896d2a6c394879e163ed7cc7eb2dba900',
-    Names: [ '/heuristic_bardeen' ],
-    Image: 'alpine',
-    ImageID: 'sha256:cc0abc535e36a7ede71978ba2bbd8159b8a5420b91f2fbc520cdf5f673640a34',
-    Command: "/bin/sh -c 'while sleep 2;do printf aaabbbccc134\\\\\\n; done;'",
-    Created: 1579014598,
-    Ports: [],
-    Labels: {},
-    State: 'running',
-    Status: 'Up 30 minutes',
+    Status: 'Up About an hour',
     HostConfig: { NetworkMode: 'default' },
     NetworkSettings: { Networks: [Object] },
     Mounts: []
@@ -54,21 +39,17 @@ let DockerServer = function() {
      ]
      */
     this.memoryContainers = [];
-
-    this.timeOutIsList = true;
+    this.beAddedContainers = [];
+    this.beDeletedContainers = [];
 };
 
 DockerServer.prototype.eventBusCallback = function(event) {
-    if (event.action === 'add') {
-
+    if (! event || ! event.target || ! event.target.action) return;
+    if (event.target.action === 'add' || event.target.action === 'del') {
+        this.lsConfigContainers(() => {
+            this.validator();
+        });
     }
-    else if (action === 'edit') {
-
-    }
-    else if (action === 'del') {
-
-    }
-    this.lsConfigContainers();
 };
 
 DockerServer.prototype.init = function(httpServer, db) {
@@ -77,11 +58,23 @@ DockerServer.prototype.init = function(httpServer, db) {
     if (global.EventBus) {
         EventBus.addEventListener('bureau', this.eventBusCallback, this);
     }
+    let self = this;
+    self.httpServer.route('/docker/ls')
+        .get(function(req, res) {
+            res.writeHead(200);
+            res.end(JSON.stringify(self.memoryContainers));
+        });
 };
-
 
 DockerServer.prototype.run = function(config) {
 // this.docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;"
+    let beAddedContainer = this.beAddedContainers.find((c => c.name === config.name));
+    if (beAddedContainer) {
+        if (Date.now() - beAddedContainer.sendTime < 10000) {
+            return;
+        }
+    }
+
     this.docker.run('alpine', [], undefined, {
         "Cmd": [
             "/bin/sh",
@@ -103,11 +96,30 @@ DockerServer.prototype.run = function(config) {
         console.log(data.StatusCode);
         console.log(container);
     });
+
+    if (!beAddedContainer) {
+        beAddedContainer = {
+            name: config.name
+        };
+        this.beAddedContainers.push(beAddedContainer);
+    }
+    beAddedContainer.sendTime = Date.now();
 };
 
 DockerServer.prototype.remove = function(id) {
+    let beDeletedContainer = this.beDeletedContainers.find((c => c.id === id));
+    if (beDeletedContainer) {
+        if (Date.now() - beDeletedContainer.sendTime < 10000) {
+            return;
+        }
+    }
+
     let container = this.docker.getContainer(id);
     if (!container) {
+        let index = this.beDeletedContainers.findIndex((c => c.id === id));
+        if (index>=0) {
+            this.beDeletedContainers.splice(index, 1);
+        }
         return;
     }
 
@@ -138,28 +150,40 @@ DockerServer.prototype.remove = function(id) {
     }
 
     container.stop(stopHandler);
+    if (!beDeletedContainer) {
+        beDeletedContainer = {
+            id: id
+        };
+        this.beDeletedContainers.push(beDeletedContainer);
+    }
+    beDeletedContainer.sendTime = Date.now();
 };
 
 DockerServer.prototype.validator = function() {
     let configContainers = this.configContainers;
     let memoryContainers = this.memoryContainers;
-    for (let i = 0; i < configContainers.length; i++) {
-        let config = configContainers[i];
-        let bRun = true;
-        for (let j = 0; j < memoryContainers.length; j++) {
-            let container = memoryContainers[j];
-            if (container.Labels && container.Labels.Name === config.Name) {
-                if (container.State !== 'running') {
-                    this.remove(container.Id);
-                }
-                else {
-                    bRun = false;
-                    continue;
-                }
-            }
+
+    // No Healthy
+    for (let j = 0; j < memoryContainers.length; j++) {
+        let mContainer = memoryContainers[j];
+        if (mContainer.State !== 'running') {
+            this.remove(mContainer.Id);
         }
-        if (bRun) {
-            this.run(config);
+    }
+    // sync - remove
+    for (let j = 0; j < memoryContainers.length; j++) {
+        let mContainer = memoryContainers[j];
+        let iIndex = configContainers.findIndex((cContainer) => mContainer.Labels && mContainer.Labels.Name === cContainer.Name);
+        if (iIndex < 0) {
+            this.remove(mContainer.Id);
+        }
+    }
+    // sync - add
+    for (let j = 0; j < configContainers.length; j++) {
+        let cContainer = configContainers[j];
+        let iIndex = memoryContainers.findIndex((mContainer) => mContainer.Labels && mContainer.Labels.Name === cContainer.Name);
+        if (iIndex < 0) {
+            this.run(cContainer);
         }
     }
 };
@@ -193,7 +217,8 @@ DockerServer.prototype.lsConfigContainers = function(callback) {
 };
 
 DockerServer.prototype.lsMemoryContainers = function() {
-    this.docker.listContainers(
+    let self = this;
+    self.docker.listContainers(
         {
             filters: {
                 "label": [
@@ -201,33 +226,65 @@ DockerServer.prototype.lsMemoryContainers = function() {
                 ]
             }
         },
-        function(err, containers) {
-            this.memoryContainers = containers;
-            console.log(containers);
-        });
+        (err, containers) => {
+            if (err) {
+                console.log('docker.listContainers: ', err);
+            }
+            if (Array.isArray(containers)) {
+                for (let i = 0; i < containers.length; i++) {
+                    let container = containers[i];
+                    if (container.State === 'running') {
+                        if (container.Labels && container.Labels.Name) {
+                            let index = self.beAddedContainers.findIndex(c => c.name === container.Labels.Name);
+                            if (index >= 0) {
+                                self.beAddedContainers.splice(index, 1);
+                            }
+                        }
+                    }
+                }
+                for (let i = self.beDeletedContainers.length-1; i >= 0; i--) {
+                    let beDeletedContainer = self.beDeletedContainers[i];
+                    let index = containers.findIndex(c => c.Id === beDeletedContainer.id);
+                    if (index < 0) {
+                        self.beDeletedContainers.splice(i, 1);
+                    }
+                }
+                self.memoryContainers = containers;
+                console.log('docker.listContainers: ', containers);
+            } else {
+                self.memoryContainers = [];
+            }
+        }
+        );
 };
 
 DockerServer.prototype.start = function() {
-    this.lsConfigContainers(() => {
-        this.validator();
+    let self = this;
+    self.lsConfigContainers(() => {
+        self.lsMemoryContainers();
     });
 
-    this.timeOut3000 = setInterval(() => {
-        if (this.timeOutIsList) {
-            this.listContainers();
-            console.log('DockerServer: listContainers');
+    self.timeOutCount = 0;
+    self.timeOutHandle = setInterval(() => {
+        self.timeOutCount ++;
+        if (self.timeOutCount % 20 === 0) {
+            self.lsConfigContainers();
+        } else {
+            if (self.timeOutCount % 2 === 0) {
+                self.validator();
+                console.log('DockerServer: validator');
+            } else {
+                self.lsMemoryContainers();
+                console.log('DockerServer: listContainers');
+            }
         }
-        else {
-            this.validator();
-            console.log('DockerServer: validator');
-        }
-        this.timeOutIsList = this.timeOutIsList;
-    }, 3000);
+    }, 1500);
 };
 
 DockerServer.prototype.stop = function() {
-    if (this.timeOut3000) {
-        clearInterval(this.timeOut3000)
+    if (this.timeOutHandle) {
+        clearInterval(this.timeOutHandle);
+        this.timeOutHandle = null;
     }
 };
 

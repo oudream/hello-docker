@@ -681,8 +681,8 @@ let dealOdl = function(app, httpMysqlServer) {
                     EventBus.dispatch(odcName, {action: action, data: data, old: old});
                 };
                 let hasEventBus = () => {
-                    if (! global.EventBus) return;
-                    EventBus.hasEventListener(odcName);
+                    if (! global.EventBus) return false;
+                    return EventBus.hasEventListener(odcName);
                 };
 
                 let nMysql = odl.DbMysql;
@@ -733,9 +733,6 @@ let dealOdl = function(app, httpMysqlServer) {
                             }
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
-                            if (!err && hasEventBus()) {
-                                dispatchOdcEvent(data);
-                            }
                         };
                         let sql = nMysql.getSelectKeySql(odc);
                         // has key
@@ -762,6 +759,9 @@ let dealOdl = function(app, httpMysqlServer) {
                             }
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
+                            if (affectedRows > 0 && hasEventBus()) {
+                                dispatchOdcEvent(data);
+                            }
                         };
                         let sqlAry = nMysql.getInsertSqlAry(odc, data);
                         if (sqlAry) {
@@ -807,7 +807,7 @@ let dealOdl = function(app, httpMysqlServer) {
                             }
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
-                            if (!err && hasEventBus()) {
+                            if (affectedRows > 0 && hasEventBus()) {
                                 dispatchOdcEvent(data, old);
                             }
                         };

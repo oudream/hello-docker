@@ -6,18 +6,18 @@ const os = require('os');
 
 require('./../../3rd/cjs-3/cjfs.js');
 
-require('./../../../assets/3rd/odl-3/odl');
-require('./../../../assets/3rd/odl-3/odl_n_mysql');
-require('./../../../assets/3rd/odl-3/odl_n_vue');
-require('./../../../assets/projects/default/odl/department');
-require('./../../../assets/projects/default/odl/role_group');
-require('./../../../assets/projects/default/odl/user');
-require('./../../../assets/projects/default/odl/material');
-require('./../../../assets/projects/default/odl/position');
-require('./../../../assets/projects/default/odl/reader');
-require('./../../../assets/projects/default/odl/status');
-require('./../../../assets/projects/default/odl/recording');
-
+// require('./../../../assets/3rd/odl-3/odl');
+// require('./../../../assets/3rd/odl-3/odl_n_mysql');
+// require('./../../../assets/3rd/odl-3/odl_n_vue');
+// require('./../../../assets/projects/default/odl/department');
+// require('./../../../assets/projects/default/odl/role_group');
+// require('./../../../assets/projects/default/odl/user');
+// require('./../../../assets/projects/default/odl/material');
+// require('./../../../assets/projects/default/odl/position');
+// require('./../../../assets/projects/default/odl/reader');
+// require('./../../../assets/projects/default/odl/status');
+// require('./../../../assets/projects/default/odl/recording');
+const odlLoader = require('./../../../projects/gcl3/master/odl-loader');
 
 const mysqlOption = {
     connectionLimit: 10,

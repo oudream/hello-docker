@@ -61,7 +61,11 @@
                                 name: 'id',
                                 readonly: true,
                                 visible: false,
-                            }
+                            },
+                            {
+                                name: 'name',
+                                required: true,
+                            },
                         ],
                     }
                 },
