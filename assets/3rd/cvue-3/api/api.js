@@ -35,3 +35,6 @@ export const getSqlQuery = params => { return axios.post(`${base}/sql/query`, pa
 export const getSqlQueries = params => { return axios.post(`${base}/sql/queries`, params).then(res => res.data); };
 
 export const getSqlTrans = params => { return axios.post(`${base}/sql/trans`, params).then(res => res.data); };
+
+
+export const getContainerQuery = params => { return axios.post(`${base}/container/query`, params).then(res => res.data); };

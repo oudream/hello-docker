@@ -16,7 +16,7 @@ import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
 import HelloCross1 from './../views/example/cross1/hello1.vue'
 import Users from './../views/users.vue'
-import Bureau from './../views/bureau.vue'
+import Bureau from './../views/bureau/bureau-manager.vue'
 
 import HelloLayout1 from './../views/example/css1/layout1'
 

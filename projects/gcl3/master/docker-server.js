@@ -44,7 +44,7 @@ let DockerServer = function() {
 };
 
 DockerServer.prototype.eventBusCallback = function(event) {
-    if (! event || ! event.target || ! event.target.action) return;
+    if (!event || !event.target || !event.target.action) return;
     if (event.target.action === 'add' || event.target.action === 'del') {
         this.lsConfigContainers(() => {
             this.validator();
@@ -59,11 +59,75 @@ DockerServer.prototype.init = function(httpServer, db) {
         EventBus.addEventListener('bureau', this.eventBusCallback, this);
     }
     let self = this;
-    self.httpServer.route('/docker/ls')
-        .get(function(req, res) {
-            res.writeHead(200);
-            res.end(JSON.stringify(self.memoryContainers));
+
+    let parseBody = function(req, res, body) {
+        if (body) {
+            let r = undefined;
+            try {
+                r = JSON.parse(body);
+            }
+            catch (e) {
+                let err = 'error: JSON.parse(body) by url :' + req.url;
+                console.log(err);
+                res.writeHead(500);
+                res.end(JSON.stringify({code: 500, msg: err}));
+            }
+            return r;
+        }
+        return undefined;
+    };
+
+    /**
+     // request url：
+     http://localhost:xxxx/container/query
+
+     action: ['ls', 'add', 'edit', 'del']
+     token.state: ['req', 'ing', 'ed', 'del']
+     */
+
+    /** ls.req.json
+     {
+     session: Date.now(),
+     action: 'ls',
+    }
+     // ls.resp.json
+     {
+     session: ^,
+     action: ^,
+     data: { configContainers,memoryContainers },
+     state: {err:null}
+    }
+     */
+
+    httpServer.route('/container/query')
+        .post(function(req, res) {
+            let body = '';
+            req.on('data', function(chunk) {
+                body += chunk;
+            });
+            req.on('end', function() {
+                let jsonContainers = JSON.stringify(self.memoryContainers);
+
+                let reqBody = parseBody(req, res, body);
+                if (!reqBody) return;
+                let {session, action} = reqBody;
+
+                if (action === 'ls') {
+                    let r = {
+                        session: session,
+                        action: action,
+                        data: {
+                            configContainers: self.configContainers,
+                            memoryContainers: self.memoryContainers
+                        },
+                        state: {err: err}
+                    };
+                    res.writeHead(200);
+                    res.end(JSON.stringify(r));
+                }
+            });
         });
+
 };
 
 DockerServer.prototype.run = function(config) {
@@ -117,7 +181,7 @@ DockerServer.prototype.remove = function(id) {
     let container = this.docker.getContainer(id);
     if (!container) {
         let index = this.beDeletedContainers.findIndex((c => c.id === id));
-        if (index>=0) {
+        if (index >= 0) {
             this.beDeletedContainers.splice(index, 1);
         }
         return;
@@ -191,7 +255,7 @@ DockerServer.prototype.validator = function() {
 DockerServer.prototype.lsConfigContainers = function(callback) {
     if (this.db) {
         this.db.query('select * from bureau', (err, values, fields) => {
-            if (!err){
+            if (!err) {
                 if (Array.isArray(values) && values.length > 0) {
                     let containers = [];
                     for (let i = 0; i < values.length; i++) {
@@ -205,7 +269,8 @@ DockerServer.prototype.lsConfigContainers = function(callback) {
                         }
                     }
                     this.configContainers = containers;
-                } else {
+                }
+                else {
                     this.configContainers = [];
                 }
                 if (callback) {
@@ -242,7 +307,7 @@ DockerServer.prototype.lsMemoryContainers = function() {
                         }
                     }
                 }
-                for (let i = self.beDeletedContainers.length-1; i >= 0; i--) {
+                for (let i = self.beDeletedContainers.length - 1; i >= 0; i--) {
                     let beDeletedContainer = self.beDeletedContainers[i];
                     let index = containers.findIndex(c => c.Id === beDeletedContainer.id);
                     if (index < 0) {
@@ -251,11 +316,12 @@ DockerServer.prototype.lsMemoryContainers = function() {
                 }
                 self.memoryContainers = containers;
                 console.log('docker.listContainers: ', containers);
-            } else {
+            }
+            else {
                 self.memoryContainers = [];
             }
         }
-        );
+    );
 };
 
 DockerServer.prototype.start = function() {
@@ -266,14 +332,16 @@ DockerServer.prototype.start = function() {
 
     self.timeOutCount = 0;
     self.timeOutHandle = setInterval(() => {
-        self.timeOutCount ++;
+        self.timeOutCount++;
         if (self.timeOutCount % 20 === 0) {
             self.lsConfigContainers();
-        } else {
+        }
+        else {
             if (self.timeOutCount % 2 === 0) {
                 self.validator();
                 console.log('DockerServer: validator');
-            } else {
+            }
+            else {
                 self.lsMemoryContainers();
                 console.log('DockerServer: listContainers');
             }

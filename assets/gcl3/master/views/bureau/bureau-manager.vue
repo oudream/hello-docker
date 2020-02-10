@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import SimpleA from "./../../../../assets/3rd/cvue-3/odl/simple-a.vue";
+    import SimpleA from "./../../../../../assets/3rd/cvue-3/odl/simple-a.vue";
 
     export default {
         components: {SimpleA},
