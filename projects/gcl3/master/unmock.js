@@ -118,15 +118,16 @@ let dealUser = function(app, httpMysqlServer) {
                     }
                     else {
                         if (Array.isArray(values)) {
-                           if (values.length ==0){
-                               res.writeHead(200);
-                               res.end(JSON.stringify({code: 500, msg: '账号或密码错误', user}));
-                           }else{
-                               user = values[0];
-                               user.password = undefined;
-                               res.writeHead(200);
-                               res.end(JSON.stringify({code: 200, msg: '请求成功', user}));
-                           }
+                            if (values.length == 0) {
+                                res.writeHead(200);
+                                res.end(JSON.stringify({code: 500, msg: '账号或密码错误', user}));
+                            }
+                            else {
+                                user = values[0];
+                                user.password = undefined;
+                                res.writeHead(200);
+                                res.end(JSON.stringify({code: 200, msg: '请求成功', user}));
+                            }
                         }
                         else {
                             res.writeHead(200);
@@ -357,10 +358,10 @@ let dealSql = function(app, httpMysqlServer) {
                         r.values = [];
                         res.forEach(rs => {
                             if (Array.isArray(rs.values)) {
-                                r.values.push({err:rs.err, data:rs.values});
+                                r.values.push({err: rs.err, data: rs.values});
                             }
                             else {
-                                r.values.push({err:rs.err, state:{affectedRows:rs.values.affectedRows}});
+                                r.values.push({err: rs.err, state: {affectedRows: rs.values.affectedRows}});
                             }
                         });
                         res.writeHead(200);
@@ -420,10 +421,10 @@ let dealSql = function(app, httpMysqlServer) {
                         r.values = [];
                         rs.forEach(re => {
                             if (Array.isArray(re.values)) {
-                                r.values.push({err:re.err, data:re.values});
+                                r.values.push({err: re.err, data: re.values});
                             }
                             else {
-                                r.values.push({err:re.err, state:{affectedRows:re.values.affectedRows}});
+                                r.values.push({err: re.err, state: {affectedRows: re.values.affectedRows}});
                             }
                         });
                         res.writeHead(200);
@@ -677,11 +678,11 @@ let dealOdl = function(app, httpMysqlServer) {
                 }
 
                 let dispatchOdcEvent = (data, old) => {
-                    if (! global.EventBus) return;
+                    if (!global.EventBus) return;
                     EventBus.dispatch(odcName, {action: action, data: data, old: old});
                 };
                 let hasEventBus = () => {
-                    if (! global.EventBus) return false;
+                    if (!global.EventBus) return false;
                     return EventBus.hasEventListener(odcName);
                 };
 
@@ -727,7 +728,8 @@ let dealOdl = function(app, httpMysqlServer) {
                                 let tk = odl.OpToken.reqToken({ip: ip}, odc, action);
                                 if (typeof tk === 'string') {
                                     r.state.err = tk;
-                                } else {
+                                }
+                                else {
                                     r.token = tk;
                                 }
                             }
@@ -742,7 +744,7 @@ let dealOdl = function(app, httpMysqlServer) {
                             });
                         }
                         else {
-                            respToken(null, [{key:Date.now()}]);
+                            respToken(null, [{key: Date.now()}]);
                         }
                     }
                     else {
@@ -787,7 +789,8 @@ let dealOdl = function(app, httpMysqlServer) {
                         let tk = odl.OpToken.reqToken({ip: ip}, odc, action);
                         if (typeof tk === 'string') {
                             r.state.err = tk;
-                        } else {
+                        }
+                        else {
                             r.token = tk;
                         }
                         res.writeHead(200);
@@ -849,7 +852,8 @@ let dealOdl = function(app, httpMysqlServer) {
                     else {
                         respState('getDeleteSqlAry is empty!', 0);
                     }
-                } if (action === 'validate') {
+                }
+                else if (action === 'validate') {
                     let {token, conditions} = reqBody;
                     if (token && token.state === 'req') {
                         let respToken = (err, data) => {
@@ -865,7 +869,8 @@ let dealOdl = function(app, httpMysqlServer) {
                                 let tk = odl.OpToken.reqToken({ip: ip}, odc, action);
                                 if (typeof tk === 'string') {
                                     r.state.err = tk;
-                                } else {
+                                }
+                                else {
                                     r.token = tk;
                                 }
                             }
@@ -880,7 +885,7 @@ let dealOdl = function(app, httpMysqlServer) {
                             });
                         }
                         else {
-                            respToken(null, [{key:Date.now()}]);
+                            respToken(null, [{key: Date.now()}]);
                         }
                     }
                     else {
@@ -916,9 +921,15 @@ let dealOdl = function(app, httpMysqlServer) {
                         // }
                         // objs.push(obj);
                         let ip = getRequestIp(req, res);
-                        let logEnv = {time: Date.now(), operation: 'validate', who: 'gcl3-master-node.js', where: ip, message: ''};
+                        let logEnv = {
+                            time: Date.now(),
+                            operation: 'validate',
+                            who: 'gcl3-master-node.js',
+                            where: ip,
+                            message: ''
+                        };
                         let sqlAry = nMysql.log.getInsertSqlAry(odc, objs, logEnv);
-                        if (Array.isArray(sqlAry) && sqlAry.length>0) {
+                        if (Array.isArray(sqlAry) && sqlAry.length > 0) {
                             httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
                                 respState(err, err ? 0 : 1);
                             });
@@ -928,7 +939,9 @@ let dealOdl = function(app, httpMysqlServer) {
                         }
                     }
                 }
-
+                else {
+                    respError('action is invalid: ' + action);
+                }
             });
         });
 

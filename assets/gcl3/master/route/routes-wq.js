@@ -16,7 +16,8 @@ import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
 import HelloCross1 from './../views/example/cross1/hello1.vue'
 import Users from './../views/users.vue'
-import Bureau from './../views/bureau/bureau-manager.vue'
+import BureauManager from './../views/bureau/bureau-manager.vue'
+import BureauContainer from './../views/bureau/bureau-container.vue'
 
 import HelloLayout1 from './../views/example/css1/layout1'
 
@@ -58,7 +59,8 @@ let routes = [
         name: '客户',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/bureau', component: Bureau, name: '局管理' }
+            { path: '/bureau-manager', component: BureauManager, name: '局管理' },
+            { path: '/bureau-container', component: BureauContainer, name: '局容器' }
         ]
     },
     //{ path: '/main', component: Main },

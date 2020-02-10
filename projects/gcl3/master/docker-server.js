@@ -106,7 +106,13 @@ DockerServer.prototype.init = function(httpServer, db) {
                 body += chunk;
             });
             req.on('end', function() {
-                let jsonContainers = JSON.stringify(self.memoryContainers);
+                let respError = (err, code) => {
+                    let code2 = code ? code : 500;
+                    let data = {err: 'error: ' + err, code: code2}
+                    res.writeHead(code2);
+                    res.end(JSON.stringify(data));
+                    console.log(data);
+                };
 
                 let reqBody = parseBody(req, res, body);
                 if (!reqBody) return;
@@ -120,10 +126,12 @@ DockerServer.prototype.init = function(httpServer, db) {
                             configContainers: self.configContainers,
                             memoryContainers: self.memoryContainers
                         },
-                        state: {err: err}
+                        state: {err: null}
                     };
                     res.writeHead(200);
                     res.end(JSON.stringify(r));
+                } else {
+                    respError('action is invalid: ' + action);
                 }
             });
         });

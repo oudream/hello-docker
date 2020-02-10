@@ -1,15 +1,27 @@
 <template>
     <section>
-        <el-row v-for="(obj, index) in memoryContainers" :key="index" :prop="obj.name" :label="obj.label" :width="obj.width"
-                         :min-width="obj.minWidth" :formatter="obj.format" :sortable="obj.sortable"
-                         :show-overflow-tooltip="obj.showOverflowTooltip">
-            <span>{{ msg }}</span>
+        <el-row v-for="(obj, index) in memoryContainers">
+            <div>
+                <h4>Id : {{obj.Id }}</h4>
+                <p>Names : {{obj.Names }}</p>
+                <p>Image : {{obj.Image }}</p>
+                <p>ImageID : {{obj.ImageID }}</p>
+                <p>Command : {{obj.Command }}</p>
+                <p>Created : {{obj.Created }}</p>
+                <p>Ports : {{obj.Ports }}</p>
+                <p>Labels : {{obj.Labels }}</p>
+                <p>State : {{obj.State }}</p>
+                <p>Status : {{obj.Status }}</p>
+                <p>HostConfig : {{obj.HostConfig }}</p>
+                <p>NetworkSettings : {{obj.NetworkSettings}}</p>
+                <p>Mounts : {{obj.Mounts }}</p>
+            </div>
         </el-row>
     </section>
 </template>
 
 <script>
-    import { getContainerQuery } from './../../../../3rd/cvue-3/api/api';
+    import {getContainerQuery} from './../../../../3rd/cvue-3/api/api';
 
     export default {
         data() {
