@@ -252,9 +252,23 @@ async function testSql(odc) {
     fs.writeFileSync(fp, JSON.stringify(odc));
     console.log('fs.writeFileSync(fp), fp: ', fp);
 
+    let values = [];
+
+    let sqlExist = odl.DbMysql.getExistSql(odc);
+    try {
+        values = await querySqlPromise(sqlExist);
+    }
+    catch (e) {
+        console.log(e);
+    }
+    console.log('sqlExist: ', values);
+    if (Array.isArray(values) && values.length > 0) {
+        return;
+    }
+
     let sqlDrop = odl.DbMysql.getDropSql(odc);
     // execSql(sqlDrop);
-    let values = await querySqlPromise(sqlDrop);
+    values = await querySqlPromise(sqlDrop);
     console.log('sqlDrop: ', values);
 
     let sqlCreate = odl.DbMysql.getCreateSql(odc);

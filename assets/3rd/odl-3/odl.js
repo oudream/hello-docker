@@ -272,7 +272,10 @@
             for (let i = 0; i < attrs.length; i++) {
                 let attr = attrs[i];
                 let myAttr = this.attrs[attr.model];
-                if (!myAttr) return attrs;
+                if (!myAttr) {
+                    console.log('error error error : odl.Attr.normalize can not find the model. odc: ', odc);
+                    return attrs;
+                };
                 let newAttr = {};
                 Object.assign(newAttr, myAttr);
                 Object.assign(newAttr, attr);

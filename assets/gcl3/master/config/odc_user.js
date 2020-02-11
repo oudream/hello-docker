@@ -203,7 +203,7 @@
                         },
                     spec: {
                         table: {
-                            name: 'users'
+                            name: 'user'
                         },
                         attrs: [
                             {

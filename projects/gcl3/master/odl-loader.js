@@ -10,6 +10,7 @@ let odcPathes = [
     './../../../assets/gcl3/master/config/odc_department',
     './../../../assets/gcl3/master/config/odc_role_group',
     './../../../assets/gcl3/master/config/odc_user',
+    './../../../assets/gcl3/master/config/odc_container_stat',
 ];
 // let odcPathes = [];
 

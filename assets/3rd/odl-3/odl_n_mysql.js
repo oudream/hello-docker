@@ -176,6 +176,22 @@
         /**
          *
          * @param odc
+         * @returns {string}
+         */
+        getExistSql: function(odc) {
+            let nObj = this.getSimilar(odc);
+            if (nObj) {
+                let sql = ["SELECT 1 FROM `"];
+                sql.push(nObj.spec.table.name);
+                sql.push("` LIMIT 1");
+                return sql.join('');
+            }
+            return '';
+        },
+
+        /**
+         *
+         * @param odc
          *
          CREATE TABLE `table3` (
          `f1` int NOT NULL,

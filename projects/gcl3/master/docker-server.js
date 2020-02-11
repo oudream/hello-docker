@@ -1,7 +1,18 @@
 let fs = require('fs');
 let Docker = require('dockerode');
 
-const ProcessStateEnum = Object.freeze({"none":0, "listingConfig":1, "listedConfig":2, "listingMemory1":3, "listedMemory1":4, "listingValidator":5, "listingMemory2":6, "listedMemory2":7, "listedValidator":8, "end":9})
+const ProcessStateEnum = Object.freeze({
+    "none": 0,
+    "listingConfig": 1,
+    "listedConfig": 2,
+    "listingMemory1": 3,
+    "listedMemory1": 4,
+    "listingValidator": 5,
+    "listingMemory2": 6,
+    "listedMemory2": 7,
+    "listedValidator": 8,
+    "end": 9
+})
 
 let DockerServer = function() {
     let socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
@@ -67,6 +78,11 @@ DockerServer.checkSameContainers = function(containers1, containers2) {
     return false;
 };
 
+DockerServer.getContainerBureauId = function(container) {
+    let sName = container.Labels.Name;
+    return sName.substring(sName.lastIndexOf('-') + 1);
+};
+
 DockerServer.prototype.lsConfigContainers = function() {
     if (this.db) {
         this.setProcessState(ProcessStateEnum.listingConfig);
@@ -96,7 +112,8 @@ DockerServer.prototype.lsConfigContainers = function() {
                 this.lsMemoryContainers1();
             }
         });
-    } else {
+    }
+    else {
         console.log('DockerServer lsConfigContainers - system error ( db is null )!');
     }
 };
@@ -120,9 +137,10 @@ DockerServer.prototype.lsMemoryContainers1 = function() {
             if (Array.isArray(containers)) {
                 newContainers = containers;
             }
-            if (! DockerServer.checkSameContainers(self.memoryContainers, newContainers)) {
+            if (!DockerServer.checkSameContainers(self.memoryContainers, newContainers)) {
                 console.log('DockerServer lsMemoryContainers1: ', self.memoryContainers);
-            } else {
+            }
+            else {
                 console.log('DockerServer lsMemoryContainers1 same to up.');
             }
             self.memoryContainers = newContainers;
@@ -137,16 +155,17 @@ DockerServer.prototype.lsMemoryContainers1 = function() {
 DockerServer.prototype.run = function(config) {
     let self = this;
 
-    let beAddedContainer = self.beAddedContainers.find((c => c.name === config.name));
+    let beAddedContainer = self.beAddedContainers.find((c => c.Name === config.Name));
     if (beAddedContainer) {
         // for repeat add
         if (Date.now() - beAddedContainer.sendTime < 10000) {
             console.log('DockerServer: run ( for repeat add ), so do not run!');
             return;
         }
-    } else {
+    }
+    else {
         beAddedContainer = {
-            name: config.name
+            Name: config.Name
         };
         this.beAddedContainers.push(beAddedContainer);
     }
@@ -167,7 +186,7 @@ DockerServer.prototype.run = function(config) {
             "AutoRemove": true,
         },
     }, (err, data, container) => {
-        let index = self.beAddedContainers.findIndex((c => c.name === config.name));
+        let index = self.beAddedContainers.findIndex((c => c.Name === config.Name));
         if (index >= 0) {
             self.beAddedContainers.splice(index, 1);
         }
@@ -183,14 +202,15 @@ DockerServer.prototype.run = function(config) {
 DockerServer.prototype.remove = function(id) {
     let self = this;
     // for repeat delete
-    let beDeletedContainer = self.beDeletedContainers.find((c => c.id === id));
+    let beDeletedContainer = self.beDeletedContainers.find((c => c.Id === id));
     if (beDeletedContainer) {
         if (Date.now() - beDeletedContainer.sendTime < 10000) {
             return;
         }
-    } else {
+    }
+    else {
         beDeletedContainer = {
-            id: id
+            Id: id
         };
         self.beDeletedContainers.push(beDeletedContainer);
     }
@@ -198,7 +218,7 @@ DockerServer.prototype.remove = function(id) {
 
     let container = self.docker.getContainer(id);
     if (!container) {
-        let index = self.beDeletedContainers.findIndex((c => c.id === id));
+        let index = self.beDeletedContainers.findIndex((c => c.Id === id));
         if (index >= 0) {
             self.beDeletedContainers.splice(index, 1);
         }
@@ -214,7 +234,7 @@ DockerServer.prototype.remove = function(id) {
         else {
             console.log('DockerServer: remove success! data= ', data);
         }
-        let index = self.beDeletedContainers.findIndex((c => c.id === id));
+        let index = self.beDeletedContainers.findIndex((c => c.Id === id));
         if (index >= 0) {
             self.beDeletedContainers.splice(index, 1);
         }
@@ -285,7 +305,7 @@ DockerServer.prototype.validator = function() {
         }
     }
 
-    if (! hasOperation) {
+    if (!hasOperation) {
         this.setProcessState(ProcessStateEnum.listedValidator);
     }
 };
@@ -311,7 +331,7 @@ DockerServer.prototype.lsMemoryContainers2 = function() {
                     let container = containers[i];
                     if (container.State === 'running') {
                         if (container.Labels && container.Labels.Name) {
-                            let index = self.beAddedContainers.findIndex(c => c.name === container.Labels.Name);
+                            let index = self.beAddedContainers.findIndex(c => c.Name === container.Labels.Name);
                             if (index >= 0) {
                                 self.beAddedContainers.splice(index, 1);
                             }
@@ -320,21 +340,22 @@ DockerServer.prototype.lsMemoryContainers2 = function() {
                 }
                 for (let i = self.beDeletedContainers.length - 1; i >= 0; i--) {
                     let beDeletedContainer = self.beDeletedContainers[i];
-                    let index = containers.findIndex(c => c.Id === beDeletedContainer.id);
+                    let index = containers.findIndex(c => c.Id === beDeletedContainer.Id);
                     if (index < 0) {
                         self.beDeletedContainers.splice(i, 1);
                     }
                 }
                 newContainers = containers;
             }
-            if (! DockerServer.checkSameContainers(self.memoryContainers, newContainers)) {
+            if (!DockerServer.checkSameContainers(self.memoryContainers, newContainers)) {
                 console.log('DockerServer lsMemoryContainers2: ', self.memoryContainers);
-            } else {
+            }
+            else {
                 console.log('DockerServer lsMemoryContainers2 same to up.');
             }
             self.memoryContainers = newContainers;
             self.setProcessState(ProcessStateEnum.listedMemory2);
-            if (self.beAddedContainers.length>0) {
+            if (self.beAddedContainers.length > 0) {
                 console.log('DockerServer lsMemoryContainers2 - beAddedContainers: ', self.beAddedContainers);
             }
             if (self.beDeletedContainers.length > 0) {
@@ -355,7 +376,8 @@ DockerServer.prototype.eventBusCallback = function(event) {
     if (event.target.action === 'add' || event.target.action === 'del') {
         if (this.processState === ProcessStateEnum.listedValidator) {
             this.lsConfigContainers();
-        } else {
+        }
+        else {
             this.eventQueue.push(event);
         }
     }
@@ -439,7 +461,8 @@ DockerServer.prototype.init = function(httpServer, db) {
                     };
                     res.writeHead(200);
                     res.end(JSON.stringify(r));
-                } else {
+                }
+                else {
                     respError('action is invalid: ' + action);
                 }
             });
@@ -449,7 +472,7 @@ DockerServer.prototype.init = function(httpServer, db) {
 
 DockerServer.prototype.reset = function() {
     this.processState = ProcessStateEnum.listedValidator;
-    for (let i = this.eventQueue.length-1; i >= 0; i++) {
+    for (let i = this.eventQueue.length - 1; i >= 0; i++) {
         let event = this.eventQueue[i];
         if (event.target.action === 'add' || event.target.action === 'del') {
             this.eventQueue.splice(i, 1);
@@ -458,10 +481,12 @@ DockerServer.prototype.reset = function() {
     this.lsConfigContainers();
 };
 
-DockerServer.prototype.stats = function(id) {
-    let container = self.docker.getContainer(id);
+DockerServer.prototype.stats = function(memoryContainer) {
+    let self = this;
+    let containerId = String(memoryContainer.Id);
+    let container = self.docker.getContainer(containerId);
     if (!container) {
-        console.log('DockerServer: stats error! self.docker.getContainer(id) is null. id = ', id);
+        console.log('DockerServer: stats error! self.docker.getContainer(id) is null. id = ', containerId);
         return;
     }
 
@@ -469,10 +494,60 @@ DockerServer.prototype.stats = function(id) {
         if (err) {
             console.log('DockerServer: stats error! err= ', err);
         }
-        console.log(stream);
+        if (!stream) return;
+        let cpu_stats = stream.cpu_stats;
+        let precpu_stats = stream.precpu_stats;
+        if (!cpu_stats || !precpu_stats) return;
+        let memory_stats = stream.memory_stats;
+        if (!memory_stats) return;
+        // https://github.com/moby/moby/issues/29306
+        // https://forums.docker.com/t/how-to-calculate-the-cpu-usage-in-percent/27509
+        // https://stackoverflow.com/questions/35692667/in-docker-cpu-usage-calculation-what-are-totalusage-systemusage-percpuusage-a
+        // let cpuPercent = 0.0
+        // // calculate the change for the cpu usage of the container in between readings
+        // let cpuDelta = cpuUsage.TotalUsage - float64(previousCPU)
+        // // calculate the change for the entire system between readings
+        // systemDelta = float64(v.CPUStats.SystemUsage) - float64(previousSystem)
+        //
+        // if systemDelta > 0.0 && cpuDelta > 0.0 {
+        //     cpuPercent = (cpuDelta / systemDelta) * float64(len(v.CPUStats.CPUUsage.PercpuUsage)) * 100.0
+        // }
+
+        let delta_total_usage = (cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage);
+        let delta_system_usage = (cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage);
+        let cpuPercent = (delta_total_usage / delta_system_usage) * cpu_stats.cpu_usage.percpu_usage.length * 100.0;
+
+        // let delta_total_usage = (cpu_stats.cpu_usage.total_usage - precpu_stats.cpu_usage.total_usage) / precpu_stats.cpu_usage.total_usage;
+        // let delta_system_usage = (cpu_stats.system_cpu_usage - precpu_stats.system_cpu_usage) / precpu_stats.system_cpu_usage;
+        // let cpuPercent = (delta_total_usage / delta_system_usage) * cpu_stats.cpu_usage.percpu_usage.length * 100.0;
+        //
+        // console.log(cpuPercent);
+        //
+        // console.log(memory_stats.usage, memory_stats.max_usage, memory_stats.limit);
+
+        if (self.db) {
+            let BureauId = DockerServer.getContainerBureauId(memoryContainer);
+            let sqlInsert = ["INSERT INTO `db1`.`container_stat`(`bureauId`, `containerId`, `cpuPercent`, `memUsage`, `memMaxUsage`, `memLimit`, `statTime`) VALUES ("];
+            sqlInsert.push(BureauId + ',');
+            sqlInsert.push("'" + containerId + "',");
+            sqlInsert.push(cpuPercent.toFixed(3) + ',');
+            sqlInsert.push(String(memory_stats.usage) + ',');
+            sqlInsert.push(String(memory_stats.max_usage) + ',');
+            sqlInsert.push(String(memory_stats.limit) + ',');
+            sqlInsert.push(String(Date.now()));
+            sqlInsert.push(");");
+            let sql = sqlInsert.join('');
+            try {
+                self.db.query(sql);
+            }
+            catch (e) {
+                console.log(sql);
+                console.log(e);
+            }
+        }
     }
 
-    container.stats(statsHandler);
+    container.stats({stream: false}, statsHandler);
 };
 
 DockerServer.prototype.lsStatContainers = function() {
@@ -480,9 +555,8 @@ DockerServer.prototype.lsStatContainers = function() {
     self.setProcessState(ProcessStateEnum.listingMemory1);
 
     for (let i = 0; i < this.memoryContainers.length; i++) {
-        let container = this.memoryContainers[i];
-        let Id = container.Id;
-        this.stats(Id);
+        let memoryContainer = this.memoryContainers[i];
+        this.stats(memoryContainer);
     }
 };
 
@@ -495,7 +569,8 @@ DockerServer.prototype.timeOut = function() {
         if (dtNow - this.processStateTime > 6000) {
             this.reset();
         }
-    } else {
+    }
+    else {
         if (this.timeOutCount % 10 === 0) {
             this.lsConfigContainers();
         }

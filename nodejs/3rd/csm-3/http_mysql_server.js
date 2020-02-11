@@ -50,7 +50,9 @@ HttpMysqlServer.prototype.query = function (sql, callback) {
     this._pool.getConnection(function(err, connection) {
         if (err) {
             console.log('HttpMysqlServer-query: ', err);
-            callback(err);
+            if (callback) {
+                callback(err);
+            }
             return;
         }
         // let sql = 'SELECT id,name FROM users';
@@ -58,10 +60,14 @@ HttpMysqlServer.prototype.query = function (sql, callback) {
             connection.release(); // always put connection back in pool after last query
             if (err) {
                 console.log('HttpMysqlServer-query: ', err);
-                callback(err);
+                if (callback) {
+                    callback(err);
+                }
                 return;
             }
-            callback(false, values, fields);
+            if (callback) {
+                callback(false, values, fields);
+            }
         });
     });
 };
@@ -70,7 +76,9 @@ HttpMysqlServer.prototype.querySql = function (sql, vs, callback) {
     this._pool.getConnection(function(err, connection) {
         if (err) {
             console.log('HttpMysqlServer-query: ', err);
-            callback(err);
+            if (callback) {
+                callback(err);
+            }
             return;
         }
         // let sql = 'SELECT id,name FROM users';
@@ -78,10 +86,14 @@ HttpMysqlServer.prototype.querySql = function (sql, vs, callback) {
             connection.release(); // always put connection back in pool after last query
             if (err) {
                 console.log('HttpMysqlServer-query: ', err);
-                callback(err);
+                if (callback) {
+                    callback(err);
+                }
                 return;
             }
-            callback(false, values, fields);
+            if (callback) {
+                callback(false, values, fields);
+            }
         });
     });
 };
@@ -170,14 +182,18 @@ HttpMysqlServer.prototype._promiseQueryQueue2 = function(executors) {
  */
 HttpMysqlServer.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) {
     if (! Array.isArray(sqlAry) || sqlAry.length < 1) {
-        callback(new Error('sqlAry invalid!'));
+        if (callback) {
+            callback(new Error('sqlAry invalid!'));
+        }
         return;
     }
     let sqlValuesAry2 = Array.isArray(sqlValuesAry) && sqlValuesAry.length === sqlAry.length ? sqlValuesAry : sqlAry.map(x => []);
 
     this._pool.getConnection((err, connection) => {
         if (err) {
-            callback(err);
+            if (callback) {
+                callback(err);
+            }
             return;
         }
 
@@ -192,7 +208,9 @@ HttpMysqlServer.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) 
         connection.beginTransaction(err => {
             if (err) {
                 connection.release();
-                callback(err);
+                if (callback) {
+                    callback(err);
+                }
                 return;
             }
 
@@ -207,17 +225,23 @@ HttpMysqlServer.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) 
                         if (err2) {
                             connection.rollback((err3)=>{
                                 connection.release();
-                                callback(err2, rs);
+                                if (callback) {
+                                    callback(err2, rs);
+                                }
                             });
                         } else {
                             connection.release();
-                            callback(null, rs);
+                            if (callback) {
+                                callback(null, rs);
+                            }
                         }
                     });
                 } else {
                     connection.rollback((err2) => {
                         connection.release();
-                        callback(err2 ? err2 : err, rs);
+                        if (callback) {
+                            callback(err2 ? err2 : err, rs);
+                        }
                     });
                 }
             };
@@ -228,14 +252,18 @@ HttpMysqlServer.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) 
 
 HttpMysqlServer.prototype.querySqls = function(sqlAry, sqlValuesAry, callback) {
     if (! Array.isArray(sqlAry) || sqlAry.length < 1) {
-        callback(new Error('sqlAry invalid!'));
+        if (callback) {
+            callback(new Error('sqlAry invalid!'));
+        }
         return;
     }
     let sqlValuesAry2 = Array.isArray(sqlValuesAry) && sqlValuesAry.length === sqlAry.length ? sqlValuesAry : sqlAry.map(x => []);
 
     this._pool.getConnection((err, connection) => {
         if (err) {
-            callback(err);
+            if (callback) {
+                callback(err);
+            }
             return;
         }
 
@@ -257,9 +285,11 @@ HttpMysqlServer.prototype.querySqls = function(sqlAry, sqlValuesAry, callback) {
             querySqlFns.push(querySql(sqlAry[i], sqlValuesAry2[i]));
         }
         let queryQueueCallback = (rs) => {
-            let err = Array.isArray(rs) && rs.length > 0 ? rs.find(x => x.err) : null;
-            err = err ? err.err : null;
-            callback(err, rs);
+            if (callback) {
+                let err = Array.isArray(rs) && rs.length > 0 ? rs.find(x => x.err) : null;
+                err = err ? err.err : null;
+                callback(err, rs);
+            }
             connection.release();
         };
         this._promiseQueryQueue2(querySqlFns).then(queryQueueCallback);
