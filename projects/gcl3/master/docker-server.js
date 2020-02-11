@@ -1,6 +1,8 @@
 let fs = require('fs');
 let Docker = require('dockerode');
 
+const ProcessStateEnum = Object.freeze({"none":0, "listingConfig":1, "listedConfig":2, "listingMemory1":3, "listedMemory1":4, "listingValidator":5, "listingMemory2":6, "listedMemory2":7, "listedValidator":8, "end":9})
+
 let DockerServer = function() {
     let socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
     let stats = fs.statSync(socket);
@@ -39,16 +41,323 @@ let DockerServer = function() {
      ]
      */
     this.memoryContainers = [];
+    this.statContainers = [];
+
     this.beAddedContainers = [];
     this.beDeletedContainers = [];
+
+    this.processState = ProcessStateEnum.none;
+    this.processStateTime = Date.now();
+
+    this.eventQueue = [];
+
+    this.timeOutCount = 0;
+};
+
+DockerServer.checkSameContainers = function(containers1, containers2) {
+    if (containers1.length === containers2.length) {
+        for (let i = 0; i < containers2.length; i++) {
+            let container = containers2[i];
+            if (containers1.findIndex((c) => c.Id === container.Id) < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    return false;
+};
+
+DockerServer.prototype.lsConfigContainers = function() {
+    if (this.db) {
+        this.setProcessState(ProcessStateEnum.listingConfig);
+        this.db.query('select * from bureau', (err, values, fields) => {
+            if (!err) {
+                if (Array.isArray(values) && values.length > 0) {
+                    let containers = [];
+                    for (let i = 0; i < values.length; i++) {
+                        let row = values[i];
+                        let id = row['id'];
+                        if (id >= 0) {
+                            let c = {
+                                "Id": id,
+                                "Name": 'gcl3-' + id,
+                                "Row": row,
+                            };
+                            containers.push(c);
+                        }
+                    }
+                    this.configContainers = containers;
+                }
+                else {
+                    this.configContainers = [];
+                    console.log('DockerServer lsConfigContainers - result is null!');
+                }
+                this.setProcessState(ProcessStateEnum.listedConfig);
+                this.lsMemoryContainers1();
+            }
+        });
+    } else {
+        console.log('DockerServer lsConfigContainers - system error ( db is null )!');
+    }
+};
+
+DockerServer.prototype.lsMemoryContainers1 = function() {
+    let self = this;
+    self.setProcessState(ProcessStateEnum.listingMemory1);
+    self.docker.listContainers(
+        {
+            filters: {
+                "label": [
+                    "Project=gcl3",
+                ]
+            }
+        },
+        (err, containers) => {
+            if (err) {
+                console.log('DockerServer lsMemoryContainers1: ', err);
+            }
+            let newContainers = [];
+            if (Array.isArray(containers)) {
+                newContainers = containers;
+            }
+            if (! DockerServer.checkSameContainers(self.memoryContainers, newContainers)) {
+                console.log('DockerServer lsMemoryContainers1: ', self.memoryContainers);
+            } else {
+                console.log('DockerServer lsMemoryContainers1 same to up.');
+            }
+            self.memoryContainers = newContainers;
+            self.setProcessState(ProcessStateEnum.listedMemory1);
+            console.log('DockerServer lsMemoryContainers1: ', self.memoryContainers);
+            self.validator();
+        }
+    );
+};
+
+// this.docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;"
+DockerServer.prototype.run = function(config) {
+    let self = this;
+
+    let beAddedContainer = self.beAddedContainers.find((c => c.name === config.name));
+    if (beAddedContainer) {
+        // for repeat add
+        if (Date.now() - beAddedContainer.sendTime < 10000) {
+            console.log('DockerServer: run ( for repeat add ), so do not run!');
+            return;
+        }
+    } else {
+        beAddedContainer = {
+            name: config.name
+        };
+        this.beAddedContainers.push(beAddedContainer);
+    }
+    beAddedContainer.sendTime = Date.now();
+
+    self.docker.run('alpine', [], undefined, {
+        "Cmd": [
+            "/bin/sh",
+            "-c",
+            "while sleep 2;do printf aaabbbccc134\\\n; done;"
+        ],
+        "Image": "alpine",
+        "Labels": {
+            "Project": "gcl3",
+            "Name": config.Name
+        },
+        "HostConfig": {
+            "AutoRemove": true,
+        },
+    }, (err, data, container) => {
+        let index = self.beAddedContainers.findIndex((c => c.name === config.name));
+        if (index >= 0) {
+            self.beAddedContainers.splice(index, 1);
+        }
+        if (err) {
+            return console.error(err);
+        }
+        console.log('DockerServer: run result ( ', data.StatusCode, container, ' )');
+        self.operationFinish();
+    });
+
+};
+
+DockerServer.prototype.remove = function(id) {
+    let self = this;
+    // for repeat delete
+    let beDeletedContainer = self.beDeletedContainers.find((c => c.id === id));
+    if (beDeletedContainer) {
+        if (Date.now() - beDeletedContainer.sendTime < 10000) {
+            return;
+        }
+    } else {
+        beDeletedContainer = {
+            id: id
+        };
+        self.beDeletedContainers.push(beDeletedContainer);
+    }
+    beDeletedContainer.sendTime = Date.now();
+
+    let container = self.docker.getContainer(id);
+    if (!container) {
+        let index = self.beDeletedContainers.findIndex((c => c.id === id));
+        if (index >= 0) {
+            self.beDeletedContainers.splice(index, 1);
+        }
+        console.log('DockerServer: remove error! self.docker.getContainer(id) is null. id = ', id);
+        self.operationFinish();
+        return;
+    }
+
+    function removeHandler(err, data) {
+        if (err) {
+            console.log('DockerServer: remove error! err= ', err, ', data= ', data);
+        }
+        else {
+            console.log('DockerServer: remove success! data= ', data);
+        }
+        let index = self.beDeletedContainers.findIndex((c => c.id === id));
+        if (index >= 0) {
+            self.beDeletedContainers.splice(index, 1);
+        }
+        self.operationFinish();
+    }
+
+    function stopHandler(err, data) {
+        if (err) {
+            container.kill(killHandler);
+            console.log('DockerServer: Stop: err= ', err);
+        }
+        else {
+            container.remove(removeHandler);
+        }
+    }
+
+    function killHandler(err, data) {
+        if (err) {
+            console.log('DockerServer: kill: err= ', err);
+        }
+        container.remove(removeHandler);
+    }
+
+    container.stop(stopHandler);
+};
+
+DockerServer.prototype.operationFinish = function() {
+    if (this.beAddedContainers.length === 0 && this.beDeletedContainers.length === 0) {
+        this.lsMemoryContainers2();
+    }
+};
+
+DockerServer.prototype.validator = function() {
+    this.setProcessState(ProcessStateEnum.listingValidator);
+    let configContainers = this.configContainers;
+    let memoryContainers = this.memoryContainers;
+
+    this.beAddedContainers = [];
+    this.beDeletedContainers = [];
+
+    let hasOperation = false;
+
+    // No Healthy
+    for (let j = 0; j < memoryContainers.length; j++) {
+        let mContainer = memoryContainers[j];
+        if (mContainer.State !== 'running') {
+            console.log("DockerServer validator mContainer.State !== 'running' , mContainer: ", mContainer);
+            this.remove(mContainer.Id);
+            hasOperation = true;
+        }
+    }
+    // sync - remove
+    for (let j = 0; j < memoryContainers.length; j++) {
+        let mContainer = memoryContainers[j];
+        let iIndex = configContainers.findIndex((cContainer) => mContainer.Labels && mContainer.Labels.Name === cContainer.Name);
+        if (iIndex < 0) {
+            this.remove(mContainer.Id);
+            hasOperation = true;
+        }
+    }
+    // sync - add
+    for (let j = 0; j < configContainers.length; j++) {
+        let cContainer = configContainers[j];
+        let iIndex = memoryContainers.findIndex((mContainer) => mContainer.Labels && mContainer.Labels.Name === cContainer.Name);
+        if (iIndex < 0) {
+            this.run(cContainer);
+            hasOperation = true;
+        }
+    }
+
+    if (! hasOperation) {
+        this.setProcessState(ProcessStateEnum.listedValidator);
+    }
+};
+
+DockerServer.prototype.lsMemoryContainers2 = function() {
+    let self = this;
+    self.setProcessState(ProcessStateEnum.listingMemory2);
+    self.docker.listContainers(
+        {
+            filters: {
+                "label": [
+                    "Project=gcl3",
+                ]
+            }
+        },
+        (err, containers) => {
+            if (err) {
+                console.log('DockerServer lsMemoryContainers2 - err: ', err);
+            }
+            let newContainers = [];
+            if (Array.isArray(containers)) {
+                for (let i = 0; i < containers.length; i++) {
+                    let container = containers[i];
+                    if (container.State === 'running') {
+                        if (container.Labels && container.Labels.Name) {
+                            let index = self.beAddedContainers.findIndex(c => c.name === container.Labels.Name);
+                            if (index >= 0) {
+                                self.beAddedContainers.splice(index, 1);
+                            }
+                        }
+                    }
+                }
+                for (let i = self.beDeletedContainers.length - 1; i >= 0; i--) {
+                    let beDeletedContainer = self.beDeletedContainers[i];
+                    let index = containers.findIndex(c => c.Id === beDeletedContainer.id);
+                    if (index < 0) {
+                        self.beDeletedContainers.splice(i, 1);
+                    }
+                }
+                newContainers = containers;
+            }
+            if (! DockerServer.checkSameContainers(self.memoryContainers, newContainers)) {
+                console.log('DockerServer lsMemoryContainers2: ', self.memoryContainers);
+            } else {
+                console.log('DockerServer lsMemoryContainers2 same to up.');
+            }
+            self.memoryContainers = newContainers;
+            self.setProcessState(ProcessStateEnum.listedMemory2);
+            if (self.beAddedContainers.length>0) {
+                console.log('DockerServer lsMemoryContainers2 - beAddedContainers: ', self.beAddedContainers);
+            }
+            if (self.beDeletedContainers.length > 0) {
+                console.log('DockerServer lsMemoryContainers2 - beDeletedContainers: ', self.beDeletedContainers);
+            }
+            self.setProcessState(ProcessStateEnum.listedValidator);
+        }
+    );
+};
+
+DockerServer.prototype.setProcessState = function(state) {
+    this.processState = state;
+    this.processStateTime = Date.now();
 };
 
 DockerServer.prototype.eventBusCallback = function(event) {
     if (!event || !event.target || !event.target.action) return;
     if (event.target.action === 'add' || event.target.action === 'del') {
-        this.lsConfigContainers(() => {
-            this.validator();
-        });
+        if (this.processState === ProcessStateEnum.listedValidator) {
+            this.lsConfigContainers();
+        } else {
+            this.eventQueue.push(event);
+        }
     }
 };
 
@@ -138,223 +447,74 @@ DockerServer.prototype.init = function(httpServer, db) {
 
 };
 
-DockerServer.prototype.run = function(config) {
-// this.docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;"
-    let beAddedContainer = this.beAddedContainers.find((c => c.name === config.name));
-    if (beAddedContainer) {
-        if (Date.now() - beAddedContainer.sendTime < 10000) {
-            return;
+DockerServer.prototype.reset = function() {
+    this.processState = ProcessStateEnum.listedValidator;
+    for (let i = this.eventQueue.length-1; i >= 0; i++) {
+        let event = this.eventQueue[i];
+        if (event.target.action === 'add' || event.target.action === 'del') {
+            this.eventQueue.splice(i, 1);
         }
     }
-
-    this.docker.run('alpine', [], undefined, {
-        "Cmd": [
-            "/bin/sh",
-            "-c",
-            "while sleep 2;do printf aaabbbccc134\\\n; done;"
-        ],
-        "Image": "alpine",
-        "Labels": {
-            "Project": "gcl3",
-            "Name": config.Name
-        },
-        "HostConfig": {
-            "AutoRemove": true,
-        },
-    }, function(err, data, container) {
-        if (err) {
-            return console.error(err);
-        }
-        console.log(data.StatusCode);
-        console.log(container);
-    });
-
-    if (!beAddedContainer) {
-        beAddedContainer = {
-            name: config.name
-        };
-        this.beAddedContainers.push(beAddedContainer);
-    }
-    beAddedContainer.sendTime = Date.now();
+    this.lsConfigContainers();
 };
 
-DockerServer.prototype.remove = function(id) {
-    let beDeletedContainer = this.beDeletedContainers.find((c => c.id === id));
-    if (beDeletedContainer) {
-        if (Date.now() - beDeletedContainer.sendTime < 10000) {
-            return;
-        }
-    }
-
-    let container = this.docker.getContainer(id);
+DockerServer.prototype.stats = function(id) {
+    let container = self.docker.getContainer(id);
     if (!container) {
-        let index = this.beDeletedContainers.findIndex((c => c.id === id));
-        if (index >= 0) {
-            this.beDeletedContainers.splice(index, 1);
-        }
+        console.log('DockerServer: stats error! self.docker.getContainer(id) is null. id = ', id);
         return;
     }
 
-    function removeHandler(err, data) {
+    function statsHandler(err, stream) {
         if (err) {
-            console.log('DockerServer: remove error! err= ', err, ', data= ', data);
+            console.log('DockerServer: stats error! err= ', err);
         }
-        else {
-            console.log('DockerServer: remove success! data= ', data);
-        }
+        console.log(stream);
     }
 
-    function stopHandler(err, data) {
-        if (err) {
-            container.kill(killHandler);
-            console.log('DockerServer: Stop: err= ', err);
-        }
-        else {
-            container.remove(removeHandler);
-        }
-    }
-
-    function killHandler(err, data) {
-        if (err) {
-            console.log('DockerServer: kill: err= ', err);
-        }
-        container.remove(removeHandler);
-    }
-
-    container.stop(stopHandler);
-    if (!beDeletedContainer) {
-        beDeletedContainer = {
-            id: id
-        };
-        this.beDeletedContainers.push(beDeletedContainer);
-    }
-    beDeletedContainer.sendTime = Date.now();
+    container.stats(statsHandler);
 };
 
-DockerServer.prototype.validator = function() {
-    let configContainers = this.configContainers;
-    let memoryContainers = this.memoryContainers;
-
-    // No Healthy
-    for (let j = 0; j < memoryContainers.length; j++) {
-        let mContainer = memoryContainers[j];
-        if (mContainer.State !== 'running') {
-            this.remove(mContainer.Id);
-        }
-    }
-    // sync - remove
-    for (let j = 0; j < memoryContainers.length; j++) {
-        let mContainer = memoryContainers[j];
-        let iIndex = configContainers.findIndex((cContainer) => mContainer.Labels && mContainer.Labels.Name === cContainer.Name);
-        if (iIndex < 0) {
-            this.remove(mContainer.Id);
-        }
-    }
-    // sync - add
-    for (let j = 0; j < configContainers.length; j++) {
-        let cContainer = configContainers[j];
-        let iIndex = memoryContainers.findIndex((mContainer) => mContainer.Labels && mContainer.Labels.Name === cContainer.Name);
-        if (iIndex < 0) {
-            this.run(cContainer);
-        }
-    }
-};
-
-DockerServer.prototype.lsConfigContainers = function(callback) {
-    if (this.db) {
-        this.db.query('select * from bureau', (err, values, fields) => {
-            if (!err) {
-                if (Array.isArray(values) && values.length > 0) {
-                    let containers = [];
-                    for (let i = 0; i < values.length; i++) {
-                        let row = values[i];
-                        let id = row['id'];
-                        if (id >= 0) {
-                            let c = {
-                                "Name": 'gcl3-' + id,
-                            };
-                            containers.push(c);
-                        }
-                    }
-                    this.configContainers = containers;
-                }
-                else {
-                    this.configContainers = [];
-                }
-                if (callback) {
-                    callback();
-                }
-            }
-        });
-    }
-};
-
-DockerServer.prototype.lsMemoryContainers = function() {
+DockerServer.prototype.lsStatContainers = function() {
     let self = this;
-    self.docker.listContainers(
-        {
-            filters: {
-                "label": [
-                    "Project=gcl3",
-                ]
-            }
-        },
-        (err, containers) => {
-            if (err) {
-                console.log('docker.listContainers: ', err);
-            }
-            if (Array.isArray(containers)) {
-                for (let i = 0; i < containers.length; i++) {
-                    let container = containers[i];
-                    if (container.State === 'running') {
-                        if (container.Labels && container.Labels.Name) {
-                            let index = self.beAddedContainers.findIndex(c => c.name === container.Labels.Name);
-                            if (index >= 0) {
-                                self.beAddedContainers.splice(index, 1);
-                            }
-                        }
-                    }
-                }
-                for (let i = self.beDeletedContainers.length - 1; i >= 0; i--) {
-                    let beDeletedContainer = self.beDeletedContainers[i];
-                    let index = containers.findIndex(c => c.Id === beDeletedContainer.id);
-                    if (index < 0) {
-                        self.beDeletedContainers.splice(i, 1);
-                    }
-                }
-                self.memoryContainers = containers;
-                console.log('docker.listContainers: ', containers);
-            }
-            else {
-                self.memoryContainers = [];
+    self.setProcessState(ProcessStateEnum.listingMemory1);
+
+    for (let i = 0; i < this.memoryContainers.length; i++) {
+        let container = this.memoryContainers[i];
+        let Id = container.Id;
+        this.stats(Id);
+    }
+};
+
+// todo
+DockerServer.prototype.timeOut = function() {
+    this.timeOutCount++;
+    let dtNow = Date.now();
+
+    if (this.processState !== ProcessStateEnum.listedValidator) {
+        if (dtNow - this.processStateTime > 6000) {
+            this.reset();
+        }
+    } else {
+        if (this.timeOutCount % 10 === 0) {
+            this.lsConfigContainers();
+        }
+        else {
+            if (this.timeOutCount % 5 === 0) {
+                this.lsStatContainers();
             }
         }
-    );
+    }
 };
 
 DockerServer.prototype.start = function() {
     let self = this;
-    self.lsConfigContainers(() => {
-        self.lsMemoryContainers();
-    });
+    self.lsConfigContainers();
 
     self.timeOutCount = 0;
     self.timeOutHandle = setInterval(() => {
-        self.timeOutCount++;
-        if (self.timeOutCount % 20 === 0) {
-            self.lsConfigContainers();
-        }
-        else {
-            if (self.timeOutCount % 2 === 0) {
-                self.validator();
-                console.log('DockerServer: validator');
-            }
-            else {
-                self.lsMemoryContainers();
-                console.log('DockerServer: listContainers');
-            }
-        }
-    }, 1500);
+        self.timeOut();
+    }, 1000);
 };
 
 DockerServer.prototype.stop = function() {

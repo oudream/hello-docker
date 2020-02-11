@@ -1,21 +1,22 @@
 <template>
     <section>
         <el-row v-for="(obj, index) in memoryContainers">
-            <div>
-                <h4>Id : {{obj.Id }}</h4>
-                <p>Names : {{obj.Names }}</p>
-                <p>Image : {{obj.Image }}</p>
-                <p>ImageID : {{obj.ImageID }}</p>
-                <p>Command : {{obj.Command }}</p>
-                <p>Created : {{obj.Created }}</p>
-                <p>Ports : {{obj.Ports }}</p>
-                <p>Labels : {{obj.Labels }}</p>
-                <p>State : {{obj.State }}</p>
-                <p>Status : {{obj.Status }}</p>
-                <p>HostConfig : {{obj.HostConfig }}</p>
-                <p>NetworkSettings : {{obj.NetworkSettings}}</p>
-                <p>Mounts : {{obj.Mounts }}</p>
-            </div>
+            <ul>
+                <li>NO : {{index }}</li>
+                <li> Id : {{obj.Id }} </li>
+                <li>Names : {{obj.Names }}</li>
+                <li>Image : {{obj.Image }}</li>
+                <li>ImageID : {{obj.ImageID }}</li>
+                <li>Command : {{obj.Command }}</li>
+                <li>Created : {{obj.Created }}</li>
+                <li>Ports : {{obj.Ports }}</li>
+                <li>Labels : {{obj.Labels }}</li>
+                <li>State : {{obj.State }}</li>
+                <li>Status : {{obj.Status }}</li>
+                <li>HostConfig : {{obj.HostConfig }}</li>
+                <li>NetworkSettings : {{obj.NetworkSettings}}</li>
+                <li>Mounts : {{obj.Mounts }}</li>
+            </ul>
         </el-row>
     </section>
 </template>
