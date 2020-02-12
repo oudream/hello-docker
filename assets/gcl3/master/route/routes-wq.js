@@ -6,20 +6,26 @@ import Main from '../views/main/Main.vue'
 
 import HelloOdlSimpleA1 from './../views/example/odl1/other/sample-a1.vue'
 import HelloOdlSimpleB1 from './../views/example/odl1/other/sample-b1.vue'
-import HelloSvg1 from './../views/example/svg1/svg1.vue'
 
-import sqlUser from './../views/example/sql1/user.vue'
+import HelloSvg1 from './../views/example/svg1/svg1.vue'
+import HelloCross1 from './../views/example/cross1/hello1.vue'
+
+import HelloLayout1 from './../views/example/css1/layout1'
+
+import HelloHighChartsLineBoost from './../views/example/highcharts1/line-boost.vue'
 
 import SampleShopGoods from './../views/example/vuex1/goods.vue'
 import SampleShopCart from './../views/example/vuex1/cart.vue'
 import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
-import HelloCross1 from './../views/example/cross1/hello1.vue'
-import Users from './../views/users.vue'
-import BureauManager from './../views/bureau/bureau-manager.vue'
-import BureauContainer from './../views/bureau/bureau-container.vue'
+import sqlUser from './../views/example/sql1/user.vue'
 
-import HelloLayout1 from './../views/example/css1/layout1'
+// #
+import Users from './../views/users.vue'
+
+import BureauManager from './../views/bureau/bureau-manager.vue'
+import LsContainers from './../views/bureau/ls-containers.vue'
+import RealtimeContainers from './../views/bureau/realtime-containers.vue'
 
 let routes = [
     {
@@ -60,10 +66,10 @@ let routes = [
         iconCls: 'fa fa-id-card-o',
         children: [
             { path: '/bureau-manager', component: BureauManager, name: '局管理' },
-            { path: '/bureau-container', component: BureauContainer, name: '局容器' }
+            { path: '/ls-container', component: LsContainers, name: '局的服务实例' },
+            { path: '/realtime-containers', component: RealtimeContainers, name: '服务实例实时监测' }
         ]
     },
-    //{ path: '/main', component: Main },
     {
         path: '/',
         component: Home,
@@ -74,6 +80,15 @@ let routes = [
             { path: '/sampleB1', component: HelloOdlSimpleB1, name: 'Sample B' },
             { path: '/svg1', component: HelloSvg1, name: 'HelloSvg1' },
             { path: '/css1', component: HelloLayout1, name: 'Hello Layout1' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: 'HIGHCHARTS',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/HelloHighChartsLineBoost', component: HelloHighChartsLineBoost, name: 'Line Boost' },
         ]
     },
     {
