@@ -16,6 +16,7 @@ import './config/odc_bureau'
 import './config/odc_department'
 import './config/odc_role_group'
 import './config/odc_user'
+import './config/odc_container_stat'
 
 // vue
 import Vue from 'vue'

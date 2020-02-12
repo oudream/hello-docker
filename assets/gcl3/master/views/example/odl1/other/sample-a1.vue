@@ -12,9 +12,21 @@
 
         data() {
 			return {
-
 			}
-        }
+        },
+
+        methods: {
+            init(){
+            }
+        },
+
+        created() {
+            // this.values = [8, 9, 10, 11, 12];
+        },
+
+        mounted() {
+            this.init();
+        },
     }
 
 </script>

@@ -696,7 +696,16 @@ let dealOdl = function(app, httpMysqlServer) {
                     sqls.push(nMysql.getSelectSql(odc, conditions));
                     let callback = (err, rs) => {
                         let counter = Array.isArray(rs) && rs.length > 1 && Array.isArray(rs[0].values) && rs[0].values.length > 0 ? rs[0].values[0]['counter'] : -1;
-                        let data = Array.isArray(rs) && rs.length > 1 ? rs[1].values : null;
+                        let data = null;
+                        if (queryCounter) {
+                            if (Array.isArray(rs) && rs.length > 1) {
+                                data = rs[1].values;
+                            }
+                        } else {
+                            if (Array.isArray(rs) && rs.length > 0) {
+                                data = rs[0].values;
+                            }
+                        }
                         let r = {
                             session: session,
                             odc: reqBody.odc,

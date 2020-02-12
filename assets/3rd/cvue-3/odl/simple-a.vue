@@ -182,7 +182,7 @@
         },
 
         props: {
-            odcName: String,
+            odcName: String
         },
 
         data() {

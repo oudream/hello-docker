@@ -12,7 +12,7 @@ const ProcessStateEnum = Object.freeze({
     "listedMemory2": 7,
     "listedValidator": 8,
     "end": 9
-})
+});
 
 let DockerServer = function() {
     let socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
@@ -52,7 +52,6 @@ let DockerServer = function() {
      ]
      */
     this.memoryContainers = [];
-    this.statContainers = [];
 
     this.beAddedContainers = [];
     this.beDeletedContainers = [];
@@ -551,9 +550,6 @@ DockerServer.prototype.stats = function(memoryContainer) {
 };
 
 DockerServer.prototype.lsStatContainers = function() {
-    let self = this;
-    self.setProcessState(ProcessStateEnum.listingMemory1);
-
     for (let i = 0; i < this.memoryContainers.length; i++) {
         let memoryContainer = this.memoryContainers[i];
         this.stats(memoryContainer);
@@ -565,6 +561,7 @@ DockerServer.prototype.timeOut = function() {
     this.timeOutCount++;
     let dtNow = Date.now();
 
+    // process exception
     if (this.processState !== ProcessStateEnum.listedValidator) {
         if (dtNow - this.processStateTime > 6000) {
             this.reset();
@@ -575,7 +572,7 @@ DockerServer.prototype.timeOut = function() {
             this.lsConfigContainers();
         }
         else {
-            if (this.timeOutCount % 5 === 0) {
+            if (this.timeOutCount % 7 === 0) {
                 this.lsStatContainers();
             }
         }

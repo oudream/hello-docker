@@ -1,7 +1,7 @@
 <template>
     <section>
         <div v-for="(bureauId, index) in bureauIds">
-            <CurveView odc-name="container_stat" :id-name="'show-ht-curve-'+bureauId" :title="'服务实例 '+bureauId+'的CPU百分值历史数据'" :fields="fields" :conditions="getConditions(bureauId)"></CurveView>
+            <CurveView odc-name="container_stat" :id-name="'show-ht-curve-'+bureauId" :title="'服务实例 '+bureauId+'的内存常规值历史数据'" :fields="fields" :conditions="getConditions(bureauId)"></CurveView>
         </div>
     </section>
 </template>
@@ -64,7 +64,7 @@
                     name: 'id',
                 },
                 {
-                    name: 'cpuPercent',
+                    name: 'memUsage',
                 },
                 {
                     name: 'statTime',

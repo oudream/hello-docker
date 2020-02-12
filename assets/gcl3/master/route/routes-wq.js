@@ -25,6 +25,9 @@ import Users from './../views/users.vue'
 
 import BureauManager from './../views/bureau/bureau-manager.vue'
 import LsContainers from './../views/bureau/ls-containers.vue'
+import ContainerCpuHistory from './../views/bureau/container-cpu-history.vue'
+import ContainerMemory1History from './../views/bureau/container-memory1-history.vue'
+import ContainerMemory2History from './../views/bureau/container-memory2-history.vue'
 import RealtimeContainers from './../views/bureau/realtime-containers.vue'
 
 let routes = [
@@ -62,11 +65,14 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '客户',
+        name: '客户(电力局)',
         iconCls: 'fa fa-id-card-o',
         children: [
             { path: '/bureau-manager', component: BureauManager, name: '局管理' },
             { path: '/ls-container', component: LsContainers, name: '局的服务实例' },
+            { path: '/container-cpu-history', component: ContainerCpuHistory, name: '服务实例CPU历史线' },
+            { path: '/container-memory1-history', component: ContainerMemory1History, name: '服务实例内存常规值历史' },
+            { path: '/container-memory2-history', component: ContainerMemory2History, name: '服务实例内存峰值历史' },
             { path: '/realtime-containers', component: RealtimeContainers, name: '服务实例实时监测' }
         ]
     },

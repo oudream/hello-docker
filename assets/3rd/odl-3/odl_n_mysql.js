@@ -267,42 +267,40 @@
             return '';
         },
 
-        getConditionsSql: function(odc, conditions) {
+        getConditionsWhereSql: function(odc, conditions) {
             let nObj = this.getSimilar(odc);
             if (nObj) {
                 let tableName = nObj.spec.table.name;
                 let attrs = conditions.attrs;
                 // where
-                if (conditions) {
-                    if (Array.isArray(attrs)) {
-                        let where = [];
-                        for (let i = 0; i < attrs.length; i++) {
-                            let condition = attrs[i];
-                            let attr = nObj.spec.attrs.find(a => a.name === condition.name);
-                            if (attr) {
-                                let sOpValue = String(condition.value);
-                                let operation = condition.operation;
-                                if (operation === '%') {
-                                    sOpValue = "LIKE '%" + sOpValue + "%'";
+                if (Array.isArray(attrs)) {
+                    let where = [];
+                    for (let i = 0; i < attrs.length; i++) {
+                        let condition = attrs[i];
+                        let attr = nObj.spec.attrs.find(a => a.name === condition.name);
+                        if (attr) {
+                            let sOpValue = String(condition.value);
+                            let operation = condition.operation;
+                            if (operation === '%') {
+                                sOpValue = "LIKE '%" + sOpValue + "%'";
+                            }
+                            else {
+                                if (attr.type === "string") {
+                                    sOpValue = operation + " '" + sOpValue + "'";
                                 }
                                 else {
-                                    if (attr.type === "string") {
-                                        sOpValue = operation + " '" + sOpValue + "'";
-                                    }
-                                    else {
-                                        sOpValue = operation + ' ' + sOpValue;
-                                    }
+                                    sOpValue = operation + ' ' + sOpValue;
                                 }
-                                let fieldName = attr.fieldName;
-                                let sItem = ' `' + tableName + '`.`' + fieldName + '` ' + sOpValue;
-                                if (i < attrs.length - 1) {
-                                    sItem += condition.isAnd ? ' AND' : ' OR';
-                                }
-                                where.push(sItem);
                             }
+                            let fieldName = attr.fieldName;
+                            let sItem = ' `' + tableName + '`.`' + fieldName + '` ' + sOpValue;
+                            if (i < attrs.length - 1) {
+                                sItem += condition.isAnd ? ' AND' : ' OR';
+                            }
+                            where.push(sItem);
                         }
-                        return where.join('');
                     }
+                    return where.join('');
                 }
             }
             return '';
@@ -339,36 +337,68 @@
                 let sqlLeftJion = '';
                 let sqlWhere = '';
                 let tableName = nObj.spec.table.name;
-                // select as
-                nObj.spec.attrs.forEach((a, i) => {
-                    sqlSelect += tableName + '.`' + a.fieldName + '` as `' + a.name + '`';
-                    if (i !== nObj.spec.attrs.length - 1) {
-                        sqlSelect += ', '
-                    }
-                });
-                // left join
-                nObj.spec.attrs.forEach((a, i) => {
-                    let refer = a.refer;
-                    if (refer) {
-                        // todo: refer key
-                        // only suport : one refer , attrs and key is string
-                        let rOdc = odl.findOdc(refer.odc);
-                        if (rOdc) {
-                            let rnObj = this.getSimilar(rOdc);
-                            if (rnObj) {
-                                sqlSelect += ", " + rnObj.spec.table.name + '.`' + refer.title
-                                    + "` as " + refer.titleName;
-                                sqlLeftJion += ' LEFT JOIN ' + rnObj.spec.table.name + ' ON ' + tableName
-                                    + '.`' + a.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
+                if (Array.isArray(conditions.fields)) {
+                    // select as
+                    nObj.spec.attrs.forEach((a, i) => {
+                        if (conditions.fields.findIndex(f => f.name === a.name)>-1){
+                            sqlSelect += tableName + '.`' + a.fieldName + '` as `' + a.name + '`';
+                            if (i !== nObj.spec.attrs.length - 1) {
+                                sqlSelect += ', '
                             }
                         }
-                    }
-                });
+                    });
+                    // left join
+                    nObj.spec.attrs.forEach((a, i) => {
+                        if (conditions.fields.findIndex(f => f.name === a.name)>-1) {
+                            let refer = a.refer;
+                            if (refer) {
+                                // todo: refer key
+                                // only suport : one refer , attrs and key is string
+                                let rOdc = odl.findOdc(refer.odc);
+                                if (rOdc) {
+                                    let rnObj = this.getSimilar(rOdc);
+                                    if (rnObj) {
+                                        sqlSelect += ", " + rnObj.spec.table.name + '.`' + refer.title
+                                            + "` as " + refer.titleName;
+                                        sqlLeftJion += ' LEFT JOIN ' + rnObj.spec.table.name + ' ON ' + tableName
+                                            + '.`' + a.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    // select as
+                    nObj.spec.attrs.forEach((a, i) => {
+                        sqlSelect += tableName + '.`' + a.fieldName + '` as `' + a.name + '`';
+                        if (i !== nObj.spec.attrs.length - 1) {
+                            sqlSelect += ', '
+                        }
+                    });
+                    // left join
+                    nObj.spec.attrs.forEach((a, i) => {
+                        let refer = a.refer;
+                        if (refer) {
+                            // todo: refer key
+                            // only suport : one refer , attrs and key is string
+                            let rOdc = odl.findOdc(refer.odc);
+                            if (rOdc) {
+                                let rnObj = this.getSimilar(rOdc);
+                                if (rnObj) {
+                                    sqlSelect += ", " + rnObj.spec.table.name + '.`' + refer.title
+                                        + "` as " + refer.titleName;
+                                    sqlLeftJion += ' LEFT JOIN ' + rnObj.spec.table.name + ' ON ' + tableName
+                                        + '.`' + a.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
+                                }
+                            }
+                        }
+                    });
+                }
                 // from
                 sqlFrom = ' FROM ' + tableName;
                 // where
                 if (conditions) {
-                    let sConditionsSql = this.getConditionsSql(odc, conditions);
+                    let sConditionsSql = this.getConditionsWhereSql(odc, conditions);
                     if (sConditionsSql.length > 0)
                         sqlWhere = ' WHERE ' + sConditionsSql;
                     if (typeof conditions.index === "number" && typeof conditions.count === "number") {
@@ -405,7 +435,7 @@
                 sqlFrom = ' FROM ' + tableName;
                 // where
                 if (conditions) {
-                    let sConditionsSql = this.getConditionsSql(odc, conditions);
+                    let sConditionsSql = this.getConditionsWhereSql(odc, conditions);
                     if (sConditionsSql.length > 0)
                         sqlWhere = ' WHERE ' + sConditionsSql;
                 }
@@ -522,7 +552,7 @@
                 }
                 sql += sFieldValues.join(',');
                 // where
-                let sConditionsSql = this.getConditionsSql(odc, conditions);
+                let sConditionsSql = this.getConditionsWhereSql(odc, conditions);
                 if (sConditionsSql.length > 0) {
                     sql += ' WHERE ' + sConditionsSql;
                     return sql;
@@ -566,7 +596,7 @@
                     sql += sFieldValues.join(',');
                     // where
                     let condition = conditions[i];
-                    let sConditionsSql = this.getConditionsSql(odc, condition);
+                    let sConditionsSql = this.getConditionsWhereSql(odc, condition);
                     if (sConditionsSql.length > 0) {
                         sql += ' WHERE ' + sConditionsSql;
                         sqlAry.push(sql);
@@ -599,7 +629,7 @@
                 conditions.forEach((condition, i) => {
                     let sql = [' DELETE FROM `', tableName, '` '].join('');
                     // where
-                    let sConditionsSql = this.getConditionsSql(odc, condition);
+                    let sConditionsSql = this.getConditionsWhereSql(odc, condition);
                     if (sConditionsSql.length > 0) {
                         sql += ' WHERE ' + sConditionsSql;
                         sqlAry.push(sql);
@@ -902,7 +932,7 @@
                 }
                 return null;
             },
-        },
+        }
     };
 
     odl.registerNPlugin(odl.DbMysql);
