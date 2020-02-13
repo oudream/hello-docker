@@ -144,7 +144,6 @@ DockerServer.prototype.lsMemoryContainers1 = function() {
             }
             self.memoryContainers = newContainers;
             self.setProcessState(ProcessStateEnum.listedMemory1);
-            console.log('DockerServer lsMemoryContainers1: ', self.memoryContainers);
             self.validator();
         }
     );
