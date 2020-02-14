@@ -47,4 +47,4 @@ dockerServer.start();
 let port = process.env.PORT || config.dev.port;
 
 // GET method route
-let server = httpServer.listen(port);
+let server = httpServer.listen(port, '0.0.0.0');
