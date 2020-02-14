@@ -4,29 +4,14 @@ const path = require('path');
 const fs = require('fs');
 const os = require('os');
 
-require('./../../3rd/cjs-3/cjfs.js');
+require('./../../../nodejs/3rd/cjs-3/cjfs.js');
 
-require('./../../../assets/3rd/odl-3/odl');
-require('./../../../assets/3rd/odl-3/odl_n_mysql');
-require('./../../../assets/3rd/odl-3/odl_n_vue');
-require('./../../../assets/3rd/odl-3/odl_n_token');
-require('./../../../assets/projects/default/odl/department');
-require('./../../../assets/projects/default/odl/role_group');
-require('./../../../assets/projects/default/odl/user');
-require('./../../../assets/projects/default/odl/material');
-require('./../../../assets/projects/default/odl/position');
-require('./../../../assets/projects/default/odl/reader');
-require('./../../../assets/projects/default/odl/status');
-require('./../../../assets/projects/default/odl/recording');
+const odlLoader = require('./../../../projects/gcl3/master/odl-loader');
 
-const mysqlOption = {
-    connectionLimit: 10,
-    // host: '10.32.50.57',
-    host: '127.0.0.1',
-    user: 'root',
-    password: '123456',
-    database: 'db1',
-};
+
+let mysqlConfig = require('./master.json');
+const mysqlOption = mysqlConfig.database.mysql1;
+
 
 let dtNow = Date.now();
 
@@ -60,7 +45,47 @@ if (!fs.existsSync(savePath)) {
 }
 
 let mysql = require('mysql');
-let pool = mysql.createPool(mysqlOption);
+let pool = null;
+// let pool = mysql.createPool(mysqlOption);
+
+//
+// var sqlCommand = `
+// create database test;
+//
+// use test;
+//
+// CREATE TABLE users (
+//   id int(11) NOT NULL auto_increment,
+//   name varchar(100) NOT NULL,
+//   age int(3) NOT NULL,
+//   email varchar(100) NOT NULL,
+//   PRIMARY KEY (id)
+// );
+// `
+function querySqlOnce(sql, values) {
+    return new Promise((resolve, reject) => {
+        var con = mysql.createConnection({
+            host: mysqlOption.host,
+            user: mysqlOption.user,
+            password: mysqlOption.password,
+            multipleStatements: true // this allow you to run multiple queries at once.
+        });
+
+        con.connect(function(err) {
+            if (err) throw err;
+            // console.log("Connected yet no db is selected yet!");
+            con.query(sql, values, function (err, result) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(result);
+                }
+                con.release();
+            });
+        });
+    });
+}
 
 function execSql(sql) {
     pool.getConnection(function(err, connection) {
@@ -90,7 +115,7 @@ function querySql(sql) {
             });
         }
     })
-};
+}
 
 function querySqlPromise(sql, values) {
     return new Promise((resolve, reject) => {
@@ -111,7 +136,7 @@ function querySqlPromise(sql, values) {
             }
         });
     });
-};
+}
 
 let countTestSql = 0;
 
@@ -121,109 +146,24 @@ function closePool() {
     }
 }
 
-const departmentCount = 10;
-const roleGroupCount = 20;
-const defaultCount = 20;
-
-/**
- * insertStrategies
- * insert strategy :
- *     index: from start to end
- *     random: scope in min 2 max
- * @type {{role_group: {count: number, attrs: Array}, department: {count: number, attrs: Array}, user: {count: number, attrs: *[]}}}
- */
-let insertStrategies = {
-    department: {
-        count: departmentCount,
-        attrs: []
-    },
-    role_group: {
-        count: roleGroupCount,
-        attrs: []
-    },
+let insertObjs = {
     user: {
-        count: 100,
-        attrs: [
+        data: [
             {
-                name: "name",
-                // head: '20190730',
-                // tail: '20190730'
+                id: 1,
+                name: "admin",
+                password: "admin",
             },
             {
-                name: "height",
-                start: 0,
-                end: 300,
-                seed: 'random'
-            },
-            {
-                name: "departmentId",
-                start: 0,
-                end: departmentCount,
-                seed: 'random'
-            },
-            {
-                name: "roleGroupId",
-                start: 0,
-                end: roleGroupCount,
-                seed: 'random'
+                id: 2,
+                name: "administrator",
+                password: "administrator",
             }
         ]
-    },
-    material: {
-        count: defaultCount,
-        attrs: [],
-    },
-    position: {
-        count: defaultCount,
-        attrs: [],
-    },
-    reader: {
-        count: defaultCount,
-        attrs: [],
-    },
-    status: {
-        count: defaultCount,
-        attrs: [],
-    },
-    recording: {
-        count: defaultCount,
-        attrs: [],
     },
 };
 
 let selectConditions = {
-    department: {
-        attrs: [
-            {
-                name: 'name',
-                operation: '%',
-                value: 'a',
-                isAnd: false
-            },
-            {
-                name: 'id',
-                operation: '>',
-                value: 1,
-                isAnd: true
-            }
-        ]
-    },
-    role_group: {
-        attrs: [
-            {
-                name: 'name',
-                operation: '%',
-                value: 'a',
-                isAnd: false
-            },
-            {
-                name: 'id',
-                operation: '>',
-                value: 3,
-                isAnd: true
-            }
-        ]
-    },
     user: {
         start: 0,
         end: 20,
@@ -237,7 +177,7 @@ let selectConditions = {
             {
                 name: 'id',
                 operation: '>',
-                value: 15,
+                value: 0,
                 isAnd: true
             }
         ]
@@ -290,9 +230,9 @@ async function testSql(odc) {
     }
 
     fp = path.resolve(savePath, odcName + ".insert.sql");
-    let strategies = insertStrategies[odcName];
-    if (strategies) {
-        let sqlsInsert = odl.DbMysql.genRandomInsertSql(odc, strategies);
+    let objs = insertObjs[odcName] ? insertObjs[odcName].data : undefined;
+    if (objs) {
+        let sqlsInsert = odl.DbMysql.getInsertSqlAry(odc, objs);
         fs.writeFileSync(fp, sqlsInsert.join('\n'));
         console.log('fs.writeFileSync(fp), fp: ', fp);
         for (let i = 0; i < sqlsInsert.length; i++) {
@@ -329,7 +269,11 @@ async function testSql(odc) {
 }
 
 async function testSqls() {
-    odl.getOdcs().forEach(testSql);
+    let r = await querySqlOnce("CREATE DATABASE "+mysqlOption.database);
+    console.log(r);
+    pool = mysql.createPool(mysqlOption);
+    let odcs = odl.getOdcs();
+    await odcs.forEach(testSql);
 }
 
 testSqls();
