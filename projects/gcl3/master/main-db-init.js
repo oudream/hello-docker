@@ -269,7 +269,7 @@ async function testSql(odc) {
 }
 
 async function testSqls() {
-    let r = await querySqlOnce("CREATE DATABASE "+mysqlOption.database);
+    let r = await querySqlOnce("CREATE DATABASE IF NOT EXISTS " + mysqlOption.database + " default charset utf8");
     console.log(r);
     pool = mysql.createPool(mysqlOption);
     let odcs = odl.getOdcs();
