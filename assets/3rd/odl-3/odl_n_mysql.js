@@ -447,9 +447,10 @@
         /**
          *
          * @param odc
-         * @returns {string}
+         * @returns {array}
          */
         getSelectKeySql: function(odc) {
+            let r = [];
             let nObj = this.getSimilar(odc);
             if (nObj) {
                 let table = nObj.spec.table;
@@ -461,10 +462,16 @@
                     sqlSelect += 'MAX(' + tableName + '.`' + table.key.fieldName + '`)+1 as `'+table.key.name+'`';
                     // from
                     sqlFrom = ' FROM ' + tableName;
-                    return sqlSelect + sqlFrom;
+                    r.push( sqlSelect + sqlFrom );
+                    r.push(table.key.name);
                 }
             }
-            return '';
+            return r;
+        },
+        getSelectKeySqlValidateValues: function(odc, values, rSql) {
+            if (! Array.isArray(values) || values.length === 0 || ! values[0][rSql[1]]) {
+                values[0][rSql[1]] = 0;
+            }
         },
 
         /**

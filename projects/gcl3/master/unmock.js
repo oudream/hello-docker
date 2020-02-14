@@ -745,10 +745,11 @@ let dealOdl = function(app, httpMysqlServer) {
                             res.writeHead(200);
                             res.end(JSON.stringify(r));
                         };
-                        let sql = nMysql.getSelectKeySql(odc);
-                        // has key
-                        if (sql) {
-                            httpMysqlServer.query(sql, (err, values) => {
+                        let rSql = nMysql.getSelectKeySql(odc);
+                        // has key, return
+                        if (rSql.length>0) {
+                            httpMysqlServer.query(rSql[0], (err, values) => {
+                                nMysql.getSelectKeySqlValidateValues(odc, values, rSql);
                                 respToken(err, values);
                             });
                         }
