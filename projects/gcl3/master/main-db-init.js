@@ -81,7 +81,7 @@ function querySqlOnce(sql, values) {
                 else {
                     resolve(result);
                 }
-                con.release();
+                con.end();
             });
         });
     });
