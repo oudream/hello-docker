@@ -525,7 +525,7 @@ DockerServer.prototype.stats = function(memoryContainer) {
 
         if (self.db) {
             let BureauId = DockerServer.getContainerBureauId(memoryContainer);
-            let sqlInsert = ["INSERT INTO `db1`.`container_stat`(`bureauId`, `containerId`, `cpuPercent`, `memUsage`, `memMaxUsage`, `memLimit`, `statTime`) VALUES ("];
+            let sqlInsert = ["INSERT INTO `container_stat`(`bureauId`, `containerId`, `cpuPercent`, `memUsage`, `memMaxUsage`, `memLimit`, `statTime`) VALUES ("];
             sqlInsert.push(BureauId + ',');
             sqlInsert.push("'" + containerId + "',");
             sqlInsert.push(cpuPercent.toFixed(3) + ',');
