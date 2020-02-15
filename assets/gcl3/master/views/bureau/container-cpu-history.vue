@@ -1,7 +1,7 @@
 <template>
     <section>
-        <div v-for="(bureauId, index) in bureauIds">
-            <CurveView odc-name="container_stat" :id-name="'show-ht-curve-'+bureauId" :title="'服务实例 '+bureauId+'的CPU百分值历史数据'" :fields="fields" :conditions="getConditions(bureauId)"></CurveView>
+        <div v-for="(bureau, index) in bureaus">
+            <CurveView :odc-name="odcName" :id-name="'show-ht-curve-'+bureau.id" :title="getConditions(bureau.id)" :fields="fields" :conditions="getConditions(bureau.id)"></CurveView>
         </div>
     </section>
 </template>
@@ -17,16 +17,31 @@
     import {getOdoQuery} from "../../../../3rd/cvue-3/api/api";
     import CurveView from "../../../../3rd/cvue-3/odl/curve-view";
 
+    const STAT_FIELD_NAME = 'cpuPercent';
+    const TITLE_EXT = '的CPU百分值历史数据';
+
     export default {
         components: {CurveView},
 
         data() {
             return {
-                bureauIds: [3,4,5,6,7],
+                odcName: 'container_stat',
 
-                fields: [],
+                bureaus: [],
 
-                conditions: []
+                fields: [
+                    {
+                        name: 'id',
+                    },
+                    {
+                        name: STAT_FIELD_NAME,
+                    },
+                    {
+                        name: 'statTime',
+                    }
+                ],
+
+                listLoading: false
             }
         },
 
@@ -52,24 +67,35 @@
                         isAnd: false
                     }
                 ]
-            }
+            },
+
+            getConditions(bureauId){
+                return '服务实例 ' + bureauId + TITLE_EXT;
+            },
         },
 
         created() {
         },
 
         mounted() {
-            this.fields = [
-                {
-                    name: 'id',
-                },
-                {
-                    name: 'cpuPercent',
-                },
-                {
-                    name: 'statTime',
+            let params = {
+                session: Date.now(),
+                odc: 'bureau',
+                action: 'ls',
+            };
+            this.listLoading = true;
+            getOdoQuery(params).then((rs) => {
+                if (rs && rs.state.err) {
+                    this.$message({
+                        message: '数据请求失败：' + rs.state.err,
+                        type: 'error'
+                    });
                 }
-            ];
+                else {
+                    this.bureaus = rs.data;
+                }
+                this.listLoading = false;
+            });
         },
 
         updated: function () {

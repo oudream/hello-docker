@@ -1,6 +1,7 @@
 let fs = require('fs');
 let Docker = require('dockerode');
 
+
 const ProcessStateEnum = Object.freeze({
     "none": 0,
     "listingConfig": 1,
@@ -14,6 +15,11 @@ const ProcessStateEnum = Object.freeze({
     "end": 9
 });
 
+
+/**
+ * DockerServer
+ * @constructor
+ */
 let DockerServer = function() {
     let socket = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
     let stats = fs.statSync(socket);
@@ -64,6 +70,12 @@ let DockerServer = function() {
     this.timeOutCount = 0;
 };
 
+/**
+ * check the Containers is same
+ * @param containers1
+ * @param containers2
+ * @returns {boolean}
+ */
 DockerServer.checkSameContainers = function(containers1, containers2) {
     if (containers1.length === containers2.length) {
         for (let i = 0; i < containers2.length; i++) {
@@ -77,11 +89,19 @@ DockerServer.checkSameContainers = function(containers1, containers2) {
     return false;
 };
 
+/**
+ * get BureauId from Container'info
+ * @param container
+ * @returns {string}
+ */
 DockerServer.getContainerBureauId = function(container) {
     let sName = container.Labels.Name;
     return sName.substring(sName.lastIndexOf('-') + 1);
 };
 
+/**
+ * ls container's config(container's count = bureau's count) from db
+ */
 DockerServer.prototype.lsConfigContainers = function() {
     if (this.db) {
         this.setProcessState(ProcessStateEnum.listingConfig);
@@ -149,7 +169,11 @@ DockerServer.prototype.lsMemoryContainers1 = function() {
     );
 };
 
-// this.docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;"
+/**
+ * run image to container on docker
+ * docker run -d --rm alpine /bin/sh -c "while sleep 2;do printf aaabbbccc134\\n; done;
+ * @param config
+ */
 DockerServer.prototype.run = function(config) {
     let self = this;
 
@@ -555,7 +579,6 @@ DockerServer.prototype.lsStatContainers = function() {
     }
 };
 
-// todo
 DockerServer.prototype.timeOut = function() {
     this.timeOutCount++;
     let dtNow = Date.now();

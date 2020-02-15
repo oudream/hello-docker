@@ -79,7 +79,6 @@
 
             // query data
             getObjs() {
-                debugger;
                 if (!this.nObj || this.conditions.length <= 0) {
                     this.clear();
                     return;
@@ -95,7 +94,6 @@
                 };
                 this.listLoading = true;
                 getOdoQuery(params).then((rs) => {
-                    debugger;
                     if (rs && rs.state.err) {
                         this.$message({
                             message: '数据请求失败：' + rs.state.err,
@@ -159,6 +157,8 @@
         created() {
             this.odc = undefined;
             this.nObj = undefined;
+            this.init();
+            this.getObjs();
         },
 
         mounted() {

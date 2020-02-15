@@ -267,7 +267,14 @@
             return '';
         },
 
+        /**
+         * get Conditions Where Sql
+         * @param odc
+         * @param conditions: {} | null
+         * @returns {string}
+         */
         getConditionsWhereSql: function(odc, conditions) {
+            if (! conditions) return '';
             let nObj = this.getSimilar(odc);
             if (nObj) {
                 let tableName = nObj.spec.table.name;
@@ -337,7 +344,7 @@
                 let sqlLeftJion = '';
                 let sqlWhere = '';
                 let tableName = nObj.spec.table.name;
-                if (Array.isArray(conditions.fields)) {
+                if (conditions && Array.isArray(conditions.fields)) {
                     // select as
                     nObj.spec.attrs.forEach((a, i) => {
                         if (conditions.fields.findIndex(f => f.name === a.name)>-1){
