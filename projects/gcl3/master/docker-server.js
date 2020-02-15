@@ -160,7 +160,7 @@ DockerServer.prototype.lsMemoryContainers1 = function() {
                 console.log('DockerServer lsMemoryContainers1: ', self.memoryContainers);
             }
             else {
-                console.log('DockerServer lsMemoryContainers1 same to up.');
+                console.log('DockerServer lsMemoryContainers1 same to up. - '+Date.now());
             }
             self.memoryContainers = newContainers;
             self.setProcessState(ProcessStateEnum.listedMemory1);
