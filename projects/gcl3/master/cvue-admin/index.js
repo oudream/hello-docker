@@ -6,8 +6,8 @@ module.exports = {
     env: {
       NODE_ENV: '"production"'
     },
-    index: path.resolve(__dirname, '../dist/index.html'),
-    assetsRoot: path.resolve(__dirname, '../dist'),
+    index: path.resolve(__dirname, '../index.html'),
+    assetsRoot: path.resolve(__dirname, '../vue-admin/'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/vue-admin/',
     productionSourceMap: true,

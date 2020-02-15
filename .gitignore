@@ -6,3 +6,5 @@ cmake-build-release*
 /package-lock.json
 /projects/gcl3/master/dist/
 /projects/gcl3/master/node_modules/
+/projects/gcl3/master/index.html
+/projects/gcl3/master/vue-admin/

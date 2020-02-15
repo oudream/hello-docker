@@ -2,7 +2,7 @@
   "database": {
     "mysql1": {
       "connectionLimit": 10,
-      "database": "db1",
+      "database": "gcl3_master",
       "host": "127.0.0.1",
       "password": "123456",
       "type": "mysql",

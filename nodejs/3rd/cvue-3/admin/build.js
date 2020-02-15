@@ -9,6 +9,7 @@ if (!process.env.CVUEADMIN_CONFIG_P) {
 let ora = require('ora')
 let rm = require('rimraf')
 let path = require('path')
+let fs = require('fs')
 let chalk = require('chalk')
 let webpack = require('webpack')
 let config = require(process.env.CVUEADMIN_CONFIG_P)
@@ -16,6 +17,8 @@ let webpackConfig = require('./webpack.prod.conf')
 
 let spinner = ora('building for production...')
 spinner.start()
+
+rm(config.build.index, err => {});
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
   if (err) throw err
@@ -30,10 +33,12 @@ rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
       chunkModules: false
     }) + '\n\n')
 
+    fs.createReadStream(path.join(config.build.assetsRoot, path.basename(config.build.index))).pipe(fs.createWriteStream(config.build.index));
+
     console.log(chalk.cyan('  Build complete.\n'))
     console.log(chalk.yellow(
         '  Tip: built files are meant to be served over an HTTP server.\n' +
         '  Opening index.html over file:// won\'t work.\n'
     ))
   })
-})
+});
