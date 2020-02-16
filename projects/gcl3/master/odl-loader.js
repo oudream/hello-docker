@@ -6,11 +6,12 @@ let odcPathes = [
     './../../../assets/3rd/odl-3/odl_n_mysql',
     './../../../assets/3rd/odl-3/odl_n_vue',
     './../../../assets/3rd/odl-3/odl_n_token',
-    './../../../assets/gcl3/master/config/odc_bureau',
     './../../../assets/gcl3/master/config/odc_department',
     './../../../assets/gcl3/master/config/odc_role_group',
     './../../../assets/gcl3/master/config/odc_user',
+    './../../../assets/gcl3/master/config/odc_bureau',
     './../../../assets/gcl3/master/config/odc_container_stat',
+    './../../../assets/gcl3/master/config/odc_locket',
 ];
 // let odcPathes = [];
 

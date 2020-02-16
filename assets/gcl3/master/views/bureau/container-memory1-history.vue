@@ -1,7 +1,7 @@
 <template>
     <section>
         <div v-for="(bureau, index) in bureaus">
-            <CurveView :odc-name="odcName" :id-name="'show-ht-curve-'+bureau.id" :title="getConditions(bureau.id)" :fields="fields" :conditions="getConditions(bureau.id)"></CurveView>
+            <CurveView :odc-name="odcName" :id-name="'show-ht-curve-'+bureau.id" :title="getTitle(bureau.id)" :fields="fields" :conditions="getConditions(bureau.id)"></CurveView>
         </div>
     </section>
 </template>
@@ -69,7 +69,7 @@
                 ]
             },
 
-            getConditions(bureauId){
+            getTitle(bureauId){
                 return '服务实例 ' + bureauId + TITLE_EXT;
             },
         },

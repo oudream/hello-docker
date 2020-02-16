@@ -20,15 +20,20 @@ import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
 import sqlUser from './../views/example/sql1/user.vue'
 
-// #
+// user
 import Users from './../views/users.vue'
 
+// Bureau
 import BureauManager from './../views/bureau/bureau-manager.vue'
 import LsContainers from './../views/bureau/ls-containers.vue'
 import ContainerCpuHistory from './../views/bureau/container-cpu-history.vue'
 import ContainerMemory1History from './../views/bureau/container-memory1-history.vue'
 import ContainerMemory2History from './../views/bureau/container-memory2-history.vue'
 import RealtimeContainers from './../views/bureau/realtime-containers.vue'
+
+// Locket
+import LocketManager from './../views/locket/locket-manager.vue'
+
 
 let routes = [
     {
@@ -79,10 +84,22 @@ let routes = [
     {
         path: '/',
         component: Home,
+        name: '智能锁具',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/locket-manager', component: LocketManager, name: '锁具管理' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
         name: 'HELLO',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/sampleA1', component: HelloOdlSimpleA1, name: 'Sample A' },
+            { path: '/sampleA1', component: HelloOdlSimpleA1, name: 'Sample A', meta: {
+                    title: "sample-a's instance",
+                    icon:"/lock.png"
+                } },
             { path: '/sampleB1', component: HelloOdlSimpleB1, name: 'Sample B' },
             { path: '/svg1', component: HelloSvg1, name: 'HelloSvg1' },
             { path: '/css1', component: HelloLayout1, name: 'Hello Layout1' },

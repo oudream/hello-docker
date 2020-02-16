@@ -12,11 +12,12 @@ gcl.rtdb.setRtServer(window.location.hostname+':8821');
 import './../../3rd/odl-3/odl'
 import './../../3rd/odl-3/odl_n_vue'
 import './../../3rd/odl-3/odl_n_mysql'
-import './config/odc_bureau'
 import './config/odc_department'
 import './config/odc_role_group'
 import './config/odc_user'
+import './config/odc_bureau'
 import './config/odc_container_stat'
+import './config/odc_locket'
 
 // vue
 import Vue from 'vue'
@@ -48,6 +49,12 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     //NProgress.start();
     // debugger;
+    // Root.route = {
+    //     name:to.name,
+    //     icon:to.meta.icon
+    // }
+    // document.title = to.meta.title;
+    document.title = to.name;
     if (to.path === '/login') {
         sessionStorage.removeItem('user');
     }
@@ -58,7 +65,8 @@ router.beforeEach((to, from, next) => {
     else {
         next()
     }
-})
+});
+
 
 //router.afterEach(transition => {
 //NProgress.done();
