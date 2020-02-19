@@ -65,7 +65,7 @@ node ./httpserver-mock-master.js
 ## upload
 cd /opt/limi/hello-docker/hello/nginx/upload1
 sFp1=$PWD/readme.md
-curl  -F "file=@${sFp1};type=text/plain;filename=a1" 34.66.82.34:2280/upload
+curl  -F "file=@${sFp1};type=text/plain;filename=a1" 34.66.82.34:2232/upload
 
 
 ### docker push image

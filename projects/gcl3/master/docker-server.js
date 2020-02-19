@@ -193,6 +193,7 @@ DockerServer.prototype.run = function(config) {
     }
     beAddedContainer.sendTime = Date.now();
 
+    /*
     self.docker.run('alpine', [], undefined, {
         "Cmd": [
             "/bin/sh",
@@ -206,6 +207,23 @@ DockerServer.prototype.run = function(config) {
         },
         "HostConfig": {
             "AutoRemove": true,
+        },
+    }, (err, data, container) => {
+     */
+    // docker run -p 2231:22 -p 2232:8821 -d --restart=always oudream/gcl3-bus-alpine:1.0.2
+    let hostPort22 = 2231 + config.Id * 4;
+    let hostPort21 = 2232 + config.Id * 4;
+    self.docker.run('oudream/gcl3-bus-alpine:1.0.2', [], undefined, {
+        "Labels": {
+            "Project": "gcl3",
+            "Name": config.Name
+        },
+        "HostConfig": {
+            "AutoRemove": true,
+            "PortBindings": {
+                "22/tcp": [{ "HostPort": String(hostPort22) }],
+                "8821/tcp": [{ "HostPort": String(hostPort21) }],
+            },
         },
     }, (err, data, container) => {
         let index = self.beAddedContainers.findIndex((c => c.Name === config.Name));
