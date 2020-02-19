@@ -60,6 +60,8 @@ ssh root@localhost -p 2233 -AXY # or $(docker-machine ip default)
 open http://34.66.82.34:2232/bus/viewer.html
 open http://34.66.82.34:2232/bus/poster.html
 122.51.12.151:2232
+## node
+node ./httpserver-mock-master.js
 ## upload
 cd /opt/limi/hello-docker/hello/nginx/upload1
 sFp1=$PWD/readme.md

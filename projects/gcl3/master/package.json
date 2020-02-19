@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "gcl master project",
   "scripts": {
-    "dev":   "node projects/gcl3/master/main.js",
+    "dev": "node projects/gcl3/master/main.js",
     "start": "node projects/gcl3/master/main.js",
     "build": "node projects/gcl3/master/main-build.js"
   },
