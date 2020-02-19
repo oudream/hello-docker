@@ -39,17 +39,17 @@
                 {
                     name: 'memUsage',
                     title: '内存占用',
-                    model: 'int',
+                    model: 'double',
                 },
                 {
                     name: 'memMaxUsage',
                     title: '内存最高占用',
-                    model: 'int',
+                    model: 'double',
                 },
                 {
                     name: 'memLimit',
                     title: '内存极限',
-                    model: 'int',
+                    model: 'double',
                 },
                 {
                     name: 'statTime',

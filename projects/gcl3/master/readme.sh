@@ -10,10 +10,10 @@ sed -i "s/123456/${GCL3_MYSQL_PASSWORD}/g" ./projects/gcl3/master/master.json
 # build
 node ./projects/gcl3/master/main-build.js
 # cp
-rm -r ./projects/gcl3/master/vue-admin
-mkdir ./projects/gcl3/master/vue-admin
-cp ./projects/gcl3/master/dist/index.html ./projects/gcl3/master/index.html
-cp -r ./projects/gcl3/master/dist/static ./projects/gcl3/master/vue-admin/
+#    rm -r ./projects/gcl3/master/vue-admin
+#    mkdir ./projects/gcl3/master/vue-admin
+#    cp ./projects/gcl3/master/dist/index.html ./projects/gcl3/master/index.html
+#    cp -r ./projects/gcl3/master/dist/static ./projects/gcl3/master/vue-admin/
 # run
 node ./projects/gcl3/master/main-run.js
 
