@@ -5,7 +5,7 @@ readonly VERSION='1.0.0'
 
 cd "$(dirname $0)"
 
-docker build ${@} -t oudream/hello-nginx-upload:1.0.3 .
+docker build ${@} -t oudream/hello-nginx-upload:1.0.7 .
 #docker build ${@} -t oudream/hello-nginx-upload:${VERSION} .
 #
 #docker push oudream/hello-nginx-upload:${VERSION}
@@ -13,7 +13,20 @@ docker build ${@} -t oudream/hello-nginx-upload:1.0.3 .
 
 #docker build -t nginx-upload:v1 . -f Dockerfile
 
-docker run -d -p 2280:80 -p 2288:8080 --name nginx-upload oudream/hello-nginx-upload:1.0.3
+# run on remote pc (google cloud)
+docker run -d -p 2280:80 -p 2288:8080 --name nginx-upload oudream/hello-nginx-upload:1.0.7
+open 34.66.82.34:2288
+open localhost:2288
+
+cd /opt/limi/hello-docker/hello/nginx/upload1
+sFp1=$PWD/readme.md
+curl  -F "file=@${sFp1};type=text/plain;filename=a1" 34.66.82.34:2280/upload
+curl  -F "file=@${sFp1};type=text/plain;filename=a1" localhost:2280/upload
+
+/tmp/nginx_upload/
+
+# run on local host
+docker run -d -p 2280:80 -p 2288:8080 --name nginx-upload oudream/hello-nginx-upload:1.0.7
 
 open 34.66.82.34:2288
 
@@ -22,6 +35,7 @@ sFp1=$PWD/readme.md
 curl  -F "file=@${sFp1};type=text/plain;filename=a1" 34.66.82.34:2280/upload
 
 /tmp/nginx_upload/
+
 
 
 cat >> backup.nginx_upload.default.conf <<EOF

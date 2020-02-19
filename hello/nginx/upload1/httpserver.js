@@ -4,9 +4,93 @@ let path = require('path');
 let http = require('http');
 const querystring = require('querystring');
 
+let getContentDisposition = function(data) {
+    let ss = data.split('\r\n');
+    for (let i = 0; i < ss.length; i++) {
+        let s = ss[i];
+        let index = s.indexOf('name=');
+
+    }
+};
+
 let server = http.createServer(function(req, res) {
     console.log(req);
-    res.end("OK, i am ---");
+
+    if (req.url.startsWith('/upload') && req.method.toLowerCase() === 'post') {
+        let data = '';
+
+        // 通过req的data事件监听函数，每当接受到请求体的数据，就累加到data变量中
+        req.on('data', function(chunk){
+            data += chunk;
+        });
+
+        // 在end事件触发后，解释请求体，取出sql语句，然后向客户端返回。
+        req.on('end', function() {
+            let ss = data.match(/(file\.[^]*?[\S]*?--)/g);
+            let fileInfo = {};
+            ss.map(s => s.replace(/[ \f\n\r\t\v\-]/g, "")).forEach(s => {
+                let a = s.split('"');
+                if (a.length > 1) {
+                    if (a[0] === 'file.size') {
+                        fileInfo[a[0]] = Number(a[1]);
+                    }
+                    else {
+                        fileInfo[a[0]] = a[1];
+                    }
+                }
+            });
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            res.end("OK, i am ---");
+        })
+    }
+    // var contentDisposition = require('./content-disposition');
+    // var disposition = contentDisposition.parse(data);
+    // data = querystring.parse(data);
+
+    // var filenameRegex = /file.name[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+    // var matches = filenameRegex.exec(data);
+    // var filename = "";
+    // if (matches != null && matches[1]) {
+    //     filename = matches[1].replace(/['"]/g, '');
+    // }
+
+    /*
+    let data = "--------------------------fa1b4dc84321a582\n" +
+        "Content-Disposition: form-data; name=\"file.name\"\n" +
+        "\n" +
+        "a1\n" +
+        "--------------------------fa1b4dc84321a582\n" +
+        "Content-Disposition: form-data; name=\"file.content_type\"\n" +
+        "\n" +
+        "text/plain\n" +
+        "--------------------------fa1b4dc84321a582\n" +
+        "Content-Disposition: form-data; name=\"file.path\"\n" +
+        "\n" +
+        "/tmp/nginx_upload/0000000030\n" +
+        "--------------------------fa1b4dc84321a582\n" +
+        "Content-Disposition: form-data; name=\"file.md5\"\n" +
+        "\n" +
+        "c36cb28e18c75cff0c269ecf3806e1d4\n" +
+        "--------------------------fa1b4dc84321a582\n" +
+        "Content-Disposition: form-data; name=\"file.size\"\n" +
+        "\n" +
+        "490\n" +
+        "--------------------------fa1b4dc84321a582--\n";
+
+     */
+    // let fileAttrs = data.match(/(name=\"(file\.[\S]*)\"[$]*?)/m);
+    // console.log(fileAttrs);
+
+    // let ss = data.split('\r\n');
+
+    // var contentDisposition = data;
+    // var startIndex = contentDisposition.indexOf("file.name") + 10; // Adjust '+ 10' if filename is not the right one.
+    // var endIndex = contentDisposition.length - 1; //Check if '- 1' is necessary
+    // var filename = contentDisposition.substring(startIndex, endIndex);
+    // console.log("filename: " + filename)
+    // console.log(filename);
+
+    // res.end("OK, i am ---");
 });
 
 // this.route.all(/\/(.){0,}.cgi/, function (req, res) {
