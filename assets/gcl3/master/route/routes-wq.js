@@ -34,6 +34,9 @@ import RealtimeContainers from './../views/bureau/realtime-containers.vue'
 // Locket
 import LocketManager from './../views/locket/locket-manager.vue'
 
+// System
+import ClientUpload from './../views/client-upload.vue'
+
 
 let routes = [
     {
@@ -88,6 +91,15 @@ let routes = [
         iconCls: 'fa fa-id-card-o',
         children: [
             { path: '/locket-manager', component: LocketManager, name: '锁具管理' },
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '系统相关',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/client-upload', component: ClientUpload, name: '客户端上传的信息' },
         ]
     },
     {
