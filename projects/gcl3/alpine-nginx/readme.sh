@@ -5,7 +5,7 @@ readonly VERSION='1.0.0'
 
 cd "$(dirname $0)"
 
-docker build ${@} -t oudream/gcl3-nginx-alpine:1.0.2 .
+docker build -t oudream/gcl3-nginx-alpine:1.0.2 .
 #docker build ${@} -t oudream/gcl3-nginx-alpine:${VERSION} .
 #
 #docker push oudream/gcl3-nginx-alpine:${VERSION}

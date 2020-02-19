@@ -24,4 +24,4 @@ RUN apk add --update alpine-sdk && \
 
 COPY deploy /opt/ddd/ccpp/gcl3/build/deploy
 COPY assets /opt/ddd/ccpp/gcl3/deploy/assets
-COPY nginx_gcl3.default.conf /etc/nginx/conf.d/nginx_gcl3.default.conf
+COPY nginx_gcl3.conf /etc/nginx/conf.d/nginx_gcl3.conf
