@@ -1,10 +1,10 @@
-FROM oudream/gcl3-nginx-alpine:1.0.2
+FROM alpine:3.10
 
 LABEL maintainer="oudream - https://github.com/oudream"
 
 ENTRYPOINT ["/opt/entrypoint.sh"]
 
-EXPOSE 22 8821
+EXPOSE 22
 
 COPY rootfs /opt/
 
@@ -20,8 +20,10 @@ RUN apk add --no-cache openssh \
 COPY identity.pub /root/.ssh/authorized_keys
 
 RUN apk add --update alpine-sdk && \
-    apk add libuuid && \
+    apk add nginx libuuid && \
+    mkdir -p /run/nginx
 
 COPY deploy /opt/ddd/ccpp/gcl3/build/deploy
 COPY assets /opt/ddd/ccpp/gcl3/deploy/assets
-COPY nginx_gcl3.default.conf /etc/nginx/conf.d/nginx_gcl3.default.conf
+COPY nginx /opt/ddd/ccpp/gcl3/deploy/nginx
+

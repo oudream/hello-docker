@@ -3,7 +3,7 @@
 
 # build dockerfile
 cat ./../../../assets/ssh/identity.pub > ./identity.pub
-docker build -t gcl3-dev-alpine .
+docker build -t oudream/gcl3-dev-alpine:1.0.1 .
 
 
 # run on vps

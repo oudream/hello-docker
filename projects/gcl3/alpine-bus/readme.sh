@@ -2,7 +2,7 @@
 
 
 ### build docker bus prepare
-dk_gcl_bus_p=/opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus
+dk_gcl_bus_p=/opt/limi/hello-docker/projects/gcl3/alpine-bus
 #ln -s /opt/ddd/ccpp/gcl3/build/deploy ${dk_gcl_bus_p}/deploy
 #ln -s /opt/ddd/ccpp/gcl3/deploy/assets ${dk_gcl_bus_p}/assets
 #ln -s /opt/ddd/ccpp/gcl3/deploy/nginx ${dk_gcl_bus_p}/nginx
@@ -28,18 +28,18 @@ cp -r /opt/ddd/ccpp/gcl3/deploy/config ${dk_gcl_bus_p}/deploy/
 #cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk ${dk_gcl_bus_p}/deploy/bin_unix_d/
 
 ### build docker bus build
-cd /opt/ddd/ops/docker/hello-dockerfile/projects/gcl3/alpine-bus
+cd /opt/limi/hello-docker/projects/gcl3/alpine-bus
 
 ## ssh ca RSA
 cat ./../../../assets/ssh/identity.pub > ./identity.pub
 
-docker build -t oudream/gcl3-bus-alpine:1.1 .
+docker build -t oudream/gcl3-bus-alpine:1.0.2 .
 
 ### run docker bus
 # local
-docker run -p 2233:22 -p 2281:8821 -d --restart=always oudream/gcl3-bus-alpine:1.1
+docker run -p 2233:22 -p 2281:8821 -d --restart=always oudream/gcl3-bus-alpine:1.0.2
 # local debug
-docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.1 /bin/sh
+docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.0.2 /bin/sh
 
 
 ### ssh
@@ -57,7 +57,7 @@ http://34.69.117.39:2281/bus/poster.html
 
 ### docker push image
 docker login
-docker tag gcl3-bus-alpine oudream/gcl3-bus-alpine:1.1
-docker push oudream/gcl3-bus-alpine:1.1
+docker tag gcl3-bus-alpine oudream/gcl3-bus-alpine:1.0.2
+docker push oudream/gcl3-bus-alpine:1.0.2
 docker pull oudream/gcl3-bus-alpine
 
