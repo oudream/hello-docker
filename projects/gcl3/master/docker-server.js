@@ -508,6 +508,53 @@ DockerServer.prototype.init = function(httpServer, db) {
             });
         });
 
+    httpServer.route('/upload')
+        .post(function(req, res) {
+            let body = '';
+            req.on('data', function(chunk) {
+                body += chunk;
+            });
+            req.on('end', function() {
+                let ss = body.match(/(file\.[^]*?[\S]*?--)/g);
+                let fileInfo = {};
+                ss.map(s => s.replace(/[ \f\n\r\t\v\-]/g, "")).forEach(s => {
+                    let a = s.split('"');
+                    if (a.length > 1) {
+                        if (a[0] === 'file.size') {
+                            fileInfo[a[0]] = Number(a[1]);
+                        }
+                        else {
+                            fileInfo[a[0]] = a[1];
+                        }
+                    }
+                });
+                res.writeHead(200, {'Content-Type': 'text/plain'});
+                res.end("OK, i am ---");
+
+                // INSERT INTO `client_upload`(`id`, `fileName`, `fileContenType`, `filePath`, `md5`, `size`, `uploadTime`) VALUES (1, 'a1', 'a2', 'a3', 'a4', 11, 12);
+                if (self.db && fileInfo["file.name"]) {
+                    let sqlInsert = ["INSERT INTO `client_upload`(`fileName`, `fileContenType`, `filePath`, `md5`, `size`, `uploadTime`) VALUES ("];
+                    sqlInsert.push("'" + fileInfo["file.name"] + "',");
+                    sqlInsert.push("'" + fileInfo["file.content_type"] + "',");
+                    sqlInsert.push("'" + fileInfo["file.path"] + "',");
+                    sqlInsert.push("'" + fileInfo["file.md5"] + "',");
+                    sqlInsert.push(String(fileInfo["file.size"]) + ',');
+                    sqlInsert.push(String(Date.now()));
+                    sqlInsert.push(");");
+                    let sql = sqlInsert.join('');
+                    try {
+                        self.db.query(sql);
+                    }
+                    catch (e) {
+                        console.log(sql);
+                        console.log(e);
+                    }
+                }
+
+            });
+        });
+
+
 };
 
 DockerServer.prototype.reset = function() {
