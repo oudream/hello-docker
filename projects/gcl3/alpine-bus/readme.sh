@@ -38,22 +38,22 @@ docker build -t oudream/gcl3-bus-alpine:1.0.2 .
 
 ### run docker bus
 # local
-docker run -p 2233:22 -p 2281:8821 -d --restart=always oudream/gcl3-bus-alpine:1.0.2
+docker run -p 2231:22 -p 2232:8821 -d --restart=always oudream/gcl3-bus-alpine:1.0.2
 # local debug
-docker run -p 2233:22 -p 2281:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.0.2 /bin/sh
+docker run -p 2231:22 -p 2232:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.0.2 /bin/sh
 
 
 ### ssh
 # remote
-ssh root@34.69.117.39 -p 2233 -AXY -v # or $(docker-machine ip default)
+ssh root@34.66.82.34 -p 2233 -AXY -v # or $(docker-machine ip default)
 # local
 ssh root@localhost -p 2233 -AXY # or $(docker-machine ip default)
 
 ### brower
-34.69.117.39:2281
-http://34.69.117.39:2281/bus/viewer.html
-http://34.69.117.39:2281/bus/poster.html
-122.51.12.151:2281
+34.66.82.34:2232
+http://34.66.82.34:2232/bus/viewer.html
+http://34.66.82.34:2232/bus/poster.html
+122.51.12.151:2232
 
 
 ### docker push image
