@@ -24,9 +24,11 @@ cp /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_filesystem ${dk_gc
 cp /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_fastcgi_rtlog ${dk_gcl_bus_p}/deploy/bin_unix_d/
 cp /opt/ddd/ccpp/gcl3/build/deploy/bin_unix_d/gcl_svr_rtdbs ${dk_gcl_bus_p}/deploy/bin_unix_d/
 
-### copy config
+## copy config
 cp -r /opt/ddd/ccpp/gcl3/deploy/config ${dk_gcl_bus_p}/deploy/
 #cp -r /opt/ddd/ccpp/gcl3/deploy/gcl_sdk ${dk_gcl_bus_p}/deploy/bin_unix_d/
+
+
 
 ### build docker bus build
 cd /opt/limi/hello-docker/projects/gcl3/alpine-bus
@@ -34,7 +36,10 @@ cd /opt/limi/hello-docker/projects/gcl3/alpine-bus
 ## ssh ca RSA
 cat ./../../../assets/ssh/identity.pub > ./identity.pub
 
+## build
 docker build -t oudream/gcl3-bus-alpine:1.0.2 .
+
+
 
 ### run docker bus
 # local
@@ -43,17 +48,22 @@ docker run -p 2231:22 -p 2232:8821 -d --restart=always oudream/gcl3-bus-alpine:1
 docker run -p 2231:22 -p 2232:8821 -it --entrypoint='' oudream/gcl3-bus-alpine:1.0.2 /bin/sh
 
 
-### ssh
+
+## ssh
 # remote
 ssh root@34.66.82.34 -p 2233 -AXY -v # or $(docker-machine ip default)
 # local
 ssh root@localhost -p 2233 -AXY # or $(docker-machine ip default)
 
-### brower
+## brower
 34.66.82.34:2232
-http://34.66.82.34:2232/bus/viewer.html
-http://34.66.82.34:2232/bus/poster.html
+open http://34.66.82.34:2232/bus/viewer.html
+open http://34.66.82.34:2232/bus/poster.html
 122.51.12.151:2232
+## upload
+cd /opt/limi/hello-docker/hello/nginx/upload1
+sFp1=$PWD/readme.md
+curl  -F "file=@${sFp1};type=text/plain;filename=a1" 34.66.82.34:2280/upload
 
 
 ### docker push image
