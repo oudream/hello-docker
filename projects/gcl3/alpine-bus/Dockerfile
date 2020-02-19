@@ -20,7 +20,7 @@ RUN apk add --no-cache openssh \
 COPY identity.pub /root/.ssh/authorized_keys
 
 RUN apk add --update alpine-sdk && \
-    apk add libuuid && \
+    apk add libuuid
 
 COPY deploy /opt/ddd/ccpp/gcl3/build/deploy
 COPY assets /opt/ddd/ccpp/gcl3/deploy/assets
