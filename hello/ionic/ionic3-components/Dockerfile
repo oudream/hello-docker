@@ -8,6 +8,6 @@ RUN cd /opt &&\
     git clone "https://github.com/yannbf/ionic3-components.git" && cd ionic3-components &&\
     npm install -y&&\
     ionic cordova platform add android -y&&\
-    ionic cordova resources android&&
-    ionic cordova resources -f&&
+    ionic cordova resources android&&\
+    ionic cordova resources -f&&\
     ionic cordova build android -y
