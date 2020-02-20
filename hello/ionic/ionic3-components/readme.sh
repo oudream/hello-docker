@@ -11,3 +11,4 @@ docker run -it oudream/ionic3-android-ubuntu:1.0.1 /bin/bash
 git clone https://github.com/yannbf/ionic3-components.git
 
 ionic cordova platform add android
+
