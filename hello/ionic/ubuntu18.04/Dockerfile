@@ -51,8 +51,4 @@ RUN wget https://services.gradle.org/distributions/gradle-"$GRADLE_VERSION"-bin.
 # Sentando varaveis no PATH
 ENV PATH ${PATH}:/opt/platform-tools:/opt/tools:/opt/gradle/gradle-"$GRADLE_VERSION"/bin
 
-# Configurando diretorio de Trabalho
-# WORKDIR dados
-
-#Expondo Portas
 EXPOSE 8100 35729 5037
