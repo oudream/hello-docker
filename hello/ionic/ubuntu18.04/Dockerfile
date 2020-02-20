@@ -1,6 +1,6 @@
-FROM     ubuntu:18.04
-LABEL maintainer="Sandro Bastos de Oliveira"
-LABEL description="Imagem base Ubuntu 18.04"
+FROM  ubuntu:18.04
+
+LABEL description="ionic on Ubuntu 18.04"
 
 #Variaveis de Ambiente
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -14,7 +14,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PLATAFORMS=android-28 \
     ANDROID_HOME=/opt
 
-#Dependencias 
+#Dependencias
 RUN apt update -y &&\
     apt upgrade -y &&\
     apt install -y apt-utils &&\
@@ -40,7 +40,7 @@ RUN cd /opt &&\
     chown -R root. /opt
 
 # Config Plataforms
-RUN yes | /opt/tools/bin/sdkmanager --include_obsolete platform-tools "platform-tools" "platforms;$PLATAFORMS" "build-tools;$BUILD_TOOLS" 
+RUN yes | /opt/tools/bin/sdkmanager --include_obsolete platform-tools "platform-tools" "platforms;$PLATAFORMS" "build-tools;$BUILD_TOOLS"
 
 # Install Gradle
 RUN wget https://services.gradle.org/distributions/gradle-"$GRADLE_VERSION"-bin.zip && \
