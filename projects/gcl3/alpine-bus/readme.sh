@@ -72,5 +72,5 @@ curl  -F "file=@${sFp1};type=text/plain;filename=a1" 34.66.82.34:2232/upload
 docker login
 docker tag gcl3-bus-alpine oudream/gcl3-bus-alpine:1.0.2
 docker push oudream/gcl3-bus-alpine:1.0.2
-docker pull oudream/gcl3-bus-alpine
+docker pull oudream/gcl3-bus-alpine:1.0.2
 

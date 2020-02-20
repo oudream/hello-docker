@@ -61,6 +61,11 @@ node ./projects/gcl3/master/main-debug.js
 # open browser
 open http://localhost:2292
 # open http://localhost:2292/hello-docker/projects/gcl3/master/dist
+# upload
+cd /opt/limi/hello-docker/hello/nginx/upload1
+sFp1=$PWD/readme.md
+curl  -F "file=@${sFp1};type=text/plain;filename=a1" 122.51.12.151:2232/upload
+
 
 # backup
 #    mysql
