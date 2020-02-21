@@ -12,3 +12,7 @@ git clone https://github.com/yannbf/ionic3-components.git
 
 ionic cordova platform add android
 
+    ionic cordova platform add android -y
+    ionic cordova resources android-y
+    ionic cordova resources -f
+    ionic cordova build android -y
