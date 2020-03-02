@@ -11,9 +11,9 @@ RUN echo "deb http://security.ubuntu.com/ubuntu xenial-security main" | tee /etc
         python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 RUN cd /opt && \
-    git clone https://github.com/opencv/opencv.git && \
-    git reset --hard 4c71dbf && \
-    cd /opt/opencv && mkdir build && cd build && \
+    git clone https://github.com/opencv/opencv.git opencv && \
+    cd /opt/opencv && git reset --hard 4c71dbf && \
+    mkdir build && cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local .. && \
     make -j7 && make install && \
     rm -r /opt/opencv
