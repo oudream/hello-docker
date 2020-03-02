@@ -1,9 +1,9 @@
 FROM ubuntu:18.04
 
-RUN apt-get update -y && \
-    apt-get install -y build-essential && \
-    apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev && \
-    apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+RUN apt update -y && \
+    apt install -y build-essential && \
+    apt install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev && \
+    apt install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 RUN cd ~ && \
     git clone https://github.com/opencv/opencv.git && \
@@ -13,10 +13,10 @@ RUN cd ~ && \
     make -j7 && make install && \
     rm -r ~/opencv
 
-RUN apt-get update -y ; apt-get upgrade -y && \
-    apt-get install gcc g++ cmake build-essential gdb gdbserver \
+RUN apt update -y ; apt upgrade -y && \
+    apt install -y gcc g++ cmake build-essential gdb gdbserver \
         unixodbc unixodbc-dev libcurl4-openssl-dev uuid uuid-dev \
-        qt5-default libqt5svg5 libqt5svg5-dev qtcreator -y
+        qt5-default libqt5svg5 libqt5svg5-dev qtcreator
 
 RUN apt update \
     && apt install -y openssh-server \
