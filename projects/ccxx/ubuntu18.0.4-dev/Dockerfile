@@ -8,8 +8,7 @@ RUN echo "deb http://security.ubuntu.com/ubuntu xenial-security main" | tee /etc
         qt5-default libqt5svg5 libqt5svg5-dev qtcreator \
         software-properties-common \
         libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev \
-        python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev && \
-    rm -rf /var/lib/apt/lists/*
+        python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 RUN cd opt && \
     git clone https://github.com/opencv/opencv.git && \
@@ -31,7 +30,8 @@ RUN apt update \
     && sed -i "s/^#PermitRootLogin.*$/PermitRootLogin yes/" /etc/ssh/sshd_config \
     && sed -i "s/^.*X11Forwarding.*$/X11Forwarding yes/" /etc/ssh/sshd_config \
     && sed -i "s/^.*X11UseLocalhost.*$/X11UseLocalhost no/" /etc/ssh/sshd_config \
-    && grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
+    && grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN echo "root:12345" | chpasswd
 
