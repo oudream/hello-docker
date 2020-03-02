@@ -10,13 +10,13 @@ RUN echo "deb http://security.ubuntu.com/ubuntu xenial-security main" | tee /etc
         libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev \
         python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
-RUN cd opt && \
+RUN cd /opt && \
     git clone https://github.com/opencv/opencv.git && \
     git reset --hard 4c71dbf && \
-    cd opt/opencv && mkdir build && cd build && \
+    cd /opt/opencv && mkdir build && cd build && \
     cmake -D CMAKE_BUILD_TYPE=Release -D CMAKE_INSTALL_PREFIX=/usr/local .. && \
     make -j7 && make install && \
-    rm -r opt/opencv
+    rm -r /opt/opencv
 
 RUN apt update \
     && apt install -y openssh-server \
