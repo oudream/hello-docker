@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main" && \
+RUN add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main" -y && \
     apt update -y && \
     apt install -y build-essential && \
     apt install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev && \
