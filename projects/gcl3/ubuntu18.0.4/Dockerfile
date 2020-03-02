@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:18.04
 
 ## 一次性安装
 RUN apt-get update -y ; apt-get upgrade -y && \
