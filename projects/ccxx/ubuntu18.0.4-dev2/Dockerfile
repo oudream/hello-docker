@@ -2,17 +2,13 @@ FROM ubuntu:18.04
 
 
 RUN echo "deb http://security.ubuntu.com/ubuntu xenial-security main" | tee /etc/apt/sources.list.d/libjasper.list && \
-    apt purge -y python2.7-minimal && \
     apt update -y ; apt upgrade -y && \
     apt install -y gcc g++ cmake build-essential gdb gdbserver git \
-        unixodbc unixodbc-dev libcurl4-openssl-dev uuid uuid-dev libssl-dev libncurses5-dev \
+        unixodbc unixodbc-dev libcurl4-openssl-dev uuid uuid-dev \
         qt5-default libqt5svg5 libqt5svg5-dev qtcreator \
         software-properties-common \
         libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev \
-        python3 python3-pip python3-dev python3-numpy \
-        libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev && \
-    update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
-    update-alternatives --install /usr/bin/pip python /usr/bin/pip3 1 && \
+        python3-dev python3-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
 
 RUN cd /opt && \
     git clone https://github.com/opencv/opencv.git opencv && \
