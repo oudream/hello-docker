@@ -12,7 +12,7 @@ RUN echo "deb http://security.ubuntu.com/ubuntu xenial-security main" | tee /etc
         python3 python3-pip python3-dev python3-numpy \
         libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev && \
     update-alternatives --install /usr/bin/python python /usr/bin/python3 1 && \
-    update-alternatives --install /usr/bin/pip python /usr/bin/pip3 1 && \
+    update-alternatives --install /usr/bin/pip python /usr/bin/pip3 1
 
 RUN cd /opt && \
     git clone https://github.com/opencv/opencv.git opencv && \
@@ -37,6 +37,6 @@ RUN apt update \
     && grep "^X11UseLocalhost" /etc/ssh/sshd_config || echo "X11UseLocalhost no" >> /etc/ssh/sshd_config \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "root:12345" | chpasswd
+RUN echo "root:123456" | chpasswd
 
 ENTRYPOINT ["sh", "-c", "/usr/sbin/sshd && tail -f /dev/null"]
