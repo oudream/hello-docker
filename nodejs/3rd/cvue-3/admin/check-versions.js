@@ -1,10 +1,7 @@
-if (!process.env.CVUEADMIN_PACKAGE_FP) {
-  throw new Error('process.env.CVUEADMIN_PACKAGE_FP is invalid! ' + __filename);
-}
-
+const path = require('path')
 let chalk = require('chalk')
 let semver = require('semver')
-let packageConfig = require(process.env.CVUEADMIN_PACKAGE_FP)
+let packageConfig = require(path.resolve(process.env.CVUE3_NODE_P, './package.json'))
 let shell = require('shelljs')
 function exec (cmd) {
   return require('child_process').execSync(cmd).toString().trim()

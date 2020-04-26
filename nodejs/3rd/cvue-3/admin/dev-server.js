@@ -1,16 +1,8 @@
 require('./check-versions')()
 
-if (!process.env.CVUEADMIN_CONFIG_P) {
-    throw new Error('process.env.CVUEADMIN_CONFIG_P is invalid! ' + __filename)
-}
-
-let config = require(process.env.CVUEADMIN_CONFIG_P)
-if (!process.env.NODE_ENV) {
-    process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
-}
-
-let opn = require('opn')
 let path = require('path')
+let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'))
+let opn = require('opn')
 let express = require('express')
 let webpack = require('webpack')
 let proxyMiddleware = require('http-proxy-middleware')

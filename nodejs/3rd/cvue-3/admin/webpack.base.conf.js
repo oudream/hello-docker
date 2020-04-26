@@ -1,20 +1,12 @@
-if (!process.env.CVUEADMIN_PROJECT_P) {
-  throw new Error('process.env.CVUEADMIN_PROJECT_P is invalid! ' + __filename);
-}
-
-if (!process.env.CVUEADMIN_CONFIG_P) {
-  throw new Error('process.env.CVUEADMIN_CONFIG_P is invalid! ' + __filename);
-}
-
 let path = require('path')
 let utils = require('./utils')
-let config = require(process.env.CVUEADMIN_CONFIG_P)
+let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'))
 
 const {VueLoaderPlugin} = require("vue-loader");
 let vueLoaderConfig = require('./vue-loader.conf')
 
 function resolve(dir) {
-  return path.join(process.env.CVUEADMIN_PROJECT_P, dir)
+  return path.join(process.env.CVUE3_WEB_P, dir)
 }
 
 module.exports = {

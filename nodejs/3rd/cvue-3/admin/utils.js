@@ -1,9 +1,5 @@
-if (!process.env.CVUEADMIN_CONFIG_P) {
-  throw new Error('process.env.CVUEADMIN_CONFIG_P is invalid! ' + __filename);
-}
-
 let path = require('path')
-let config = require(process.env.CVUEADMIN_CONFIG_P)
+let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'))
 let ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 exports.assetsPath = function (_path) {

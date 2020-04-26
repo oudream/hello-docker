@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="200"
+   height="400"
+   viewBox="0 0 52.916665 105.83334"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="tuli.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="275.0848"
+     inkscape:cy="190.68244"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1600"
+     inkscape:window-height="838"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-191.16665)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.70645"
+       y="205.6908"
+       id="text3725"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723"
+         x="23.70645"
+         y="205.6908"
+         style="stroke-width:0.13760345">故障</tspan></text>
+    <circle
+       id="rt_0002"
+       cx="11.899975"
+       cy="201.84447"
+       r="1.8466836"
+       style="fill:#cccccc;stroke:#666666;stroke-width:0.61556119" />
+    <polyline
+       id="rt_0003"
+       points="130 120,130 125,200 125,200 120"
+       transform="matrix(0.12932151,0,0,0.28649119,-9.438074,198.63954)"
+       style="fill:#cccccc;stroke:#666666;stroke-width:2" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.70645"
+       y="236.83711"
+       id="text3725-5"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723-0"
+         x="23.70645"
+         y="236.83711"
+         style="stroke-width:0.13760345">系统故障</tspan></text>
+    <polyline
+       id="rt_0003-4"
+       points="130 120,130 125,200 125,200 120"
+       transform="matrix(0.12932151,0,0,0.28649118,-9.438074,209.02532)"
+       style="fill:#00ff00;stroke:#666666;stroke-width:2" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.754826"
+       y="247.30971"
+       id="text3725-5-2"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723-0-6"
+         x="23.754826"
+         y="247.30971"
+         style="stroke-width:0.13760345">全部在库</tspan></text>
+    <polyline
+       id="rt_0003-8"
+       points="130 120,130 125,200 125,200 120"
+       transform="matrix(0.12932151,0,0,0.28649118,-9.438074,219.41109)"
+       style="fill:#ffff00;stroke:#666666;stroke-width:2" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.701075"
+       y="257.76886"
+       id="text3725-5-0"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723-0-4"
+         x="23.701075"
+         y="257.76886"
+         style="stroke-width:0.13760345">部分借出</tspan></text>
+    <polyline
+       id="rt_0003-86"
+       points="130 120,130 125,200 125,200 120"
+       transform="matrix(0.12932151,0,0,0.28649118,-9.438074,229.79687)"
+       style="fill:#ff0000;stroke:#666666;stroke-width:2" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.711824"
+       y="268.38657"
+       id="text3725-5-4"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723-0-1"
+         x="23.711824"
+         y="268.38657"
+         style="stroke-width:0.13760345">全部借出</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.722574"
+       y="214.19643"
+       id="text3725-9"
+       transform="scale(1.0076473,0.99241073)"
+       inkscape:transform-center-x="-12.617548"
+       inkscape:transform-center-y="-6.4255956"><tspan
+         sodipodi:role="line"
+         id="tspan3723-6"
+         x="23.722574"
+         y="214.19643"
+         style="stroke-width:0.13760345">灯灭</tspan></text>
+    <circle
+       id="rt_0002-2"
+       cx="11.899975"
+       cy="210.30687"
+       r="1.8466836"
+       style="fill:#ffffff;stroke:#666666;stroke-width:0.61556119"
+       inkscape:transform-center-x="10.52653"
+       inkscape:transform-center-y="-6.7931951" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.722574"
+       y="222.74506"
+       id="text3725-3"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723-1"
+         x="23.722574"
+         y="222.74506"
+         style="stroke-width:0.13760345">灯亮</tspan></text>
+    <circle
+       id="rt_0002-28"
+       cx="11.899975"
+       cy="218.76929"
+       r="1.8466836"
+       style="fill:#00ff00;stroke:#666666;stroke-width:0.61556119" />
+    <polyline
+       id="rt_0003-86-0"
+       points="130 120,130 125,200 125,200 120"
+       transform="matrix(0.12932151,0,0,0.28649118,-9.438074,240.18264)"
+       style="fill:#0000ff;stroke:#666666;stroke-width:2" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.50413799px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.13760345"
+       x="23.636572"
+       y="278.69791"
+       id="text3725-5-4-2"
+       transform="scale(1.0076473,0.99241073)"><tspan
+         sodipodi:role="line"
+         id="tspan3723-0-1-0"
+         x="23.636572"
+         y="278.69791"
+         style="stroke-width:0.13760345">借还进行</tspan></text>
+  </g>
+</svg>

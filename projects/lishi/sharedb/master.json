@@ -1,0 +1,12 @@
+{
+  "database": {
+    "mysql1": {
+      "connectionLimit": 10,
+      "database": "lishi_sharedb",
+      "host": "127.0.0.1",
+      "password": "123456",
+      "type": "mysql",
+      "user": "root"
+    }
+  }
+}

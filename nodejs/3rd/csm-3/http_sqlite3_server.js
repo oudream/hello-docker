@@ -1,55 +1,58 @@
 'use strict';
 
-exports = module.exports = HttpMysqlServer;
+exports = module.exports = HttpSqlite3Server;
 
-let mysql = require('mysql');
+
 let http = require('http');
 
+let sqlite3 = require('sqlite3').verbose();
+let db = new sqlite3.Database(':memory:');
+
 /**
- * Class HttpMysqlServer
+ * Class HttpSqlite3Server
  * @constructor
  * @param option = {
-    connectionLimit: 10,
-    host: 'localhost',
+    dbFilePath: ':memory:',
     user: 'root',
     password: '123456',
     database: 'db1',
 }
  */
-function HttpMysqlServer(option) {
+function HttpSqlite3Server(option) {
     this._option = {
-        connectionLimit: option.connectionLimit ? option.connectionLimit : 10,
-        host: option.host ? option.host : 'localhost',
+        dbFilePath: option.dbFilePath ? option.dbFilePath : ':memory:',
         user: option.user ? option.user : 'root',
         password: option.password ? option.password : '123456',
         database: option.database ? option.database : 'db1',
     };
-    this._pool = mysql.createPool(this._option);
-    console.log('Create mysql pool by option : ', this._option);
+    this._db = new sqlite3.Database(this._option.dbFilePath);
+    console.log('Create sqlite3 by option : ', this._option);
 }
 
-HttpMysqlServer.prototype.close = function() {
-    this._pool.end();
-    this._pool = null;
+HttpSqlite3Server.prototype.close = function() {
+    if (this._db !== null) {
+        this._db.close();
+        this._db = null;
+    }
 };
 
-HttpMysqlServer.prototype.getOption = function () {
+HttpSqlite3Server.prototype.getOption = function () {
     return this._option;
 };
 
-HttpMysqlServer.prototype.isOpen = function () {
-    return this._pool !== null;
+HttpSqlite3Server.prototype.isOpen = function () {
+    return this._db;
 };
 
 /**
- * HttpMysqlServer.prototype.query
+ * HttpSqlite3Server.prototype.query
  * @param {String} sql
  * @param {function} callback
  */
-HttpMysqlServer.prototype.query = function (sql, callback) {
+HttpSqlite3Server.prototype.query = function (sql, callback) {
     this._pool.getConnection(function(err, connection) {
         if (err) {
-            console.log('HttpMysqlServer-query: ', err);
+            console.log('HttpSqlite3Server-query: ', err);
             if (callback) {
                 callback(err);
             }
@@ -59,7 +62,7 @@ HttpMysqlServer.prototype.query = function (sql, callback) {
         connection.query(sql, [], function(err, values, fields) {
             connection.release(); // always put connection back in pool after last query
             if (err) {
-                console.log('HttpMysqlServer-query: ', err);
+                console.log('HttpSqlite3Server-query: ', err);
                 if (callback) {
                     callback(err);
                 }
@@ -72,10 +75,10 @@ HttpMysqlServer.prototype.query = function (sql, callback) {
     });
 };
 
-HttpMysqlServer.prototype.querySql = function (sql, vs, callback) {
+HttpSqlite3Server.prototype.querySql = function (sql, vs, callback) {
     this._pool.getConnection(function(err, connection) {
         if (err) {
-            console.log('HttpMysqlServer-query: ', err);
+            console.log('HttpSqlite3Server-query: ', err);
             if (callback) {
                 callback(err);
             }
@@ -85,7 +88,7 @@ HttpMysqlServer.prototype.querySql = function (sql, vs, callback) {
         connection.query(sql, vs, function(err, values, fields) {
             connection.release(); // always put connection back in pool after last query
             if (err) {
-                console.log('HttpMysqlServer-query: ', err);
+                console.log('HttpSqlite3Server-query: ', err);
                 if (callback) {
                     callback(err);
                 }
@@ -99,13 +102,13 @@ HttpMysqlServer.prototype.querySql = function (sql, vs, callback) {
 };
 
 /**
- * HttpMysqlServer.prototype.queryPromise
- * @param {HttpMysqlServer} dbMysql
+ * HttpSqlite3Server.prototype.queryPromise
+ * @param {HttpSqlite3Server} dbMysql
  * @param {String} sql
  * @param {Array} values
  * @return {Array}
  */
-HttpMysqlServer.prototype.queryPromise = function(sql, values) {
+HttpSqlite3Server.prototype.queryPromise = function(sql, values) {
     return new Promise((resolve, reject) => {
         this._pool.getConnection(function(err, connection) {
             if (err) {
@@ -124,7 +127,7 @@ HttpMysqlServer.prototype.queryPromise = function(sql, values) {
     });
 };
 
-HttpMysqlServer.prototype._promiseQueryQueue1 = function(executors) {
+HttpSqlite3Server.prototype._promiseQueryQueue1 = function(executors) {
     return new Promise((resolve, reject) => {
         if (!Array.isArray(executors)) {
             executors = Array.from(executors)
@@ -149,7 +152,7 @@ HttpMysqlServer.prototype._promiseQueryQueue1 = function(executors) {
     })
 };
 
-HttpMysqlServer.prototype._promiseQueryQueue2 = function(executors) {
+HttpSqlite3Server.prototype._promiseQueryQueue2 = function(executors) {
     return new Promise((resolve, reject) => {
         if (!Array.isArray(executors)) {
             executors = Array.from(executors)
@@ -180,7 +183,7 @@ HttpMysqlServer.prototype._promiseQueryQueue2 = function(executors) {
  * @param sqlValuesAry
  * @param callback
  */
-HttpMysqlServer.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) {
+HttpSqlite3Server.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) {
     if (! Array.isArray(sqlAry) || sqlAry.length < 1) {
         if (callback) {
             callback(new Error('sqlAry invalid!'));
@@ -250,7 +253,7 @@ HttpMysqlServer.prototype.queryTrans = function(sqlAry, sqlValuesAry, callback) 
     })
 };
 
-HttpMysqlServer.prototype.querySqls = function(sqlAry, sqlValuesAry, callback) {
+HttpSqlite3Server.prototype.querySqls = function(sqlAry, sqlValuesAry, callback) {
     if (! Array.isArray(sqlAry) || sqlAry.length < 1) {
         if (callback) {
             callback(new Error('sqlAry invalid!'));
@@ -327,7 +330,7 @@ HttpMysqlServer.prototype.querySqls = function(sqlAry, sqlValuesAry, callback) {
  * @param req
  * @param res
  */
-HttpMysqlServer.prototype.dealRequest = function(req, res) {
+HttpSqlite3Server.prototype.dealRequest = function(req, res) {
     let self = this;
     let reqBody = null;
 
@@ -359,7 +362,7 @@ HttpMysqlServer.prototype.dealRequest = function(req, res) {
                 self._pool.getConnection(function(err, connection) {
                     if (err) {
                         callback(err);
-                        console.log('HttpMysqlServer-query: ', err);
+                        console.log('HttpSqlite3Server-query: ', err);
                         return;
                     }
                     // let sql = 'SELECT id,name FROM users';
@@ -367,7 +370,7 @@ HttpMysqlServer.prototype.dealRequest = function(req, res) {
                         connection.release(); // always put connection back in pool after last query
                         if (err) {
                             callback(err);
-                            console.log('HttpMysqlServer-query: ', err);
+                            console.log('HttpSqlite3Server-query: ', err);
                             return;
                         }
                         callback(false, reqBody, values, fields);

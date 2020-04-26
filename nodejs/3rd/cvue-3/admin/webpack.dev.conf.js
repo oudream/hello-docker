@@ -1,16 +1,7 @@
 let path = require('path')
-
-if (!process.env.CVUEADMIN_CONFIG_P) {
-  throw new Error('process.env.CVUEADMIN_CONFIG_P is invalid! ' + __filename);
-}
-
-if (!process.env.CVUEADMIN_INDEX_PAGE_FP) {
-  throw new Error('process.env.CVUEADMIN_INDEX_PAGE_FP is invalid! ' + __filename);
-}
-
 let utils = require('./utils')
 let webpack = require('webpack')
-let config = require(process.env.CVUEADMIN_CONFIG_P)
+let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'))
 let merge = require('webpack-merge')
 let baseWebpackConfig = require('./webpack.base.conf')
 let HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -40,7 +31,7 @@ module.exports = merge(baseWebpackConfig, {
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: process.env.CVUEADMIN_INDEX_PAGE_FP,
+      template: path.resolve(process.env.CVUE3_NODE_P, './config/index.html'),
       inject: true
     }),
     new FriendlyErrorsPlugin()

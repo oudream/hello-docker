@@ -2,13 +2,11 @@ const path = require('path');
 const fs = require('fs');
 
 // vue admin package filepath
-process.env.CVUEADMIN_PROJECT_P = path.resolve(__dirname, './../../../assets/gcl3/master');
-process.env.CVUEADMIN_PACKAGE_FP = path.resolve(__dirname, './package.json');
-process.env.CVUEADMIN_CONFIG_P = path.resolve(__dirname, './cvue-admin');
-process.env.CVUEADMIN_MYSQL_CONFIG_FP = path.resolve(__dirname, './master.json');
-process.env.CVUEADMIN_INDEX_PAGE_FP = path.resolve(__dirname, './cvue-admin/index.html');
+process.env.CVUE3_WEB_P  = path.resolve(__dirname, './../../../assets/gcl3/master');
+process.env.CVUE3_NODE_P  = __dirname;
+process.env.CVUE3_ROOT_P  = path.resolve(__dirname, './../../..');
 
-let config = require(process.env.CVUEADMIN_CONFIG_P)
+let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'))
 
 const DevServer = require('./../../../nodejs/3rd/cvue-3/admin/dev-server');
 const odlLoader = require('./odl-loader');
@@ -22,13 +20,13 @@ let app = express()
 
 const HttpMysqlServer = require('./../../../nodejs/3rd/csm-3/http_mysql_server')
 let httpMysqlServer = null
-if (process.env.CVUEADMIN_MYSQL_CONFIG_FP) {
-    let mysqlConfig = require(process.env.CVUEADMIN_MYSQL_CONFIG_FP)
+if (path.resolve(__dirname, './master.json')) {
+    let mysqlConfig = require(path.resolve(__dirname, './master.json'))
     if (mysqlConfig.database && mysqlConfig.database.mysql1) {
         httpMysqlServer = new HttpMysqlServer(mysqlConfig.database.mysql1)
     }
     else {
-        console.log('CVUEADMIN_MYSQL_CONFIG_FP is invalid : ', process.env.CVUEADMIN_MYSQL_CONFIG_FP)
+        console.log('CVUEADMIN_MYSQL_CONFIG_FP is invalid : ', path.resolve(__dirname, './master.json'))
     }
 }
 
