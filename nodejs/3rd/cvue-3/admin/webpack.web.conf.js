@@ -10,6 +10,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
+const vueLoaderConfig = require('./vue-loader.conf')
+let utils = require('./utils')
 
 let webConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -19,74 +21,29 @@ let webConfig = {
   module: {
     rules: [
       {
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
-      {
-        test: /\.scss$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader']
-      },
-      {
-        test: /\.sass$/,
-        use: ['vue-style-loader', 'css-loader', 'sass-loader?indentedSyntax']
-      },
-      {
-        test: /\.less$/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
-      },
-      {
-        test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader']
-      },
-      {
-        test: /\.html$/,
-        use: 'vue-html-loader'
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: vueLoaderConfig
       },
       {
         test: /\.js$/,
-        use: 'babel-loader',
-        include: [ process.env.CVUE3_WEB_P ],
-        exclude: /node_modules/
-      },
-      {
-        test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            extractCSS: true,
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
-            }
-          }
-        }
+        loader: 'babel-loader',
+        include: [process.env.CVUE3_WEB_P, path.join(process.env.CVUE3_WEB_P, '_test')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          query: {
-            limit: 10000,
-            name: 'imgs/[name].[ext]'
-          }
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('img/[name].[hash:7].[ext]')
         }
       },
       {
         test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          query: {
-            limit: 10000,
-            name: 'fonts/[name].[ext]'
-          }
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
       }
     ]
@@ -115,11 +72,12 @@ let webConfig = {
     path: path.resolve(process.env.CVUE3_NODE_P, './dist/web')
   },
   resolve: {
+    extensions: ['.js', '.vue', '.json'],
     alias: {
+      'vue$': 'vue/dist/vue.esm.js',
       '@': process.env.CVUE3_WEB_P,
-      'vue$': 'vue/dist/vue.esm.js'
-    },
-    extensions: ['.js', '.vue', '.json', '.css']
+      'scss_vars': path.resolve(process.env.CVUE3_WEB_P, 'styles/vars.scss'),
+    }
   },
   target: 'web'
 }

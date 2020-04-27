@@ -15,17 +15,6 @@ let mainConfig = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
-      {
         test: /\.js$/,
         use: 'babel-loader',
         exclude: /node_modules/
@@ -43,7 +32,7 @@ let mainConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.resolve(process.env.CVUE3_NODE_P, './dist/electron')
+    path: path.resolve(process.env.CVUE3_NODE_P, './dist')
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin()

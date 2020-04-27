@@ -43,6 +43,7 @@ function build () {
   let results = ''
 
   m.on('success', () => {
+    process.chdir(process.env.CVUE3_NODE_P)
     process.stdout.write('\x1B[2J\x1B[0f')
     console.log(`\n\n${results}`)
     console.log(`${okayLog}take it away ${chalk.yellow('`electron-builder`')}\n`)

@@ -12,13 +12,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader')
 
-/**
- * List of node_modules to include in webpack bundle
- *
- * Required for specific packages like Vue UI libraries
- * that provide pure *.vue files that need compiling
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
- */
 let whiteListedModules = ['vue']
 
 let rendererConfig = {
@@ -31,17 +24,6 @@ let rendererConfig = {
   ],
   module: {
     rules: [
-      {
-        test: /\.(js|vue)$/,
-        enforce: 'pre',
-        exclude: /node_modules/,
-        use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
-        }
-      },
       {
         test: /\.scss$/,
         use: ['vue-style-loader', 'css-loader', 'sass-loader']
@@ -143,11 +125,12 @@ let rendererConfig = {
     path: path.resolve(process.env.CVUE3_NODE_P, './dist/electron')
   },
   resolve: {
+    extensions: ['.js', '.vue', '.json'],
     alias: {
+      'vue$': 'vue/dist/vue.esm.js',
       '@': process.env.CVUE3_WEB_P,
-      'vue$': 'vue/dist/vue.esm.js'
-    },
-    extensions: ['.js', '.vue', '.json', '.css', '.node']
+      'scss_vars': path.resolve(process.env.CVUE3_WEB_P, 'styles/vars.scss'),
+    }
   },
   target: 'electron-renderer'
 }
