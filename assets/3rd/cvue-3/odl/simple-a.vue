@@ -3,14 +3,62 @@
         <!-- operate toolbar on top -->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true">
-
                 <section v-for="(filter, index) in filters">
+                    <el-form-item>
+                    </el-form-item>
                     <section v-if="filter.type === 'refer'">
-                        {{filter.fields[0].label}}
+                        <el-form-item>
+                            {{filter.fields[0].label}}
+                        </el-form-item>
                         <section v-if="filter.operations.length === 1">
-                            {{filter.operations[0].label}}
+                            <el-form-item>
+                                {{filter.operations[0].label}}
+                            </el-form-item>
                         </section>
                         <section v-else>
+                            <el-form-item>
+                                <el-select v-model="filter.operationValue" clearable placeholder="OP"
+                                           style="width: 80px">
+                                    <el-option
+                                            v-for="(operation, ind) in filter.operations"
+                                            :key="operation.value"
+                                            :label="operation.label"
+                                            :value="operation.value"
+                                            :disabled="operation.disabled">
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </section>
+                        <el-form-item>
+                            <el-select v-model="filter.value" clearable placeholder="查询值" filterable
+                                       style="width: 80px">
+                                <el-option
+                                        v-for="(value, ind) in filter.values"
+                                        :key="value.value"
+                                        :label="value.label"
+                                        :value="value.value"
+                                        :disabled="value.disabled">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
+                            {{filter.isAnd ? "And" : "Or"}}
+                        </el-form-item>
+                    </section>
+                    <section v-else>
+                        <el-form-item>
+                            <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 130px"
+                                       @change="handleFilterChange(index)">
+                                <el-option
+                                        v-for="(field, ind) in filter.fields"
+                                        :key="field.value"
+                                        :label="field.label"
+                                        :value="field.value"
+                                        :disabled="field.disabled">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item>
                             <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 80px">
                                 <el-option
                                         v-for="(operation, ind) in filter.operations"
@@ -20,70 +68,17 @@
                                         :disabled="operation.disabled">
                                 </el-option>
                             </el-select>
-                        </section>
-                        <el-select v-model="filter.value" clearable placeholder="查询值" filterable style="width: 80px">
-                            <el-option
-                                    v-for="(value, ind) in filter.values"
-                                    :key="value.value"
-                                    :label="value.label"
-                                    :value="value.value"
-                                    :disabled="value.disabled">
-                            </el-option>
-                        </el-select>
-                        {{filter.isAnd ? "And" : "Or"}}
-                    </section>
-                    <section v-else>
-                        <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 130px" @change="handleFilterChange(index)">
-                            <el-option
-                                    v-for="(field, ind) in filter.fields"
-                                    :key="field.value"
-                                    :label="field.label"
-                                    :value="field.value"
-                                    :disabled="field.disabled">
-                            </el-option>
-                        </el-select>
-                        <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 80px">
-                            <el-option
-                                    v-for="(operation, ind) in filter.operations"
-                                    :key="operation.value"
-                                    :label="operation.label"
-                                    :value="operation.value"
-                                    :disabled="operation.disabled">
-                            </el-option>
-                        </el-select>
-                        <el-input v-model="filter.value" placeholder=""></el-input>
+                        </el-form-item>
+                        <el-form-item>
+                            <el-input v-model="filter.value" placeholder="查询值"></el-input>
+                        </el-form-item>
                         <section v-if="index < filters.length-1">
-                            {{filter.isAnd ? "And" : "Or"}}
+                            <el-form-item>
+                                {{filter.isAnd ? "And" : "Or"}}
+                            </el-form-item>
                         </section>
                     </section>
                 </section>
-
-
-                <el-form-item>
-                    <el-select v-model="filterFieldValue" clearable placeholder="查询的属性" style="width: 130px">
-                        <el-option
-                                v-for="(field, index) in filterFields"
-                                :key="field.value"
-                                :label="field.label"
-                                :value="field.value"
-                                :disabled="field.disabled">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-select v-model="filterOperationValue" clearable placeholder="OP" style="width: 80px">
-                        <el-option
-                                v-for="(operation, index) in filterOperations"
-                                :key="operation.value"
-                                :label="operation.label"
-                                :value="operation.value"
-                                :disabled="operation.disabled">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-input v-model="filterValue" placeholder="查询值"></el-input>
-                </el-form-item>
                 <el-form-item>
                     <el-button type="primary" v-on:click="getObjs">查询</el-button>
                 </el-form-item>
@@ -310,9 +305,9 @@
             initFilterRefer(filterIndex) {
                 let filter = this.filters[filterIndex];
                 let attrValue = this.nObj.spec.attrs.find(a => a.name === filter.fields[0].value);
-                if (! attrValue || ! attrValue.refer) return;
+                if (!attrValue || !attrValue.refer) return;
                 let attrLabel = odl.findReferTitleAttr(attrValue.refer, this.nObj.kind);
-                if (! attrLabel) return;
+                if (!attrLabel) return;
                 let params = {
                     session: Date.now(),
                     odc: attrValue.refer.odc,
@@ -340,8 +335,9 @@
                             for (let i = 0; i < objs.length; i++) {
                                 let obj = objs[i];
                                 filter.values.push(
-                                {value: obj[attrValue.name], label: obj[attrLabel.name]}
-                            )}
+                                    {value: obj[attrValue.name], label: obj[attrLabel.name]}
+                                )
+                            }
                         }
                     }
                 });
@@ -383,7 +379,7 @@
                 let filters = this.filters;
                 for (let i = 0; i < filters.length; i++) {
                     let filter = filters[i];
-                    if (filter.fieldValue && filter.operationValue && ( filter.value !== null && filter.value !== undefined )) {
+                    if (filter.fieldValue && filter.operationValue && (filter.value !== null && filter.value !== undefined)) {
                         params.conditions.attrs.push({
                             name: filter.fieldValue,
                             operation: filter.operationValue,
@@ -408,7 +404,7 @@
                 });
             },
 
-            handleFilterChange(index){
+            handleFilterChange(index) {
                 let filters = this.filters;
                 let filter = filters[index];
                 filter.operations = odl.UiVueTable.getFilterOperations(this.nObj, filter.fieldValue);
@@ -564,7 +560,7 @@
                     if (valid) {
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             let obj = odl.UiVueTable.getEditSubmitObj(this.nObj, this.editForm, this.editOld);
-                            if (! obj) {
+                            if (!obj) {
                                 this.$message({
                                     message: '没有要更新的数据！',
                                     type: 'success'
