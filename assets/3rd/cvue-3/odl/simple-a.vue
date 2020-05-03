@@ -3,7 +3,63 @@
         <!-- operate toolbar on top -->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true">
-                <el-form-item label="属性名">
+
+                <section v-for="(filter, index) in filters">
+                    <section v-if="filter.type === 'refer'">
+                        {{filter.fields[0].label}}
+                        <section v-if="filter.operations.length === 1">
+                            {{filter.operations[0].label}}
+                        </section>
+                        <section v-else>
+                            <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 80px">
+                                <el-option
+                                        v-for="(operation, ind) in filter.operations"
+                                        :key="operation.value"
+                                        :label="operation.label"
+                                        :value="operation.value"
+                                        :disabled="operation.disabled">
+                                </el-option>
+                            </el-select>
+                        </section>
+                        <el-select v-model="filter.value" clearable placeholder="查询值" filterable style="width: 80px">
+                            <el-option
+                                    v-for="(value, ind) in filter.values"
+                                    :key="value.value"
+                                    :label="value.label"
+                                    :value="value.value"
+                                    :disabled="value.disabled">
+                            </el-option>
+                        </el-select>
+                        {{filter.isAnd ? "And" : "Or"}}
+                    </section>
+                    <section v-else>
+                        <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 130px" @change="handleFilterChange(index)">
+                            <el-option
+                                    v-for="(field, ind) in filter.fields"
+                                    :key="field.value"
+                                    :label="field.label"
+                                    :value="field.value"
+                                    :disabled="field.disabled">
+                            </el-option>
+                        </el-select>
+                        <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 80px">
+                            <el-option
+                                    v-for="(operation, ind) in filter.operations"
+                                    :key="operation.value"
+                                    :label="operation.label"
+                                    :value="operation.value"
+                                    :disabled="operation.disabled">
+                            </el-option>
+                        </el-select>
+                        <el-input v-model="filter.value" placeholder=""></el-input>
+                        <section v-if="index < filters.length-1">
+                            {{filter.isAnd ? "And" : "Or"}}
+                        </section>
+                    </section>
+                </section>
+
+
+                <el-form-item>
                     <el-select v-model="filterFieldValue" clearable placeholder="查询的属性" style="width: 130px">
                         <el-option
                                 v-for="(field, index) in filterFields"
@@ -25,8 +81,8 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="查询值">
-                    <el-input v-model="filterValue" placeholder=""></el-input>
+                <el-form-item>
+                    <el-input v-model="filterValue" placeholder="查询值"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" v-on:click="getObjs">查询</el-button>
@@ -84,7 +140,7 @@
 
         <!-- add -->
         <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" top="1vh">
-            <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
+            <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">
                     <section v-if="attr.from">
@@ -124,7 +180,7 @@
 
         <!-- edit -->
         <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" top="1vh">
-            <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+            <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">
                     <section v-if="attr.from">
@@ -189,11 +245,12 @@
             return {
                 attrs: [],
 
-                filterFields: [],
-                filterFieldValue: '',
-                filterOperations: [],
-                filterOperationValue: '',
-                filterValue: '',
+                filters: [],
+                // filterFields: [],
+                // filterFieldValue: '',
+                // filterOperations: [],
+                // filterOperationValue: '',
+                // filterValue: '',
 
                 objs: [],
 
@@ -227,6 +284,7 @@
 
         methods: {
             init: function() {
+                debugger;
                 // odc
                 this.odc = odl.findOdc(this.odcName);
                 console.assert(this.odc);
@@ -236,13 +294,68 @@
                 console.assert(this.nObj.spec.key);
                 // filter
                 this.attrs = odl.UiVueTable.getTableFields(this.nObj);
-                this.filterFields = odl.UiVueTable.getFilterFields(this.nObj);
+                this.filters = odl.UiVueTable.getFilterFields(this.nObj);
+            },
+
+            clearFilters() {
+                let filters = this.filters;
+                for (let i = 0; i < filters.length; i++) {
+                    let filter = filters[i];
+                    filter.fieldValue = null;
+                    filter.operationValue = null;
+                    filter.value = null;
+                }
+            },
+
+            initFilterRefer(filterIndex) {
+                let filter = this.filters[filterIndex];
+                let attrValue = this.nObj.spec.attrs.find(a => a.name === filter.fields[0].value);
+                if (! attrValue || ! attrValue.refer) return;
+                let attrLabel = odl.findReferTitleAttr(attrValue.refer, this.nObj.kind);
+                if (! attrLabel) return;
+                let params = {
+                    session: Date.now(),
+                    odc: attrValue.refer.odc,
+                    action: 'ls',
+                    fields: [
+                        {
+                            name: attrValue.name
+                        },
+                        {
+                            name: attrLabel.name
+                        }
+                    ]
+                };
+                getOdoQuery(params).then((rs) => {
+                    if (rs && rs.state.err) {
+                        this.$message({
+                            message: '数据请求失败：' + rs.state.err,
+                            type: 'error'
+                        });
+                    }
+                    else {
+                        let objs = rs.data;
+                        filter.values = [];
+                        if (Array.isArray(objs)) {
+                            for (let i = 0; i < objs.length; i++) {
+                                let obj = objs[i];
+                                filter.values.push(
+                                {value: obj[attrValue.name], label: obj[attrLabel.name]}
+                            )}
+                        }
+                    }
+                });
+            },
+
+            initFilters() {
+                let filters = this.filters;
+                for (let i = 0; i < filters.length; i++) {
+                    this.initFilterRefer(i);
+                }
             },
 
             getAllObjs() {
-                this.filterFieldValue = '';
-                this.filterOperationValue = '';
-                this.filterValue = '';
+                this.clearFilters();
                 this.page = 1;
                 this.getObjs();
             },
@@ -267,6 +380,18 @@
                         ]
                     }
                 };
+                let filters = this.filters;
+                for (let i = 0; i < filters.length; i++) {
+                    let filter = filters[i];
+                    if (filter.fieldValue && filter.operationValue && ( filter.value !== null && filter.value !== undefined )) {
+                        params.conditions.attrs.push({
+                            name: filter.fieldValue,
+                            operation: filter.operationValue,
+                            value: filter.value,
+                            isAnd: filter.isAnd
+                        });
+                    }
+                }
                 this.listLoading = true;
                 getOdoQuery(params).then((rs) => {
                     if (rs && rs.state.err) {
@@ -281,6 +406,12 @@
                     }
                     this.listLoading = false;
                 });
+            },
+
+            handleFilterChange(index){
+                let filters = this.filters;
+                let filter = filters[index];
+                filter.operations = odl.UiVueTable.getFilterOperations(this.nObj, filter.fieldValue);
             },
 
             handleCurrentChange(val) {
@@ -536,6 +667,7 @@
 
         mounted() {
             this.getObjs();
+            this.initFilters();
         },
 
         watch: {

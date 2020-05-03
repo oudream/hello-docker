@@ -50,7 +50,8 @@
                 if (base.spec && base.spec.attrs) {
                     if (nObj.spec && nObj.spec.attrs) {
                         nObj.spec.attrs = odl.Attr.mergeAttrs(base.spec.attrs, nObj.spec.attrs);
-                    } else {
+                    }
+                    else {
                         if (!nObj.spec) nObj.spec = {};
                         nObj.spec.attrs = odl.clone(base.spec.attrs);
                     }
@@ -154,13 +155,21 @@
             return name && formats[name] ? formats[name] : formatDefault[type];
         },
 
-        getSelects: function(scopes) {
+        getSelects: function(scopes, values) {
             let r = {options: []};
             if (Array.isArray(scopes)) {
-                scopes.forEach((s, i) => {
-                    r.options.push({label:s, value: i})
-                });
-            } else {
+                if (Array.isArray(values) && values.length >= scopes.length) {
+                    scopes.forEach((s, i) => {
+                        r.options.push({label: s, value: values[i]})
+                    });
+                }
+                else {
+                    scopes.forEach((s, i) => {
+                        r.options.push({label: s, value: i})
+                    });
+                }
+            }
+            else {
                 return null;
             }
             return r;
@@ -182,7 +191,7 @@
                     maxLength: a.maxLength,
                     label: a.title,
                     width: this._defaultWidth[a.type],
-                    format: this.getFormats(a.format,a.type),
+                    format: this.getFormats(a.format, a.type),
                     sortable: true,
                     showOverflowTooltip: a.type === 'string' && a.maxLength > this._defaultWidth[a.type],
                     readonly: a.readonly,
@@ -192,7 +201,7 @@
                     atr.maxvalue = a.maxvalue;
                 }
                 if (a.type === 'enum') {
-                    atr.select = this.getSelects(a.scopes);
+                    atr.select = this.getSelects(a.scopes, a.values);
                 }
                 r.push(atr);
                 return atr;
@@ -235,18 +244,53 @@
          * @returns {[]}
          */
         getFilterFields: function(nObj) {
-            let r = [];
             let attrs = nObj.spec.attrs;
-            for (let i = 0; i < attrs.length; i++) {
-                let attr = attrs[i];
-                if (attr.visible) {
-                    r.push({
-                        value: attr.name,
-                        label: attr.title,
-                    });
+            let filters = nObj.spec.filter && Array.isArray(nObj.spec.filter.filters) ? odl.clone(nObj.spec.filter.filters) : null;
+            if (Array.isArray(filters)) {
+                let b = true;
+                for (let i = 0; i < filters.length; i++) {
+                    let filter = filters[i];
+                    if (filter.type === 'refer') {
+                        if (filter.fields.length === 1 && filter.operations.length > 1) {
+                            if (! filter.hasOwnProperty('fieldValue')) filter.fieldValue = null;
+                            if (! filter.hasOwnProperty('operationValue')) filter.operationValue = null;
+                            if (! filter.hasOwnProperty('value')) filter.value = null;
+                            if (! filter.hasOwnProperty('type')) filter.type = null;
+                            if (! filter.hasOwnProperty('isAnd')) filter.isAnd = true;
+                            if (! Array.isArray(filter.values)) filter.values = [];
+                        }
+                        else {
+                            b = false;
+                            break;
+                        }
+                    }
+                }
+                if (b) {
+                    return filters;
                 }
             }
-            return r;
+            {
+                let filter = {
+                    fields: [],
+                    fieldValue: null,
+                    operations: [],
+                    operationValue: null,
+                    values: [],
+                    value: null,
+                    type: null,
+                    isAnd: true
+                };
+                for (let i = 0; i < attrs.length; i++) {
+                    let attr = attrs[i];
+                    if (attr.visible) {
+                        filter.fields.push({
+                            value: attr.name,
+                            label: attr.title,
+                        });
+                    }
+                }
+                return [filter];
+            }
         },
 
         /**
@@ -274,13 +318,20 @@
             ];
             let attr = nObj.spec.attrs.find(a => a.name === attrName);
             if (attr) {
-                if (attr.type === 'string') {
+                let type = attr.type;
+                if (attr.refer) {
+                    let attr2 = odl.findReferTitleAttr(attr.refer, this.kind);
+                    if (attr2) {
+                        type = attr2.type;
+                    }
+                }
+                if (type === 'string') {
                     r.push({
                         value: '%',
                         label: '%',
                     });
                 }
-                else if (attr.type === 'bool' || attr.type === 'enum') {
+                else if (type === 'bool' || type === 'enum') {
 
                 }
                 else {
@@ -304,7 +355,12 @@
         getFormDefault: function(nObj) {
             let r = {};
             nObj.spec.attrs.forEach(a => {
-                r[a.name] = a.default;
+                if (typeof a.default === 'function') {
+                    r[a.name] = a.default();
+                }
+                else {
+                    r[a.name] = a.default;
+                }
             });
             return r;
         },
@@ -319,13 +375,13 @@
                 nObj.spec.keys.forEach(k => {
                     let attr = nObj.spec.attrs.find(a => a.name === k);
                     if (attr !== undefined) {
-                        r[k] = [{required: true, message: '请输入'+attr.title, trigger: 'blur'}];
+                        r[k] = [{required: true, message: '请输入' + attr.title, trigger: 'blur'}];
                     }
                 });
             }
             nObj.spec.attrs.forEach(a => {
                 if (a.required) {
-                    r[a.name] = [{required: true, message: '请输入'+a.title, trigger: 'blur'}];
+                    r[a.name] = [{required: true, message: '请输入' + a.title, trigger: 'blur'}];
                 }
             });
             return r;
@@ -348,7 +404,8 @@
             }
             if (iCount > 0) {
                 return r;
-            } else {
+            }
+            else {
                 return null;
             }
         }

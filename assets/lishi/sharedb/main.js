@@ -12,12 +12,11 @@ gcl.rtdb.setRtServer(window.location.hostname+':8821');
 import './../../3rd/odl-3/odl'
 import './../../3rd/odl-3/odl_n_vue'
 import './../../3rd/odl-3/odl_n_mysql'
-import './config/odc_department'
+import './config/odc_customer'
 import './config/odc_role_group'
 import './config/odc_user'
-import './config/odc_bureau'
-import './config/odc_container_stat'
-import './config/odc_locket'
+import './config/odc_man'
+import './config/odc_vehicle'
 import './config/odc_client_upload'
 
 // vue

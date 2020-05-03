@@ -12,6 +12,8 @@ import HelloCross1 from './../views/example/cross1/hello1.vue'
 
 import HelloLayout1 from './../views/example/css1/layout1'
 
+import ElementSelect1 from './../views/example/element1/select1'
+
 import HelloHighChartsLineBoost from './../views/example/highcharts1/line-boost.vue'
 
 import SampleShopGoods from './../views/example/vuex1/goods.vue'
@@ -20,19 +22,10 @@ import SampleShopPayment from './../views/example/vuex1/payment.vue'
 
 import sqlUser from './../views/example/sql1/user.vue'
 
-// user
-import Users from './../views/users.vue'
-
-// Bureau
-import BureauManager from './../views/bureau/bureau-manager.vue'
-import LsContainers from './../views/bureau/ls-containers.vue'
-import ContainerCpuHistory from './../views/bureau/container-cpu-history.vue'
-import ContainerMemory1History from './../views/bureau/container-memory1-history.vue'
-import ContainerMemory2History from './../views/bureau/container-memory2-history.vue'
-import RealtimeContainers from './../views/bureau/realtime-containers.vue'
-
-// Locket
-import LocketManager from './../views/locket/locket-manager.vue'
+import Customer from './../views/customer'
+import Users from './../views/users'
+import Man from './../views/man'
+import Vehicle from './../views/vehicle'
 
 // System
 import ClientUpload from './../views/client-upload.vue'
@@ -64,33 +57,21 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '用户',
+        name: '客户与用户管理',
         iconCls: 'fa fa-id-card-o',
         children: [
+            { path: '/customer', component: Customer, name: '客户管理' },
             { path: '/users', component: Users, name: '用户管理' }
         ]
     },
     {
         path: '/',
         component: Home,
-        name: '客户(电力局)',
+        name: '汽车信息管理',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/bureau-manager', component: BureauManager, name: '局管理' },
-            { path: '/ls-container', component: LsContainers, name: '局的服务实例' },
-            { path: '/container-cpu-history', component: ContainerCpuHistory, name: '服务实例CPU历史线' },
-            { path: '/container-memory1-history', component: ContainerMemory1History, name: '服务实例内存常规值历史' },
-            { path: '/container-memory2-history', component: ContainerMemory2History, name: '服务实例内存峰值历史' },
-            { path: '/realtime-containers', component: RealtimeContainers, name: '服务实例实时监测' }
-        ]
-    },
-    {
-        path: '/',
-        component: Home,
-        name: '智能锁具',
-        iconCls: 'fa fa-id-card-o',
-        children: [
-            { path: '/locket-manager', component: LocketManager, name: '锁具管理' },
+            { path: '/man', component: Man, name: '品牌管理' },
+            { path: '/vehicle', component: Vehicle, name: '型号管理' },
         ]
     },
     {
@@ -105,16 +86,10 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: 'HELLO',
+        name: 'Element',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/sampleA1', component: HelloOdlSimpleA1, name: 'Sample A', meta: {
-                    title: "sample-a's instance",
-                    icon:"/lock.png"
-                } },
-            { path: '/sampleB1', component: HelloOdlSimpleB1, name: 'Sample B' },
-            { path: '/svg1', component: HelloSvg1, name: 'HelloSvg1' },
-            { path: '/css1', component: HelloLayout1, name: 'Hello Layout1' },
+            { path: '/select1', component: ElementSelect1, name: 'Hello Select1' },
         ]
     },
     {

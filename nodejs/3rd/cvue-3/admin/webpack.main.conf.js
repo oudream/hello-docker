@@ -32,7 +32,7 @@ let mainConfig = {
   output: {
     filename: '[name].js',
     libraryTarget: 'commonjs2',
-    path: path.resolve(process.env.CVUE3_NODE_P, './dist')
+    path: path.resolve(process.env.CVUE3_NODE_P, './dist/electron')
   },
   plugins: [
     new webpack.NoEmitOnErrorsPlugin()

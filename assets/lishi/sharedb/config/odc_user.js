@@ -47,13 +47,13 @@
                     model: 'date'
                 },
                 {
-                    name: 'departmentId',
-                    desc: 'department id',
+                    name: 'CustID',
+                    desc: 'Customer ID',
                     model: 'int',
                     refer: {
-                        odc: 'department',
-                        key: 'id',
-                        title: 'name'
+                        odc: 'customer',
+                        key: 'CustID',
+                        title: 'CustName'
                     }
                 },
                 {
@@ -113,7 +113,7 @@
                                 required: true,
                             },
                             {
-                                name: 'departmentId',
+                                name: 'CustID',
                                 visible: false,
                             },
                             {
@@ -169,11 +169,11 @@
                                 visible: false,
                             },
                             {
-                                name: 'departmentId',
+                                name: 'CustID',
                                 visible: false,
                             },
                             {
-                                name: 'department_name',
+                                name: 'customer_CustName',
                                 visible: false,
                             },
                             {

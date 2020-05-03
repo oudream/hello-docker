@@ -6,16 +6,16 @@ process.env.CVUE3_WEB_P  = path.resolve(__dirname, './../../../assets/lishi/shar
 process.env.CVUE3_NODE_P  = __dirname;
 process.env.CVUE3_ROOT_P  = path.resolve(__dirname, './../../..');
 
-let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'))
+let config = require(path.resolve(process.env.CVUE3_NODE_P, './config'));
 
-const DevServer = require('./../../../nodejs/3rd/cvue-3/admin/dev-vue-electron');
+const DevServer = require('./../../../nodejs/3rd/cvue-3/admin/dev-server');
 const odlLoader = require('./odl-loader');
 const unmock = require('./unmock');
 
 global.EventBus = global.EventBus || require('./event-bus');
 
-let express = require('express')
-let app = express()
+let express = require('express');
+let app = express();
 
 const HttpMysqlServer = require('./../../../nodejs/3rd/csm-3/http_mysql_server')
 let httpMysqlServer = null

@@ -121,9 +121,9 @@ function startElectron () {
   ]
 
   // detect yarn or npm and process commandline args accordingly
-  if (process.env.npm_execpath.endsWith('yarn.js')) {
+  if (process.execPath.endsWith('yarn.js')) {
     args = args.concat(process.argv.slice(3))
-  } else if (process.env.npm_execpath.endsWith('npm-cli.js')) {
+  } else if (process.execPath.endsWith('npm-cli.js')) {
     args = args.concat(process.argv.slice(2))
   }
 

@@ -79,3 +79,23 @@ curl  -F "file=@${sFp1};type=text/plain;filename=a1" 122.51.12.151:2232/upload
 #    INSERT INTO `db1`.`bureau`(`id`, `name`, `phone`, `email`, `addr`, `remark`) VALUES (5, '金湾局', '8884323', '3@xxx.com', '人民西路3号', NULL);
 #    INSERT INTO `db1`.`bureau`(`id`, `name`, `phone`, `email`, `addr`, `remark`) VALUES (6, '斗门局', '8884324', '4@xxx.com', '人民西路4号', NULL);
 #    INSERT INTO `db1`.`bureau`(`id`, `name`, `phone`, `email`, `addr`, `remark`) VALUES (7, '金鼎局', '8884325', '5@xxx.com', '保可可国国是是另国', '村沙发舒服');
+
+
+### modify db
+# UPDATE Vehicle SET BeginDT='-62164540800000' WHERE BeginDT='----';
+# UPDATE Vehicle SET EndDT='-62164540800000' WHERE EndDT='----';
+#    UPDATE Vehicle SET EndDT='-62164540800000' WHERE EndDT='----';
+#
+#    UPDATE Vehicle SET BeginDT=0 WHERE BeginDT='-62164540800000';
+#
+#    UPDATE Vehicle SET EndDT='0' WHERE EndDT='';
+#
+#    SELECT * FROM Vehicle WHERE EndDT='-'
+#
+#    SELECT * FROM Vehicle WHERE EndDT=''
+#
+#    SELECT * FROM Vehicle WHERE IS_NUMERIC(BeginDT)
+#
+#    SELECT * FROM Vehicle WHERE concat('',EndDT * 1) != EndDT
+
+

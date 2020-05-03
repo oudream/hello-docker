@@ -82,6 +82,7 @@
             });
         },
 
+        // judge value to undefined
         fromM: function(odcName, objs) {
             let odc = odl.findOdc(odcName);
             if (! odc) return;
