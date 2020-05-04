@@ -230,16 +230,37 @@
 
         /**
          * attrs
-         this.filter.options = [
-         {
-                    value: 'name',
-                    label: '姓名',
+        filter: {
+            filters: [
+                {
+                    fields: [
+                        {value: 'ManID', label: '品牌名称'}
+                    ],
+                    fieldValue: null,
+                    operations: [
+                        {value: '=', label: '='}
+                    ],
+                    operationValue: null,
+                    values: [],
+                    value: null,
+                    type: 'refer',
+                    isAnd: true
                 },
-         {
-                    value: 'addr',
-                    label: '地址',
-                },
-         ]
+                {
+                    fields: [
+                        {value: 'ModelName', label: '车型名称'},
+                        {value: 'ModelPy', label: '车型拼音'},
+                    ],
+                    fieldValue: null,
+                    operations: [],
+                    operationValue: null,
+                    values: [],
+                    value: null,
+                    type: null,
+                    isAnd: true
+                }
+            ]
+        }
          * @param nObj
          * @returns {[]}
          */
@@ -250,14 +271,37 @@
                 let b = true;
                 for (let i = 0; i < filters.length; i++) {
                     let filter = filters[i];
+                    if (! Array.isArray(filter.fields)) {
+                        b = false;
+                        break;
+                    }
+                    if (! filter.hasOwnProperty('fieldValue')) {
+                        if (filter.fields.length === 1) {
+                            filter.fieldValue = filter.fields[0].value;
+                        } else {
+                            filter.fieldValue = null;
+                        }
+                    }
+                    if (! Array.isArray(filter.operations)) filter.operations = [];
+                    if (! filter.hasOwnProperty('operationValue')) {
+                        if (filter.operations.length === 1) {
+                            filter.operationValue = filter.operations[0].value;
+                        } else {
+                            filter.operationValue = null;
+                        }
+                    }
+                    if (! Array.isArray(filter.values)) filter.values = [];
+                    if (! filter.hasOwnProperty('value')) {
+                        if (filter.values.length === 1) {
+                            filter.value = filter.values[0].value;
+                        } else {
+                            filter.value = null;
+                        }
+                    }
+                    if (! filter.hasOwnProperty('type')) filter.type = null;
+                    if (! filter.hasOwnProperty('isAnd')) filter.isAnd = true;
                     if (filter.type === 'refer') {
-                        if (filter.fields.length === 1 && filter.operations.length > 1) {
-                            if (! filter.hasOwnProperty('fieldValue')) filter.fieldValue = null;
-                            if (! filter.hasOwnProperty('operationValue')) filter.operationValue = null;
-                            if (! filter.hasOwnProperty('value')) filter.value = null;
-                            if (! filter.hasOwnProperty('type')) filter.type = null;
-                            if (! filter.hasOwnProperty('isAnd')) filter.isAnd = true;
-                            if (! Array.isArray(filter.values)) filter.values = [];
+                        if (filter.fields.length === 1 && filter.operations.length >= 1) {
                         }
                         else {
                             b = false;

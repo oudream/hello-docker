@@ -29,7 +29,8 @@
     "highcharts": "^8.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.17.1",
-    "nprogress": "^0.2.0"
+    "nprogress": "^0.2.0",
+    "express-fileupload": "^1.1.6"
   },
   "devDependencies": {
     "ajv": "^6.5.0",

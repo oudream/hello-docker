@@ -44,7 +44,7 @@
                     default: 0,
                 },
                 {
-                    name: 'Manlogo',
+                    name: 'ManlogoFileName',
                     title: '品牌logo',
                     model: 'string',
                 }
@@ -71,6 +71,11 @@
                                 name: 'ManID',
                                 readonly: true,
                                 visible: false,
+                            },
+                            {
+                                name: 'ManlogoFileName',
+                                model: 'string',
+                                contentType: "image"
                             }
                         ],
                     }

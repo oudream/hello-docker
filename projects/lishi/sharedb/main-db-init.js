@@ -68,6 +68,7 @@ function querySqlOnce(sql, values) {
             host: mysqlOption.host,
             user: mysqlOption.user,
             password: mysqlOption.password,
+            database: mysqlOption.database,
             multipleStatements: true // this allow you to run multiple queries at once.
         });
 
@@ -276,4 +277,23 @@ async function testSqls() {
     await odcs.forEach(testSql);
 }
 
-testSqls();
+// testSqls();
+
+async function helloJpegToGuid() {
+    let rows = await querySqlOnce(" SELECT ManID, ManLogo FROM Man; ");
+    let p = path.resolve(path.dirname(process.argv[1]), "static/images");
+    let pre = Date.now().toString() + '-' + Math.round(Math.random() * 1000) + '-';
+    for (let i = 0; i < rows.length; i++) {
+        let row = rows[i];
+        let ManID = row["ManID"];
+        let ManLogo = row["ManLogo"];
+        let fn = pre + ManID.toString() + ".jpeg";
+        let fp = path.resolve(p, fn);
+        fs.writeFileSync(fp, ManLogo);
+        let result = await querySqlOnce(" UPDATE Man SET ManLogoFileName = '"+fn+"' WHERE `ManID` = "+ManID);
+        console.log('update result: ', result);
+    }
+    console.log(r);
+}
+
+helloJpegToGuid();

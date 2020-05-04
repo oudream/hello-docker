@@ -266,28 +266,16 @@
                                     fields: [
                                         {value: 'ManID', label: '品牌名称'}
                                     ],
-                                    fieldValue: null,
                                     operations: [
                                         {value: '=', label: '='}
                                     ],
-                                    operationValue: null,
-                                    values: [],
-                                    value: null,
                                     type: 'refer',
-                                    isAnd: true
                                 },
                                 {
                                     fields: [
                                         {value: 'ModelName', label: '车型名称'},
                                         {value: 'ModelPy', label: '车型拼音'},
                                     ],
-                                    fieldValue: null,
-                                    operations: [],
-                                    operationValue: null,
-                                    values: [],
-                                    value: null,
-                                    type: null,
-                                    isAnd: true
                                 }
                             ]
                         }
@@ -299,7 +287,7 @@
                     kind: odl.DbMysql ? odl.DbMysql.kind : '',
                     spec: {
                         table: {
-                            name: 'Vehicle1'
+                            name: 'Vehicle'
                         },
                         log: {
                             attrs: [

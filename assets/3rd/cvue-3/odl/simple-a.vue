@@ -3,22 +3,15 @@
         <!-- operate toolbar on top -->
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true">
-                <section v-for="(filter, index) in filters">
-                    <el-form-item>
-                    </el-form-item>
-                    <section v-if="filter.type === 'refer'">
-                        <el-form-item>
+                <div v-for="(filter, index) in filters" style="display: inline">
+                    <div v-if="filter.type === 'refer'" style="display: inline">
                             {{filter.fields[0].label}}
-                        </el-form-item>
-                        <section v-if="filter.operations.length === 1">
-                            <el-form-item>
+                        <div v-if="filter.operations.length === 1" style="display: inline">
                                 {{filter.operations[0].label}}
-                            </el-form-item>
-                        </section>
-                        <section v-else>
-                            <el-form-item>
+                        </div>
+                        <div v-else style="display: inline">
                                 <el-select v-model="filter.operationValue" clearable placeholder="OP"
-                                           style="width: 80px">
+                                           style="width: 70px">
                                     <el-option
                                             v-for="(operation, ind) in filter.operations"
                                             :key="operation.value"
@@ -27,11 +20,9 @@
                                             :disabled="operation.disabled">
                                     </el-option>
                                 </el-select>
-                            </el-form-item>
-                        </section>
-                        <el-form-item>
+                        </div>
                             <el-select v-model="filter.value" clearable placeholder="查询值" filterable
-                                       style="width: 80px">
+                                       style="width: 100px">
                                 <el-option
                                         v-for="(value, ind) in filter.values"
                                         :key="value.value"
@@ -40,14 +31,10 @@
                                         :disabled="value.disabled">
                                 </el-option>
                             </el-select>
-                        </el-form-item>
-                        <el-form-item>
                             {{filter.isAnd ? "And" : "Or"}}
-                        </el-form-item>
-                    </section>
-                    <section v-else>
-                        <el-form-item>
-                            <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 130px"
+                    </div>
+                    <div v-else style="display: inline">
+                            <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 100px"
                                        @change="handleFilterChange(index)">
                                 <el-option
                                         v-for="(field, ind) in filter.fields"
@@ -57,9 +44,7 @@
                                         :disabled="field.disabled">
                                 </el-option>
                             </el-select>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 80px">
+                            <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 70px">
                                 <el-option
                                         v-for="(operation, ind) in filter.operations"
                                         :key="operation.value"
@@ -68,19 +53,14 @@
                                         :disabled="operation.disabled">
                                 </el-option>
                             </el-select>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-input v-model="filter.value" placeholder="查询值"></el-input>
-                        </el-form-item>
-                        <section v-if="index < filters.length-1">
-                            <el-form-item>
+                            <el-input v-model="filter.value" placeholder="查询值" style="width: 100px"></el-input>
+                        <div v-if="index < filters.length-1" style="display: inline">
                                 {{filter.isAnd ? "And" : "Or"}}
-                            </el-form-item>
-                        </section>
-                    </section>
-                </section>
+                        </div>
+                    </div>
+                </div>
                 <el-form-item>
-                    <el-button type="primary" v-on:click="getObjs">查询</el-button>
+                    <el-button type="primary" v-on:click="handleQuery">查询</el-button>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" v-on:click="getAllObjs">全部</el-button>
@@ -241,11 +221,6 @@
                 attrs: [],
 
                 filters: [],
-                // filterFields: [],
-                // filterFieldValue: '',
-                // filterOperations: [],
-                // filterOperationValue: '',
-                // filterValue: '',
 
                 objs: [],
 
@@ -279,7 +254,7 @@
 
         methods: {
             init: function() {
-                debugger;
+                // debugger;
                 // odc
                 this.odc = odl.findOdc(this.odcName);
                 console.assert(this.odc);
@@ -296,8 +271,12 @@
                 let filters = this.filters;
                 for (let i = 0; i < filters.length; i++) {
                     let filter = filters[i];
-                    filter.fieldValue = null;
-                    filter.operationValue = null;
+                    if (filter.fields.length > 1) {
+                        filter.fieldValue = null;
+                    }
+                    if (filter.operations.length > 1) {
+                        filter.operationValue = null;
+                    }
                     filter.value = null;
                 }
             },
@@ -344,6 +323,7 @@
             },
 
             initFilters() {
+                // debugger;
                 let filters = this.filters;
                 for (let i = 0; i < filters.length; i++) {
                     this.initFilterRefer(i);
@@ -366,14 +346,7 @@
                     conditions: {
                         index: ((this.page - 1) * this.pageSize),
                         count: this.pageSize,
-                        attrs: [
-                            {
-                                name: this.filterFieldValue,
-                                operation: this.filterOperationValue,
-                                value: this.filterValue,
-                                isAnd: false
-                            }
-                        ]
+                        attrs: []
                     }
                 };
                 let filters = this.filters;
@@ -408,6 +381,11 @@
                 let filters = this.filters;
                 let filter = filters[index];
                 filter.operations = odl.UiVueTable.getFilterOperations(this.nObj, filter.fieldValue);
+            },
+
+            handleQuery() {
+                this.page = 1;
+                this.getObjs();
             },
 
             handleCurrentChange(val) {
@@ -486,7 +464,7 @@
                         this.$confirm('确认提交吗？', '提示', {}).then(() => {
                             this.addLoading = true;
                             let obj = Object.assign({}, this.addForm);
-                            debugger;
+                            // debugger;
                             let params = {
                                 session: Date.now(),
                                 odc: this.odcName,

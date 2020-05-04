@@ -11,3 +11,5 @@ cmake-build-release*
 /tools/oudream/
 /assets/lishi/sharedb-/
 /projects/lishi/sharedb/dist/
+/projects/lishi/sharedb/node_modules/
+/projects/lishi/sharedb/static/images/

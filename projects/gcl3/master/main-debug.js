@@ -1,5 +1,5 @@
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 // vue admin package filepath
 process.env.CVUE3_WEB_P  = path.resolve(__dirname, './../../../assets/gcl3/master');

@@ -31,12 +31,6 @@
     odl._odcs = [];
     odl._nplugins = [];
 
-    const odlIsObject = function odlIsObject(val) {
-        // return (item && typeof item === 'object' && !Array.isArray(item));
-        return val === Object(val);
-    };
-    odl.isObject = odlIsObject;
-
     odl.clone = function odlClone(item) {
         if (!item) {
             return item;
@@ -96,7 +90,14 @@
         return result;
     };
 
+    // todo : array if false
+    // do not test
     odl.merge = function odlMerge(...objects) {
+        const odlIsObject = (val) => {
+            // return (item && typeof item === 'object' && !Array.isArray(item));
+            return val === Object(val);
+        };
+
         objects.reduce(
             (obj1, obj2) => ({
                 ...obj1,
@@ -114,12 +115,20 @@
         if (!sources.length) return target;
         const source = sources.shift();
 
-        if (odlIsObject(target) && odlIsObject(source)) {
+        // object and array
+        if (target === Object(target) && source === Object(source)) {
             for (const key in source) {
                 if (key === 'attrs') {
                     continue;
                 }
-                if (odlIsObject(source[key])) {
+                // if (key === 'filters') {
+                //     if (!target[key]) target[key] = odl.clone(source[key]);
+                //     continue;
+                // }
+                if (Array.isArray(source[key])) {
+                    if (!target[key]) target[key] = odl.clone(source[key]);
+                }
+                else if (source[key] === Object(source[key])) {
                     if (!target[key]) Object.assign(target, {[key]: {}});
                     mergeExcepts(target[key], source[key]);
                 }
