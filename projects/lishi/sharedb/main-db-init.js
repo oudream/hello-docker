@@ -282,7 +282,7 @@ async function testSqls() {
 async function helloJpegToGuid() {
     let rows = await querySqlOnce(" SELECT ManID, ManLogo FROM Man; ");
     let p = path.resolve(path.dirname(process.argv[1]), "static/images");
-    let pre = Date.now().toString() + '-' + Math.round(Math.random() * 1000) + '-';
+    let pre = Date.now().toString() + '-' + Math.round(Math.random() * 1000000) + '-';
     for (let i = 0; i < rows.length; i++) {
         let row = rows[i];
         let ManID = row["ManID"];
@@ -297,3 +297,4 @@ async function helloJpegToGuid() {
 }
 
 helloJpegToGuid();
+

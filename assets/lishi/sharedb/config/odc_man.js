@@ -20,13 +20,13 @@
                     name: 'ManName',
                     title: '品牌名称',
                     model: 'string',
-                    isNull: false
+                    isNull: false,
                 },
                 {
                     name: 'ManPy',
                     title: '品牌拼音',
                     model: 'string',
-                    isNull: false
+                    isNull: false,
                 },
                 {
                     name: 'LanID',
@@ -34,14 +34,17 @@
                     model: 'enum',
                     scopes: ['1033,英语（美国）', '2052,简体中文', '1028,繁体中文(台湾)'],
                     values: [1033, 2052, 1028],
-                    default: 0,
+                    default: 1033,
+                    width: 100,
                 },
                 {
                     name: 'IsNative',
-                    title: '是否本地本国',
+                    title: '国内Y/N',
                     model: 'enum',
-                    scopes: ['是', '否'],
-                    default: 0,
+                    scopes: ['N', 'Y'],
+                    values: [0, 1],
+                    default: 1,
+                    width: 100,
                 },
                 {
                     name: 'ManlogoFileName',
@@ -73,15 +76,29 @@
                                 visible: false,
                             },
                             {
+                                name: 'IsNative',
+                                format: 'formatBool',
+                            },
+                            {
                                 name: 'ManlogoFileName',
-                                model: 'string',
                                 contentType: "image"
                             }
                         ],
+                        filter: {
+                            filters: [
+                                {
+                                    fields: [
+                                        {value: 'ManName'},
+                                        {value: 'ManPy'},
+                                        {value: 'LanID'},
+                                    ],
+                                }
+                            ]
+                        }
                     }
                 },
-                { kind: odl.UiVueForm ? odl.UiVueForm.kind : '' },
-                { kind: odl.UiVueTable ? odl.UiVueTable.kind : '' },
+                {kind: odl.UiVueForm ? odl.UiVueForm.kind : ''},
+                {kind: odl.UiVueTable ? odl.UiVueTable.kind : ''},
                 {
                     kind: odl.DbMysql ? odl.DbMysql.kind : '',
                 }

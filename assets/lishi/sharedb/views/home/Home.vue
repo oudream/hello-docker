@@ -86,7 +86,7 @@
 		data() {
 			return {
 			    orgName:'',
-				sysName:'BOOGOO客户管理系统',
+				sysName:'力狮四轮平衡管理系统',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',

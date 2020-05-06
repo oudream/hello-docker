@@ -51,167 +51,210 @@
                     model: 'enum',
                     scopes: ['1033,英语（美国）', '2052,简体中文', '1028,繁体中文(台湾)'],
                     values: [1033, 2052, 1028],
-                    default: 0,
+                    default: 1033,
+                    width: 100,
                 },
                 {
                     name: 'BeginDT',
                     title: '生产日期',
-                    model: 'string'
+                    model: 'string',
+                    width: 100,
                 },
                 {
                     name: 'EndDT',
                     title: '结束日期',
-                    model: 'string'
+                    model: 'string',
+                    width: 100,
+                },
+                {
+                    name: 'FrontPhotoFileName',
+                    title: '前面照片',
+                    model: 'string',
+                },
+                {
+                    name: 'SidePhotoFileName',
+                    title: '侧面照片',
+                    model: 'string',
+                },
+                {
+                    name: 'BackPhotoFileName',
+                    title: '后面照片',
+                    model: 'string',
                 },
                 {
                     name: 'Wheelbase',
                     title: '轴距',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 100,
                 },
                 {
                     name: 'TrackDia',
                     title: '轮毂直径',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 100,
                 },
                 {
                     name: 'FTreadWidth',
                     title: '前轮距',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 100,
                 },
                 {
                     name: 'RTreadWidth',
                     title: '后轮距',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 100,
                 },
                 {
                     name: 'FToeMin',
                     title: '前轮前束最小',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'FToe',
                     title: '前轮前束标准',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'FToeMax',
                     title: '前轮前束最大',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'FCamberMin',
                     title: '前轮外倾最小',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'FCamber',
                     title: '前轮外倾典型',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'FCamberMax',
                     title: '前轮外倾最大',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'KpiCasterMin',
                     title: '主销后倾最小',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'KpiCaster',
                     title: '主销后倾标准',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'KpiCasterMax',
                     title: '主销后倾最大',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'KpiCamberMin',
                     title: '主销内倾最小值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'KpiCamber',
                     title: '主销内倾标准值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'KpiCamberMax',
                     title: '主销内倾最大值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RToeMin',
                     title: '后轮前束最小值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RToe',
                     title: '后轮前束标准值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RToeMax',
                     title: '后轮前束最大值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RCamberMin',
                     title: '后轮外倾最小值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RCamber',
                     title: '后轮外倾典型值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RCamberMax',
                     title: '后轮外倾最大值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RThrustMin',
                     title: '推进⻆最小值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RThrust',
                     title: '推进⻆标准值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 },
                 {
                     name: 'RThrustMax',
                     title: '推进⻆最大值',
                     model: 'double',
-                    scopes: [0, 9999]
+                    scopes: [0, 9999],
+                    width: 90,
                 }
             ],
             container: {
@@ -258,6 +301,18 @@
                             {
                                 name: 'ManID',
                                 visible: false,
+                            },
+                            {
+                                name: 'FrontPhotoFileName',
+                                contentType: "image"
+                            },
+                            {
+                                name: 'SidePhotoFileName',
+                                contentType: "image"
+                            },
+                            {
+                                name: 'BackPhotoFileName',
+                                contentType: "image"
                             }
                         ],
                         filter: {

@@ -85,7 +85,6 @@
                             {
                                 name: 'sex',
                                 format: 'formatSex',
-                                select: 'selectSex',
                             }
                         ]
                     }

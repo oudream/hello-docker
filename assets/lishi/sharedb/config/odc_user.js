@@ -119,13 +119,22 @@
                             {
                                 name: 'sex',
                                 format: 'formatSex',
-                                select: 'selectSex',
                             },
                             {
                                 name: 'roleGroupId',
                                 visible: false,
                             }
                         ],
+                        filter: {
+                            filters: [
+                                {
+                                    fields: [
+                                        {value: 'ManName'},
+                                        {value: 'ManPy'},
+                                    ],
+                                }
+                            ]
+                        }
                     }
                 },
                 { kind: odl.UiVueForm ? odl.UiVueForm.kind : '' },

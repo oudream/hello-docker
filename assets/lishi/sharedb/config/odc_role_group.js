@@ -25,7 +25,7 @@
                 {
                     name: 'remark',
                     title: '备注',
-                    maxLength: 64*1024,
+                    maxLength: 64 * 1024,
                     minLength: 1,
                     model: 'string'
                 }
@@ -36,14 +36,14 @@
             },
             ns: [
                 {
-                    kind: odl.UiVueTable ? odl.UiVueTable.kind : '',
+                    kind: odl.UiVueBase ? odl.UiVueBase.kind : '',
                     metadata:
                         {
                             name: '',
                         },
                     spec: {
                         title: {
-                            text: 'RoleGroup',
+                            text: '角色分组管理',
                         },
                         attrs: [
                             {
@@ -51,8 +51,11 @@
                                 readonly: true,
                                 visible: false,
                             }
-                        ],
+                        ]
                     }
+                },
+                {
+                    kind: odl.UiVueTable ? odl.UiVueTable.kind : ''
                 },
                 {
                     kind: odl.DbMysql ? odl.DbMysql.kind : '',

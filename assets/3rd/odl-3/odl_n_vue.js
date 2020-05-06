@@ -190,11 +190,13 @@
                     type: a.type,
                     maxLength: a.maxLength,
                     label: a.title,
-                    width: this._defaultWidth[a.type],
+                    width: a.width ? a.width : this._defaultWidth[a.type],
+                    height: a.height ? a.height : 30,
                     format: this.getFormats(a.format, a.type),
                     sortable: true,
                     showOverflowTooltip: a.type === 'string' && a.maxLength > this._defaultWidth[a.type],
                     readonly: a.readonly,
+                    contentType: a.contentType ? a.contentType : 'text'
                 };
                 if (a.type !== 'string' || a.type !== 'bool') {
                     atr.minvalue = a.minvalue;
@@ -275,6 +277,23 @@
                         b = false;
                         break;
                     }
+                    for (let j = 0; j < filter.fields.length; j++) {
+                        let field = filter.fields[i];
+                        if (! field.value) {
+                            b = false;
+                            break;
+                        }
+                        if (! field.label) {
+                            let attr = attrs.find(a => a.name === field.value);
+                            if (attr) {
+                                field.label = attr.title;
+                            } else {
+                                b = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (b === false) break;
                     if (! filter.hasOwnProperty('fieldValue')) {
                         if (filter.fields.length === 1) {
                             filter.fieldValue = filter.fields[0].value;

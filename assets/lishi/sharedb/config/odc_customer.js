@@ -18,13 +18,13 @@
                 },
                 {
                     name: 'CustName',
-                    title: '用户名',
+                    title: '客户名称',
                     model: 'string',
                     isNull: false
                 },
                 {
                     name: 'CustPy',
-                    title: '用户名拼音',
+                    title: '客户拼音',
                     model: 'string',
                     isNull: false
                 },

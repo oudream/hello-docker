@@ -99,3 +99,4 @@ curl  -F "file=@${sFp1};type=text/plain;filename=a1" 122.51.12.151:2232/upload
 #    SELECT * FROM Vehicle WHERE concat('',EndDT * 1) != EndDT
 #
 #    UPDATE Vehicle, Man SET Vehicle.ManID = Man.ManID WHERE Vehicle.ManName = Man.ManName
+

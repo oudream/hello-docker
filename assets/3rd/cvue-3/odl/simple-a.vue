@@ -5,46 +5,13 @@
             <el-form :inline="true">
                 <div v-for="(filter, index) in filters" style="display: inline">
                     <div v-if="filter.type === 'refer'" style="display: inline">
-                            {{filter.fields[0].label}}
+                        {{filter.fields[0].label}}
                         <div v-if="filter.operations.length === 1" style="display: inline">
-                                {{filter.operations[0].label}}
+                            {{filter.operations[0].label}}
                         </div>
                         <div v-else style="display: inline">
-                                <el-select v-model="filter.operationValue" clearable placeholder="OP"
-                                           style="width: 70px">
-                                    <el-option
-                                            v-for="(operation, ind) in filter.operations"
-                                            :key="operation.value"
-                                            :label="operation.label"
-                                            :value="operation.value"
-                                            :disabled="operation.disabled">
-                                    </el-option>
-                                </el-select>
-                        </div>
-                            <el-select v-model="filter.value" clearable placeholder="查询值" filterable
-                                       style="width: 100px">
-                                <el-option
-                                        v-for="(value, ind) in filter.values"
-                                        :key="value.value"
-                                        :label="value.label"
-                                        :value="value.value"
-                                        :disabled="value.disabled">
-                                </el-option>
-                            </el-select>
-                            {{filter.isAnd ? "And" : "Or"}}
-                    </div>
-                    <div v-else style="display: inline">
-                            <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 100px"
-                                       @change="handleFilterChange(index)">
-                                <el-option
-                                        v-for="(field, ind) in filter.fields"
-                                        :key="field.value"
-                                        :label="field.label"
-                                        :value="field.value"
-                                        :disabled="field.disabled">
-                                </el-option>
-                            </el-select>
-                            <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 70px">
+                            <el-select v-model="filter.operationValue" clearable placeholder="OP"
+                                       style="width: 70px">
                                 <el-option
                                         v-for="(operation, ind) in filter.operations"
                                         :key="operation.value"
@@ -53,9 +20,42 @@
                                         :disabled="operation.disabled">
                                 </el-option>
                             </el-select>
-                            <el-input v-model="filter.value" placeholder="查询值" style="width: 100px"></el-input>
+                        </div>
+                        <el-select v-model="filter.value" clearable placeholder="查询值" filterable
+                                   style="width: 100px">
+                            <el-option
+                                    v-for="(value, ind) in filter.values"
+                                    :key="value.value"
+                                    :label="value.label"
+                                    :value="value.value"
+                                    :disabled="value.disabled">
+                            </el-option>
+                        </el-select>
+                        {{filter.isAnd ? "And" : "Or"}}
+                    </div>
+                    <div v-else style="display: inline">
+                        <el-select v-model="filter.fieldValue" clearable placeholder="查询的属性" style="width: 100px"
+                                   @change="handleFilterChange(index)">
+                            <el-option
+                                    v-for="(field, ind) in filter.fields"
+                                    :key="field.value"
+                                    :label="field.label"
+                                    :value="field.value"
+                                    :disabled="field.disabled">
+                            </el-option>
+                        </el-select>
+                        <el-select v-model="filter.operationValue" clearable placeholder="OP" style="width: 70px">
+                            <el-option
+                                    v-for="(operation, ind) in filter.operations"
+                                    :key="operation.value"
+                                    :label="operation.label"
+                                    :value="operation.value"
+                                    :disabled="operation.disabled">
+                            </el-option>
+                        </el-select>
+                        <el-input v-model="filter.value" placeholder="查询值" style="width: 100px"></el-input>
                         <div v-if="index < filters.length-1" style="display: inline">
-                                {{filter.isAnd ? "And" : "Or"}}
+                            {{filter.isAnd ? "And" : "Or"}}
                         </div>
                     </div>
                 </div>
@@ -90,6 +90,8 @@
                     <el-form label-position="left" class="demo-table-expand">
                         <el-form-item v-for="(attr, index) in attrs" :key="index">
                             <span><b>{{attr.label}}：</b>{{ props.row[attr.name] }}</span>
+                            <img v-if="attr.contentType === 'image' && props.row[attr.name]" :src="'/static/images/'+props.row[attr.name]"
+                                 style="width: 300px; height: 200px;">
                         </el-form-item>
                     </el-form>
                 </template>
@@ -113,17 +115,22 @@
         <TableView :odcName="tableViewOdc" :visible.sync="tableViewVisible" :sels-key-values="[tableViewSelsKeyValue]"
                    :return-attach="tableViewReturnAttach" @submit="handleTableViewSubmit"></TableView>
 
+        <UploadA :title="uploadATitle" :visible.sync="uploadAVisible" :image-file-name="uploadAFileName"
+                 :return-attach="uploadAReturnAttach" @submit="handleUploadASubmit"></UploadA>
+
         <!-- add -->
         <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" top="1vh">
             <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">
-                    <section v-if="attr.from">
-                        <el-input v-model="addForm[attr.name]" :disabled="true">
-                            <el-button slot="append" icon="el-icon-search"
-                                       @click.native="tableViewInvoke('add', attr.name, attr.from, addForm[attr.from.prevAttr])"></el-button>
-                        </el-input>
-                    </section>
+                    <el-input v-if="attr.from" v-model="addForm[attr.name]" :disabled="true">
+                        <el-button slot="append" icon="el-icon-search"
+                                   @click.native="tableViewInvoke('add', attr.name, attr.from, addForm[attr.from.prevAttr])"></el-button>
+                    </el-input>
+                    <el-input v-else-if="attr.contentType === 'image'" v-model="addForm[attr.name]" :disabled="true">
+                        <el-button slot="append" icon="el-icon-upload"
+                                   @click.native="uploadAInvoke('add', attr.name, addForm[attr.name])"></el-button>
+                    </el-input>
                     <el-input v-else-if="attr.type === 'string' && attr.maxLength < 256" v-model="addForm[attr.name]"
                               auto-complete="off"></el-input>
                     <el-input v-else-if="attr.type === 'string'" type="textarea"
@@ -158,12 +165,14 @@
             <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">
-                    <section v-if="attr.from">
-                        <el-input v-model="editForm[attr.name]" :disabled="true">
-                            <el-button slot="append" icon="el-icon-search"
-                                       @click.native="tableViewInvoke('edit', attr.name, attr.from, editForm[attr.from.prevAttr])"></el-button>
-                        </el-input>
-                    </section>
+                    <el-input v-if="attr.from" v-model="editForm[attr.name]" :disabled="true">
+                        <el-button slot="append" icon="el-icon-search"
+                                   @click.native="tableViewInvoke('edit', attr.name, attr.from, editForm[attr.from.prevAttr])"></el-button>
+                    </el-input>
+                    <el-input v-else-if="attr.contentType === 'image'" v-model="editForm[attr.name]" :disabled="true">
+                        <el-button slot="append" icon="el-icon-upload"
+                                   @click.native="uploadAInvoke('edit', attr.name, editForm[attr.name])"></el-button>
+                    </el-input>
                     <el-input v-else-if="attr.type === 'string' && attr.maxLength < 256" v-model="editForm[attr.name]"
                               auto-complete="off"></el-input>
                     <el-input v-else-if="attr.type === 'string'" type="textarea"
@@ -206,10 +215,12 @@
     import Util from './../js/util'
     import {getOdoQuery} from './../api/api';
     import TableView from './table-view.vue'
+    import UploadA from './../component/upload-a'
 
     export default {
         components: {
             TableView,
+            UploadA
         },
 
         props: {
@@ -249,12 +260,15 @@
                 editFormRules: {},
                 editLoading: false,
 
+                uploadATitle: '',
+                uploadAVisible: false,
+                uploadAFileName: null,
+                uploadAReturnAttach: {},
             }
         },
 
         methods: {
             init: function() {
-                // debugger;
                 // odc
                 this.odc = odl.findOdc(this.odcName);
                 console.assert(this.odc);
@@ -384,6 +398,7 @@
             },
 
             handleQuery() {
+                debugger;
                 this.page = 1;
                 this.getObjs();
             },
@@ -423,6 +438,25 @@
                         form[attr] = sel[refer.title];
                     }
                 }
+            },
+
+            uploadAInvoke: function(action, attr, fileName) {
+                this.uploadATitle = '';
+                this.uploadATitle = '上传图片-' + action;
+                this.uploadAFileName = "";
+                this.uploadAFileName = fileName;
+                this.uploadAVisible = false;
+                this.uploadAVisible = true;
+                this.uploadAReturnAttach = {
+                    action: action,
+                    attr: attr
+                }
+            },
+
+            handleUploadASubmit: function(imageFileName, ra) {
+                let {action, attr} = ra;
+                let form = action === 'add' ? this.addForm : this.editForm;
+                form[attr] = imageFileName;
             },
 
             // handle add operate
@@ -644,13 +678,7 @@
             this.initFilters();
         },
 
-        watch: {
-            filterFieldValue(nv, ov) {
-                this.filterOperations = odl.UiVueTable.getFilterOperations(this.nObj, nv);
-                this.filterOperationValue = '';
-                this.filterValue = '';
-            }
-        }
+        watch: {}
 
     }
 
