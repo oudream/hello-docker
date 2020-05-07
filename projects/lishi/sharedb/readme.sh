@@ -100,3 +100,12 @@ curl  -F "file=@${sFp1};type=text/plain;filename=a1" 122.51.12.151:2232/upload
 #
 #    UPDATE Vehicle, Man SET Vehicle.ManID = Man.ManID WHERE Vehicle.ManName = Man.ManName
 
+# 1，数据库从 mdb 中导入
+# 2，修正数据库的数据，修正数据库的字段类型，把图片单独提取出来
+# 3，做服务器的图片上传功能，管理上传后的文件
+# 4，做客户端的图片上传功能，做关联的增、删、改
+# 5，做客户端的整体框架（外形、登录）
+# 6，做客户端的快速搜索功能
+# 7，尝试做 Electron 客户端，已经上传到 https://github.com/oudream/lishi-sharedb
+# 8，做main-server.js，单独提取服务端功能……
+# 9, 部署
