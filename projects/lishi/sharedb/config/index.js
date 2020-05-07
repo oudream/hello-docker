@@ -27,7 +27,7 @@ module.exports = {
     env: {
       NODE_ENV: '"development"'
     },
-    port: 2292,
+    port: 2293,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
