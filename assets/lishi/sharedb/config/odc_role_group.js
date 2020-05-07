@@ -59,6 +59,14 @@
                 },
                 {
                     kind: odl.DbMysql ? odl.DbMysql.kind : '',
+                    metadata: {
+                        name: '',
+                    },
+                    spec: {
+                        table: {
+                            name: 'RoleGroup'
+                        }
+                    }
                 }
             ]
         }

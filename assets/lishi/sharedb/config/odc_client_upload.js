@@ -77,7 +77,7 @@
                         },
                     spec: {
                         table: {
-                            name: 'client_upload'
+                            name: 'ClientUpload'
                         },
                         attrs: [
                             {

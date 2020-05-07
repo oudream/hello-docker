@@ -212,7 +212,7 @@
                         },
                     spec: {
                         table: {
-                            name: 'user'
+                            name: 'User'
                         },
                         attrs: [
                             {

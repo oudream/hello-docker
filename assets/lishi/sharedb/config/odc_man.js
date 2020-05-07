@@ -101,6 +101,14 @@
                 {kind: odl.UiVueTable ? odl.UiVueTable.kind : ''},
                 {
                     kind: odl.DbMysql ? odl.DbMysql.kind : '',
+                    metadata: {
+                        name: '',
+                    },
+                    spec: {
+                        table: {
+                            name: 'Man'
+                        }
+                    }
                 }
             ]
         }

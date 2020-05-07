@@ -340,20 +340,13 @@
                 {kind: odl.UiVueTable ? odl.UiVueTable.kind : ''},
                 {
                     kind: odl.DbMysql ? odl.DbMysql.kind : '',
+                    metadata: {
+                        name: '',
+                    },
                     spec: {
                         table: {
                             name: 'Vehicle'
-                        },
-                        log: {
-                            attrs: [
-                                {
-                                    name: 'id',
-                                },
-                                {
-                                    name: 'name',
-                                }
-                            ],
-                        },
+                        }
                     }
                 }
             ]
