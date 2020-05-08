@@ -656,6 +656,128 @@
         },
 
         /**
+         *  { table, name, field, value }
+         * @param odc
+         * @param conditions
+         * @returns {[]|*}
+         */
+        getTableKeyValuesByConditions: function(odc, conditions) {
+            let nObj = this.getSimilar(odc);
+            if (! nObj) {
+                return [];
+            }
+            if (!Array.isArray(conditions)) {
+                return []
+            }
+            let table = nObj.spec.table;
+            let tableKey = table.key;
+            if (! tableKey) {
+                return [];
+            }
+            let kvs = [];
+            for (let i = 0; i < conditions.length; i++) {
+                let condition = conditions[i];
+                if (Array.isArray(condition.attrs)) {
+                    let attr = condition.attrs.find(a => a.name === tableKey.name);
+                    if (! attr){
+                        return [];
+                    }
+                    kvs.push({
+                        table: table.name,
+                        name: tableKey.name,
+                        field: tableKey.fieldName,
+                        value: attr.value
+                    });
+                }
+            }
+            return kvs;
+        },
+
+        getTableKeyValuesByData: function(odc, objs) {
+            let nObj = this.getSimilar(odc);
+            if (! nObj) {
+                return [];
+            }
+            if (!Array.isArray(objs)) {
+                return []
+            }
+            let table = nObj.spec.table;
+            let tableKey = table.key;
+            if (! tableKey) {
+                return [];
+            }
+            let kvs = [];
+            for (let i = 0; i < objs.length; i++) {
+                let obj = objs[i];
+                if (obj.hasOwnProperty(tableKey.name)) {
+                    kvs.push({
+                        table: table.name,
+                        name: tableKey.name,
+                        field: tableKey.fieldName,
+                        value: obj[tableKey.name]
+                    });
+                } else {
+                    return [];
+                }
+            }
+            return kvs;
+        },
+
+        /**
+         * LogRecord { id(auto), action, time, odc, table, name, field, value }
+         CREATE TABLE `LogRecord` (
+         `id` int(11) NOT NULL AUTO_INCREMENT,
+         `action` varchar(64) DEFAULT NULL,
+         `time` double DEFAULT NULL,
+         `odc` varchar(64) DEFAULT NULL,
+         `table` varchar(64) DEFAULT NULL,
+         `name` varchar(64) DEFAULT NULL,
+         `field` varchar(64) DEFAULT NULL,
+         `value` varchar(64) DEFAULT NULL,
+         PRIMARY KEY (`id`)
+         ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+         * @param odc
+         * @param action
+         * @param data
+         * @returns {Array}
+         */
+        getLogInsertSql: function(odc, action, data) {
+            let kvs = [];
+            if (action === 'edit' || action === 'del') {
+                kvs = this.getTableKeyValuesByConditions(odc, data);
+            } else if (action === 'add') {
+                kvs = this.getTableKeyValuesByData(odc, data);
+            }
+            for (let i = 0; i < kvs.length; i++) {
+                let kv = kvs[i];
+                kv.action = action;
+                kv.time = Date.now();
+                kv.odc = odc.metadata.name;
+            }
+            let sqlAry = [];
+            kvs.forEach(o => {
+                let sql = [' INSERT INTO `LogRecord`('].join('');
+                let sFields = [];
+                let sValues = [];
+                for (let prop in o) {
+                    sFields.push(['`', prop, '`'].join(''))
+                    if (prop === 'time') {
+                        sValues.push(String(o[prop]));
+                    }
+                    else {
+                        sValues.push("'" + o[prop] + "'");
+                    }
+                }
+                sql += sFields.join(',');
+                sql += ') VALUES(';
+                if (sValues.length > 0) {
+                    sqlAry.push(sql + sValues.join(',') + ')');
+                }
+            });
+            return sqlAry;
+        },
+
+        /**
          *
          * @param odc
          * @returns {string}

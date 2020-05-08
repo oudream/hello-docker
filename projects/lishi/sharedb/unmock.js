@@ -777,9 +777,14 @@ let dealOdl = function(app, httpMysqlServer) {
                         };
                         let sqlAry = nMysql.getInsertSqlAry(odc, data);
                         if (sqlAry) {
-                            httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
-                                respState(err, err ? 0 : 1);
-                            });
+                            let sqlAryLog = nMysql.getLogInsertSql(odc, action, data);
+                            if (sqlAryLog.length === sqlAry.length) {
+                                httpMysqlServer.queryTrans(sqlAry.concat(sqlAryLog), null, (err, res) => {
+                                    respState(err, err ? 0 : 1);
+                                });
+                            } else {
+                                respState('getLogInsertSql is empty!', 0);
+                            }
                         }
                         else {
                             respState('getInsertSqlAry is empty!', 0);
@@ -826,9 +831,14 @@ let dealOdl = function(app, httpMysqlServer) {
                         };
                         let sqlAry = nMysql.getUpdateSqlAry(odc, data, conditions);
                         if (sqlAry) {
-                            httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
-                                respState(err, err ? 0 : 1);
-                            });
+                            let sqlAryLog = nMysql.getLogInsertSql(odc, action, conditions);
+                            if (sqlAryLog.length === sqlAry.length) {
+                                httpMysqlServer.queryTrans(sqlAry.concat(sqlAryLog), null, (err, res) => {
+                                    respState(err, err ? 0 : 1);
+                                });
+                            } else {
+                                respState('getLogInsertSql is empty!', 0);
+                            }
                         }
                         else {
                             respState('getUpdateSqlAry is empty!', 0);
@@ -852,12 +862,17 @@ let dealOdl = function(app, httpMysqlServer) {
                     };
                     let sqlAry = nMysql.getDeleteSqlAry(odc, conditions);
                     if (sqlAry) {
-                        httpMysqlServer.queryTrans(sqlAry, null, (err, res) => {
-                            respState(err, err ? 0 : 1);
-                            if (!err && hasEventBus()) {
-                                dispatchOdcEvent(conditions);
-                            }
-                        });
+                        let sqlAryLog = nMysql.getLogInsertSql(odc, action, conditions);
+                        if (sqlAryLog.length === sqlAry.length) {
+                            httpMysqlServer.queryTrans(sqlAry.concat(sqlAryLog), null, (err, res) => {
+                                respState(err, err ? 0 : 1);
+                                if (!err && hasEventBus()) {
+                                    dispatchOdcEvent(conditions);
+                                }
+                            });
+                        } else {
+                            respState('getLogInsertSql is empty!', 0);
+                        }
                     }
                     else {
                         respState('getDeleteSqlAry is empty!', 0);
