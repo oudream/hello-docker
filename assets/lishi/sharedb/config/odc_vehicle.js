@@ -348,6 +348,26 @@
                             name: 'Vehicle'
                         }
                     }
+                },
+                {
+                    kind: odl.DbSqlite ? odl.DbSqlite.kind : '',
+                    metadata: {
+                        name: ''
+                    },
+                    spec: {
+                        table: {
+                            name: 'Vehicle',
+                            sync: true
+                        },
+                        attrs: [
+                            {
+                                name: 'remark',
+                                field: {
+                                    fieldType: 'text'
+                                }
+                            }
+                        ]
+                    }
                 }
             ]
         }

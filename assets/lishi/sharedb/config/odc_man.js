@@ -109,6 +109,29 @@
                             name: 'Man'
                         }
                     }
+                },
+                {
+                    kind: odl.DbSqlite ? odl.DbSqlite.kind : '',
+                    metadata:
+                        {
+                            name: '',
+                        },
+                    spec: {
+                        table: {
+                            name: 'Man',
+                            sync: true
+                        },
+                        attrs: [
+                            {
+                                name: 'ManlogoFileName',
+                                noPersistence: true,
+                                mapField: {
+                                    fieldName: "ManLogo",
+                                    fieldType: "BLOB"
+                                }
+                            }
+                        ]
+                    }
                 }
             ]
         }

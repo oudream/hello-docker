@@ -18,6 +18,7 @@ import './config/odc_user'
 import './config/odc_man'
 import './config/odc_vehicle'
 import './config/odc_client_upload'
+import './config/odc_log_record'
 
 // vue
 import Vue from 'vue'

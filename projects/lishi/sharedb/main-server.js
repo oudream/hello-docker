@@ -17,6 +17,14 @@ global.EventBus = global.EventBus || require('./event-bus');
 let express = require('express')
 let app = express()
 
+app.all('/', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'POWERED-BY-AID,Content-Type,Content-Length,Authorization,Accept,X-Requested-With');
+    res.header('Access-Control-Max-Age', '30');
+    next();
+});
+
 const HttpMysqlServer = require('./../../../nodejs/3rd/csm-3/http_mysql_server')
 let httpMysqlServer = null
 if (path.resolve(__dirname, './master.json')) {
@@ -28,7 +36,6 @@ if (path.resolve(__dirname, './master.json')) {
         console.log('CVUEADMIN_MYSQL_CONFIG_FP is invalid : ', path.resolve(__dirname, './master.json'))
     }
 }
-
 
 // default options
 app.use(fileUpload());

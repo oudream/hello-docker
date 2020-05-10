@@ -6,31 +6,15 @@
     odl.DbMysql = {
         kind: 'db.mysql',
 
-        attrs: {
-            int: {
-                fieldType: 'int'
-            },
-            int32: {
-                fieldType: 'int'
-            },
-            int64: {
-                fieldType: 'bigint'
-            },
-            double: {
-                fieldType: 'double'
-            },
-            bool: {
-                fieldType: 'int'
-            },
-            string: {
-                fieldType: 'varchar(255)'
-            },
-            date: {
-                fieldType: 'bigint'
-            },
-            enum: {
-                fieldType: 'int'
-            }
+        fieldTypes: {
+            int: 'int',
+            int32: 'int',
+            int64: 'bigint',
+            double: 'double',
+            bool: 'int',
+            string: 'varchar(255)',
+            date: 'bigint',
+            enum: 'int',
         },
 
         getSimilar: function(odc) {
@@ -43,16 +27,19 @@
         },
 
         completionAttr: function(attr) {
+            console.assert(attr.name);
+            console.assert(attr.type);
+            console.assert(this.fieldTypes[attr.type]);
             // fieldName
-            if (!attr.fieldName && attr.name) {
-                attr.fieldName = attr.name;
+            if (!attr.field) {
+                attr.field = {};
             }
-            let attrs = this.attrs;
+            if (!attr.field.fieldName) {
+                attr.field.fieldName = attr.name;
+            }
             // fieldType
-            if (!attr.fieldType && attr.type) {
-                let fieldType = attrs[attr.type];
-                console.assert(fieldType);
-                attr.fieldType = fieldType;
+            if (!attr.field.fieldType) {
+                attr.field.fieldType = this.fieldTypes[attr.type];
             }
         },
 
@@ -232,11 +219,11 @@
             sql.push('` (');
             for (let i = 0; i < attrs.length; i++) {
                 let attr = attrs[i];
-                let fieldName = attr.fieldName;
-                let fieldType = attr.fieldType;
+                let fieldName = attr.field.fieldName;
+                let fieldType = attr.field.fieldType;
                 let sIsNull = attr.isNull ? ' DEFAULT NULL' : ' NOT NULL';
                 let sAutoIncrement = attr.autoIncrement && attr.autoIncrement > 0 ? ' AUTO_INCREMENT' : '';
-                let sItem = '`' + fieldName + '` ' + fieldType.fieldType + sIsNull + sAutoIncrement;
+                let sItem = '`' + fieldName + '` ' + fieldType + sIsNull + sAutoIncrement;
                 if (i !== attrs.length - 1) {
                     sItem += ',';
                 }
@@ -300,7 +287,7 @@
                                     sOpValue = operation + ' ' + sOpValue;
                                 }
                             }
-                            let fieldName = attr.fieldName;
+                            let fieldName = attr.field.fieldName;
                             let sItem = ' `' + tableName + '`.`' + fieldName + '` ' + sOpValue;
                             if (i < attrs.length - 1) {
                                 sItem += condition.isAnd ? ' AND' : ' OR';
@@ -349,7 +336,7 @@
                     // select as
                     nObj.spec.attrs.forEach((a, i) => {
                         if (conditions.fields.findIndex(f => f.name === a.name)>-1){
-                            sqlSelect += tableName + '.`' + a.fieldName + '` as `' + a.name + '`';
+                            sqlSelect += tableName + '.`' + a.field.fieldName + '` as `' + a.name + '`';
                             if (i !== nObj.spec.attrs.length - 1) {
                                 sqlSelect += ', '
                             }
@@ -369,7 +356,7 @@
                                         sqlSelect += ", " + rnObj.spec.table.name + '.`' + refer.title
                                             + "` as " + refer.titleName;
                                         sqlLeftJion += ' LEFT JOIN ' + rnObj.spec.table.name + ' ON ' + tableName
-                                            + '.`' + a.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
+                                            + '.`' + a.field.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
                                     }
                                 }
                             }
@@ -378,7 +365,7 @@
                 } else {
                     // select as
                     nObj.spec.attrs.forEach((a, i) => {
-                        sqlSelect += tableName + '.`' + a.fieldName + '` as `' + a.name + '`';
+                        sqlSelect += tableName + '.`' + a.field.fieldName + '` as `' + a.name + '`';
                         if (i !== nObj.spec.attrs.length - 1) {
                             sqlSelect += ', '
                         }
@@ -396,7 +383,7 @@
                                     sqlSelect += ", " + rnObj.spec.table.name + '.`' + refer.title
                                         + "` as " + refer.titleName;
                                     sqlLeftJion += ' LEFT JOIN ' + rnObj.spec.table.name + ' ON ' + tableName
-                                        + '.`' + a.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
+                                        + '.`' + a.field.fieldName + '` = ' + rnObj.spec.table.name + '.`' + refer.key + '`';
                                 }
                             }
                         }
@@ -434,7 +421,7 @@
                 let sqlWhere = '';
                 let tableName = table.name;
                 if (table.key) {
-                    sqlSelect += 'COUNT(' + tableName + '.`' + table.key.fieldName + '`) as `counter`';
+                    sqlSelect += 'COUNT(' + tableName + '.`' + table.key.field.fieldName + '`) as `counter`';
                 }
                 else {
                     sqlSelect += 'COUNT(*) as `counter`';
@@ -467,7 +454,7 @@
                 let sqlWhere = '';
                 let tableName = table.name;
                 if (table.key && table.key.type !== 'string') {
-                    sqlSelect += 'MAX(' + tableName + '.`' + table.key.fieldName + '`)+1 as `'+table.key.name+'`';
+                    sqlSelect += 'MAX(' + tableName + '.`' + table.key.field.fieldName + '`)+1 as `'+table.key.name+'`';
                     // from
                     sqlFrom = ' FROM ' + tableName;
                     r.push( sqlSelect + sqlFrom );
@@ -479,6 +466,31 @@
         getSelectKeySqlValidateValues: function(odc, values, rSql) {
             if (! Array.isArray(values) || values.length === 0 || ! values[0][rSql[1]]) {
                 values[0][rSql[1]] = 0;
+            }
+        },
+
+        getSelectKeyMaxSql: function(odc) {
+            let r = [];
+            let nObj = this.getSimilar(odc);
+            if (nObj) {
+                let table = nObj.spec.table;
+                let sqlSelect = 'SELECT ';
+                let sqlFrom;
+                let sqlWhere = '';
+                let tableName = table.name;
+                if (table.key && table.key.type !== 'string') {
+                    sqlSelect += 'MAX(' + tableName + '.`' + table.key.field.fieldName + '`) as `maxValue`';
+                    // from
+                    sqlFrom = ' FROM ' + tableName;
+                    r.push( sqlSelect + sqlFrom );
+                    r.push(table.key.name);
+                }
+            }
+            return r;
+        },
+        getSelectKeyMaxValue: function(row) {
+            if (row) {
+                return Number(row['maxValue']);
             }
         },
 
@@ -516,7 +528,7 @@
                 for (let prop in o) {
                     let attr = attrs.find(a => a.name === prop);
                     if (attr) {
-                        sFields.push(['`', attr.fieldName, '`'].join(''))
+                        sFields.push(['`', attr.field.fieldName, '`'].join(''))
                         if (attr.type === 'string') {
                             sValues.push("'" + o[prop] + "'");
                         }
@@ -558,10 +570,10 @@
                     let attr = attrs.find(a => a.name === prop);
                     if (attr) {
                         if (attr.type === 'string') {
-                            sFieldValues.push(['`', attr.fieldName, "` = '" + obj[prop] + "'"].join(''));
+                            sFieldValues.push(['`', attr.field.fieldName, "` = '" + obj[prop] + "'"].join(''));
                         }
                         else {
-                            sFieldValues.push(['`', attr.fieldName, '` = ', String(obj[prop])].join(''));
+                            sFieldValues.push(['`', attr.field.fieldName, '` = ', String(obj[prop])].join(''));
                         }
                     }
                 }
@@ -601,10 +613,10 @@
                         let attr = attrs.find(a => a.name === prop);
                         if (attr) {
                             if (attr.type === 'string') {
-                                sFieldValues.push(['`', attr.fieldName, "` = '" + obj[prop] + "'"].join(''));
+                                sFieldValues.push(['`', attr.field.fieldName, "` = '" + obj[prop] + "'"].join(''));
                             }
                             else {
-                                sFieldValues.push(['`', attr.fieldName, '` = ', String(obj[prop])].join(''));
+                                sFieldValues.push(['`', attr.field.fieldName, '` = ', String(obj[prop])].join(''));
                             }
                         }
                     }
@@ -685,7 +697,7 @@
                     kvs.push({
                         table: table.name,
                         name: tableKey.name,
-                        field: tableKey.fieldName,
+                        field: tableKey.field.fieldName,
                         value: attr.value
                     });
                 }
@@ -713,7 +725,7 @@
                     kvs.push({
                         table: table.name,
                         name: tableKey.name,
-                        field: tableKey.fieldName,
+                        field: tableKey.field.fieldName,
                         value: obj[tableKey.name]
                     });
                 } else {
@@ -793,7 +805,7 @@
                 if (Array.isArray(attrs)) {
                     for (let i = 0; i < attrs.length; i++) {
                         let attr = attrs[i];
-                        sqlSelect += tableName + '.`' + attr.fieldName + '`';
+                        sqlSelect += tableName + '.`' + attr.field.fieldName + '`';
                         if (i !== attrs.length - 1) {
                             sqlSelect += ', '
                         }
@@ -943,7 +955,7 @@
                     let sFields = [];
                     for (let i = 0; i < attrs.length; i++) {
                         let attr = attrs[i];
-                        let fieldName = attr.fieldName;
+                        let fieldName = attr.field.fieldName;
                         sFields.push(['`', fieldName, '`'].join(''))
                     }
                     sql += sFields.join(',');
@@ -1009,8 +1021,10 @@
                 for (let i = 0; i < this.fixFields.length; i++) {
                     let attr1 = this.fixFields[i];
                     let attr2 = odl.clone(attr1);
-                    attr2.fieldName = attr1.name;
-                    attr2.fieldType = DbMysql.attrs[attr1.type];
+                    attr2.field = {
+                        fieldName: attr1.name,
+                        fieldType: DbMysql.fieldTypes[attr1.type]
+                    };
                     attrs.push(attr2);
                 }
                 for (let i = 0; i < nObj.spec.attrs.length; i++) {

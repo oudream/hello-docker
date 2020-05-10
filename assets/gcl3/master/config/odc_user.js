@@ -207,7 +207,7 @@
                         attrs: [
                             {
                                 name: 'remark',
-                                fieldType: {
+                                field: {
                                     fieldType: 'text'
                                 }
                             }
