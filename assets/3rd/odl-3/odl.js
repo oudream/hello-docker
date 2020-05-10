@@ -377,6 +377,22 @@
                 minLength: 1,
                 scopes: []
             },
+            text: {
+                type: 'string',
+                isNull: true,
+                regexp: '',
+                maxLength: 1024*1024*4,
+                minLength: 1,
+                scopes: []
+            },
+            blob: {
+                type: 'blob',
+                isNull: true,
+                regexp: '',
+                maxLength: 1024*1024*4,
+                minLength: 1,
+                scopes: []
+            },
             date: {
                 type: 'date',
                 isNull: true,

@@ -48,8 +48,15 @@
                 },
                 {
                     name: 'ManlogoFileName',
-                    title: '品牌logo',
+                    title: 'logo文件名',
                     model: 'string',
+                    contentType: "image"
+                },
+                {
+                    name: 'Manlogo',
+                    title: 'logo文件',
+                    model: 'blob',
+                    contentType: "image"
                 }
             ],
             container: {
@@ -73,15 +80,16 @@
                             {
                                 name: 'ManID',
                                 readonly: true,
-                                visible: false,
+                                visible: false
                             },
                             {
                                 name: 'IsNative',
-                                format: 'formatBool',
+                                format: 'formatBool'
                             },
                             {
-                                name: 'ManlogoFileName',
-                                contentType: "image"
+                                name: 'Manlogo',
+                                readonly: true,
+                                visible: false
                             }
                         ],
                         filter: {
@@ -107,7 +115,13 @@
                     spec: {
                         table: {
                             name: 'Man'
-                        }
+                        },
+                        attrs: [
+                            {
+                                name: 'Manlogo',
+                                noPersistence: true
+                            }
+                        ]
                     }
                 },
                 {
@@ -124,11 +138,11 @@
                         attrs: [
                             {
                                 name: 'ManlogoFileName',
-                                noPersistence: true,
-                                mapField: {
-                                    fieldName: "ManLogo",
-                                    fieldType: "BLOB"
-                                }
+                                noPersistence: true
+                            },
+                            {
+                                name: 'Manlogo',
+                                contentFrom: 'ManlogoFileName'
                             }
                         ]
                     }

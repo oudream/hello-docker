@@ -1,27 +1,7 @@
 #!/usr/bin/env bash
 
 
-GCL3_MYSQL_PASSWORD=123456
-
-
-cd /opt/limi/hello-docker
-git pull origin master
-sed -i "s/123456/${GCL3_MYSQL_PASSWORD}/g" ./projects/lishi/sharedb/master.json
-# build
-node ./projects/lishi/sharedb/main-build.js
-# cp
-#    rm -r ./projects/lishi/sharedb/vue-admin
-#    mkdir ./projects/lishi/sharedb/vue-admin
-#    cp ./projects/lishi/sharedb/dist/index.html ./projects/lishi/sharedb/index.html
-#    cp -r ./projects/lishi/sharedb/dist/static ./projects/lishi/sharedb/vue-admin/
-# run
-node ./projects/lishi/sharedb/main-run.js
-
-
-### ----------------------------------------------------------------------------------------------
-
-
-### install node
+### step 1: install node
 sudo apt update
 sudo apt install nodejs
 # or 或者
@@ -34,29 +14,51 @@ sudo tar -xJvf node-${NODE_VERSION}-${NODE_DISTRO}.tar.xz -C /usr/local/lib/node
 sed -i "$ a export PATH=/usr/local/lib/nodejs/node-${NODE_VERSION}-${NODE_DISTRO}/bin:"'$PATH' ~/.profile
 
 
-### install mysql-server
+### step 2: install mysql-server
 sudo apt update
 sudo apt install mysql-server
+# root password
+# https://stackoverflow.com/questions/11223235/mysql-root-access-from-all-hosts
+mysql -u root -p
+# mysql>
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'password';
 
 
-### git clone
-git clone https://github.com/oudream/hello-docker.git
-sed -i "s/123456/${GCL3_MYSQL_PASSWORD}/g" ./projects/lishi/sharedb/master.json
-sed -i "s/db1/db2/g" ./projects/lishi/sharedb/master.json
-
-
+### step 3:
+git clone https://github.com/oudream/hello-docker.git --recursive
+cd /opt/limi/hello-docker/assets/lishi/sharedb
 # note note note
 npm i sqlite3 node-sass --unsafe-perm
 npm i
 
 
+### step 4 : modify password file
 ### mysql password.sh
+GCL3_MYSQL_PASSWORD=123456
+
+#
+cd /opt/limi/hello-docker
+git pull origin master
+sed -i "s/123456/${GCL3_MYSQL_PASSWORD}/g" ./projects/lishi/sharedb/master.json
 
 # create table
+mkdir -p ./projects/lishi/sharedb/static/images
 node ./projects/lishi/sharedb/main-db-init.js
+
+# build
+node ./projects/lishi/sharedb/main-build.js
+
+# server
+node ./projects/lishi/sharedb/main-server.js
 
 # debug
 node ./projects/lishi/sharedb/main-debug.js
+# cp
+#    rm -r ./projects/lishi/sharedb/vue-admin
+#    mkdir ./projects/lishi/sharedb/vue-admin
+#    cp ./projects/lishi/sharedb/dist/index.html ./projects/lishi/sharedb/index.html
+#    cp -r ./projects/lishi/sharedb/dist/static ./projects/lishi/sharedb/vue-admin/
+
 
 # open browser
 open http://localhost:2292
@@ -65,6 +67,31 @@ open http://localhost:2292
 cd /opt/limi/hello-docker/hello/nginx/upload1
 sFp1=$PWD/readme.md
 curl  -F "file=@${sFp1};type=text/plain;filename=a1" 122.51.12.151:2232/upload
+
+
+
+# electron
+docker run --rm -ti \
+ --env-file <(env | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
+ --env ELECTRON_CACHE="/root/.cache/electron" \
+ --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+ -v ${PWD}:/project \
+ -v ${PWD##*/}-node-modules:/project/node_modules \
+ -v ~/.cache/electron:/root/.cache/electron \
+ -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+ electronuserland/builder:wine
+
+#
+yarn # or npm install
+yarn run dev # or npm run dev
+npm i -g electron-builder
+electron-builder --windows
+
+
+
+### QA
+# Cross-Origin Request Blocked
+# https://github.com/axios/axios/issues/853
 
 
 # backup
@@ -109,3 +136,5 @@ curl  -F "file=@${sFp1};type=text/plain;filename=a1" 122.51.12.151:2232/upload
 # 7，尝试做 Electron 客户端，已经上传到 https://github.com/oudream/lishi-sharedb
 # 8，做main-server.js，单独提取服务端功能……
 # 9, 部署
+
+

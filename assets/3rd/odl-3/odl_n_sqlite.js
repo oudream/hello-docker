@@ -215,6 +215,9 @@
             sql.push('` (');
             for (let i = 0; i < attrs.length; i++) {
                 let attr = attrs[i];
+                if (attr.noPersistence) {
+                    continue;
+                }
                 let fieldName = attr.field.fieldName;
                 let fieldType = attr.field.fieldType;
                 let sIsNull = attr.isNull ? ' DEFAULT NULL' : ' NOT NULL';
@@ -331,14 +334,15 @@
                 let tableName = nObj.spec.table.name;
                 if (conditions && Array.isArray(conditions.fields)) {
                     // select as
+                    let sqls = [];
                     nObj.spec.attrs.forEach((a, i) => {
                         if (conditions.fields.findIndex(f => f.name === a.name)>-1){
-                            sqlSelect += tableName + '.`' + a.field.fieldName + '` as `' + a.name + '`';
-                            if (i !== nObj.spec.attrs.length - 1) {
-                                sqlSelect += ', '
+                            if (! a.noPersistence) {
+                                sqls.push(tableName + '.`' + a.field.fieldName + '` as `' + a.name + '`');
                             }
                         }
                     });
+                    sqlSelect += sqls.join(',');
                     // left join
                     nObj.spec.attrs.forEach((a, i) => {
                         if (conditions.fields.findIndex(f => f.name === a.name)>-1) {
@@ -361,10 +365,10 @@
                     });
                 } else {
                     // select as
+                    let sqls = [];
                     nObj.spec.attrs.forEach((a, i) => {
-                        sqlSelect += tableName + '.`' + a.field.fieldName + '` as `' + a.name + '`';
-                        if (i !== nObj.spec.attrs.length - 1) {
-                            sqlSelect += ', '
+                        if (! a.noPersistence) {
+                            sqls.push(tableName + '.`' + a.field.fieldName + '` as `' + a.name + '`');
                         }
                     });
                     // left join
@@ -441,7 +445,7 @@
          * @param odc
          * @returns {array}
          */
-        getSelectKeySql: function(odc) {
+        getSelectKeySqls: function(odc) {
             let r = [];
             let nObj = this.getSimilar(odc);
             if (nObj) {
@@ -460,14 +464,14 @@
             }
             return r;
         },
-        getSelectKeySqlValidateValues: function(odc, values, rSql) {
+        getSelectKeySqlsValidateValues: function(odc, values, rSql) {
             if (! Array.isArray(values) || values.length === 0 || ! values[0][rSql[1]]) {
                 values[0][rSql[1]] = 0;
             }
         },
 
         getSelectKeyMaxSql: function(odc) {
-            let r = [];
+            let r = '';
             let nObj = this.getSimilar(odc);
             if (nObj) {
                 let table = nObj.spec.table;
@@ -479,15 +483,16 @@
                     sqlSelect += 'MAX(' + tableName + '.`' + table.key.field.fieldName + '`) as `maxValue`';
                     // from
                     sqlFrom = ' FROM ' + tableName;
-                    r.push( sqlSelect + sqlFrom );
-                    r.push(table.key.name);
+                    r = sqlSelect + sqlFrom ;
                 }
             }
             return r;
         },
         getSelectKeyMaxValue: function(row) {
-            if (row) {
+            if (row && row['maxValue'] !== null && row['maxValue'] !== undefined) {
                 return Number(row['maxValue']);
+            } else {
+                return -1;
             }
         },
 
@@ -525,6 +530,9 @@
                 for (let prop in o) {
                     let attr = attrs.find(a => a.name === prop);
                     if (attr) {
+                        if (attr.noPersistence) {
+                            continue;
+                        }
                         sFields.push(['`', attr.field.fieldName, '`'].join(''))
                         if (attr.type === 'string') {
                             sValues.push("'" + o[prop] + "'");
@@ -566,6 +574,9 @@
                 for (let prop in obj) {
                     let attr = attrs.find(a => a.name === prop);
                     if (attr) {
+                        if (attr.noPersistence) {
+                            continue;
+                        }
                         if (attr.type === 'string') {
                             sFieldValues.push(['`', attr.field.fieldName, "` = '" + obj[prop] + "'"].join(''));
                         }
@@ -609,6 +620,9 @@
                     for (let prop in obj) {
                         let attr = attrs.find(a => a.name === prop);
                         if (attr) {
+                            if (attr.noPersistence) {
+                                continue;
+                            }
                             if (attr.type === 'string') {
                                 sFieldValues.push(['`', attr.field.fieldName, "` = '" + obj[prop] + "'"].join(''));
                             }
@@ -802,6 +816,9 @@
                 if (Array.isArray(attrs)) {
                     for (let i = 0; i < attrs.length; i++) {
                         let attr = attrs[i];
+                        if (attr.noPersistence) {
+                            continue;
+                        }
                         sqlSelect += tableName + '.`' + attr.field.fieldName + '`';
                         if (i !== attrs.length - 1) {
                             sqlSelect += ', '
@@ -854,6 +871,9 @@
                 let valueses = [];
                 for (let i = 0; i < attrs.length; i++) {
                     let attr = attrs[i];
+                    if (attr.noPersistence) {
+                        continue;
+                    }
                     let type = attr.type;
                     let attrST = attrsST.find(ele => ele.name === attr.name);
                     let minvalue = attrST && typeof attrST.start === 'number' ? attrST.start : attr.minvalue;
@@ -952,6 +972,9 @@
                     let sFields = [];
                     for (let i = 0; i < attrs.length; i++) {
                         let attr = attrs[i];
+                        if (attr.noPersistence) {
+                            continue;
+                        }
                         let fieldName = attr.field.fieldName;
                         sFields.push(['`', fieldName, '`'].join(''))
                     }
@@ -960,6 +983,9 @@
                     let sValue = [];
                     for (let i = 0; i < attrs.length; i++) {
                         let attr = attrs[i];
+                        if (attr.noPersistence) {
+                            continue;
+                        }
                         let type = attr.type;
                         let values = valueses[i];
                         if (type === 'string') {
