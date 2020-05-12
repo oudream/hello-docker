@@ -8,7 +8,10 @@
     "gcl3:build": "node projects/gcl3/master/main-build.js",
     "lishi:dev": "node projects/lishi/sharedb/main-debug.js",
     "lishi:server": "node projects/lishi/sharedb/main-server.js",
-    "lishi:build": "node projects/lishi/sharedb/main-build.js"
+    "lishi:build": "node projects/lishi/sharedb/main-build.js",
+    "pl10:dev": "node projects/pinfox/pl10_safe_lock/main-debug.js",
+    "pl10:server": "node projects/lpinfox/pl10_safe_lock/main-server.js",
+    "pl10:build": "node projects/pinfox/pl10_safe_lock/main-build.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
