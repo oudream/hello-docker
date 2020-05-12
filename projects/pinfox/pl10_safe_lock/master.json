@@ -1,0 +1,12 @@
+{
+  "database": {
+    "mysql1": {
+      "connectionLimit": 10,
+      "database": "pl10_safe_lock",
+      "host": "127.0.0.1",
+      "password": "Pinfox~135246",
+      "type": "mysql",
+      "user": "root"
+    }
+  }
+}
