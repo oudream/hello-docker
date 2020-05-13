@@ -59,8 +59,8 @@ node ./projects/pinfox/pl10_safe_lock/main-db-init.js
 node ./projects/pinfox/pl10_safe_lock/main-debug.js
 
 # open browser
-open http://localhost:2292
-# open http://localhost:2292/hello-docker/projects/pinfox/pl10_safe_lock/dist
+open http://localhost:2299
+# open http://localhost:2299/hello-docker/projects/pinfox/pl10_safe_lock/dist
 # upload
 cd /opt/limi/hello-docker/hello/nginx/upload1
 sFp1=$PWD/readme.md

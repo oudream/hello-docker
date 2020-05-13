@@ -1,25 +1,7 @@
 import Login from '../views/home/Login.vue'
-// import Login from './../views/example/odl1/validator/validator-a1'
 import NotFound from '../views/home/404.vue'
 import Home from '../views/home/Home.vue'
 import Main from '../views/main/Main.vue'
-
-import HelloOdlSimpleA1 from './../views/example/odl1/other/sample-a1.vue'
-import HelloOdlSimpleB1 from './../views/example/odl1/other/sample-b1.vue'
-
-import HelloSvg1 from './../views/example/svg1/svg1.vue'
-import HelloCross1 from './../views/example/cross1/hello1.vue'
-
-import HelloLayout1 from './../views/example/css1/layout1'
-
-import HelloHighChartsLineBoost from './../views/example/highcharts1/line-boost.vue'
-
-import SampleShopGoods from './../views/example/vuex1/goods.vue'
-import SampleShopCart from './../views/example/vuex1/cart.vue'
-import SampleShopPayment from './../views/example/vuex1/payment.vue'
-
-import sqlUser from './../views/example/sql1/user.vue'
-
 // user
 import Users from './../views/users.vue'
 
@@ -58,7 +40,7 @@ let routes = [
         leaf: true,//只有一个节点
         iconCls: 'el-icon-message',
         children: [
-            { path: '/main', component: HelloSvg1, name: '主页' }
+            { path: '/main', component:Main, name: '主页' }
         ]
     },
     {
