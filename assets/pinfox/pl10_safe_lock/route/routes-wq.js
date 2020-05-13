@@ -3,21 +3,20 @@ import NotFound from '../views/home/404.vue'
 import Home from '../views/home/Home.vue'
 import Main from '../views/main/Main.vue'
 // user
-import Users from './../views/users.vue'
-
+import Users from '../views/org/users.vue'
 // Bureau
-import BureauManager from './../views/bureau/bureau-manager.vue'
-import LsContainers from './../views/bureau/ls-containers.vue'
-import ContainerCpuHistory from './../views/bureau/container-cpu-history.vue'
-import ContainerMemory1History from './../views/bureau/container-memory1-history.vue'
-import ContainerMemory2History from './../views/bureau/container-memory2-history.vue'
-import RealtimeContainers from './../views/bureau/realtime-containers.vue'
+import BureauManager from '../views/org/bureau.vue'
 
-// Locket
-import LocketManager from './../views/locket/locket-manager.vue'
+import LsContainers from '../views/docker/ls-containers.vue'
+import ContainerCpuHistory from '../views/docker/container-cpu-history.vue'
+import ContainerMemory1History from '../views/docker/container-memory1-history.vue'
+import ContainerMemory2History from '../views/docker/container-memory2-history.vue'
+import RealtimeContainers from '../views/docker/realtime-containers.vue'
 
+// Lock
+import LocketManager from '../views/device/lock.vue'
 // System
-import ClientUpload from './../views/client-upload.vue'
+import ClientUpload from '../views/log/client-upload.vue'
 
 
 let routes = [
@@ -51,6 +50,7 @@ let routes = [
         children: [
             { path: '/users', component: Users, name: '用户管理' },
             { path: '/bureau-manager', component: BureauManager, name: '局管理' },
+            { path: '/station-manager', component: StationManager, name: '变电站' },
         ]
     },
     {

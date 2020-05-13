@@ -85,7 +85,7 @@
 	export default {
 		data() {
 			return {
-			    orgName:'平方科技',
+			    orgName:'',
 				sysName:'平方智能安全锁控运维管理系统',
 				collapsed:false,
 				sysUserName: '',
@@ -197,7 +197,8 @@
 				border-right-width: 1px;
 				border-right-style: solid;
 				background: url(../../img/company.png);
-				background-size: 100%,100%;
+				//background-size: 100%,100%;
+				background-size: contain;
 				background-repeat:no-repeat;
 				img {
 					width: 40px;

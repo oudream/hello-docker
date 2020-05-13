@@ -18,7 +18,7 @@
                 },
                 {
                     name: 'name',
-                    title: '局名称',
+                    title: '名称',
                     model: 'string',
                     isNull: false
                 },

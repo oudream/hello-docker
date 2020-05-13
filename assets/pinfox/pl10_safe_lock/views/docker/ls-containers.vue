@@ -22,7 +22,7 @@
 </template>
 
 <script>
-    import {getContainerQuery} from './../../../../3rd/cvue-3/api/api';
+    import {getContainerQuery} from '../../../../3rd/cvue-3/api/api';
 
     export default {
         data() {

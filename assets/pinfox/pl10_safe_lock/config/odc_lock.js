@@ -6,7 +6,7 @@
             'odc',
         metadata:
             {
-                name: 'locket',
+                name: 't_obj_lock',
                 namespace: 'gcl3'
             },
         spec: {
