@@ -196,8 +196,8 @@
 				border-color: rgba(238,241,146,0.3);
 				border-right-width: 1px;
 				border-right-style: solid;
-				background: url(../../img/app.png);
-				background-size: auto,100%;
+				background: url(../../img/company.png);
+				background-size: 100%,100%;
 				background-repeat:no-repeat;
 				img {
 					width: 40px;
