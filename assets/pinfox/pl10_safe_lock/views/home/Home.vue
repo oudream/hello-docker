@@ -86,7 +86,7 @@
 		data() {
 			return {
 			    orgName:'平方科技',
-				sysName:'平方智能安全锁控系统',
+				sysName:'平方智能安全锁控运维管理系统',
 				collapsed:false,
 				sysUserName: '',
 				sysUserAvatar: '',
@@ -196,9 +196,9 @@
 				border-color: rgba(238,241,146,0.3);
 				border-right-width: 1px;
 				border-right-style: solid;
-				//background: url(../../img/app.png);
-				//background-size: auto,100%;
-				//background-repeat:no-repeat;
+				background: url(../../img/app.png);
+				background-size: auto,100%;
+				background-repeat:no-repeat;
 				img {
 					width: 40px;
 					float: left;

@@ -38,7 +38,7 @@ let routes = [
         component: Home,
         name: '',
         leaf: true,//只有一个节点
-        iconCls: 'el-icon-message',
+        iconCls: 'fa fa-home',
         children: [
             { path: '/main', component:Main, name: '主页' }
         ]
@@ -46,30 +46,30 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '用户',
-        iconCls: 'fa fa-id-card-o',
+        name: '组织机构',
+        iconCls: 'fa fa-user',
         children: [
-            { path: '/users', component: Users, name: '用户管理' }
-        ]
-    },
-    {
-        path: '/',
-        component: Home,
-        name: '客户(电力局)',
-        iconCls: 'fa fa-id-card-o',
-        children: [
+            { path: '/users', component: Users, name: '用户管理' },
             { path: '/bureau-manager', component: BureauManager, name: '局管理' },
-            { path: '/ls-container', component: LsContainers, name: '局的服务实例' },
-            { path: '/container-cpu-history', component: ContainerCpuHistory, name: '服务实例CPU历史线' },
-            { path: '/container-memory1-history', component: ContainerMemory1History, name: '服务实例内存常规值历史' },
-            { path: '/container-memory2-history', component: ContainerMemory2History, name: '服务实例内存峰值历史' },
-            { path: '/realtime-containers', component: RealtimeContainers, name: '服务实例实时监测' }
         ]
     },
     {
         path: '/',
         component: Home,
-        name: '智能锁具',
+        name: '服务管理',
+        iconCls: 'fa fa-id-card-o',
+        children: [
+            { path: '/ls-container', component: LsContainers, name: '实例信息' },
+            { path: '/container-cpu-history', component: ContainerCpuHistory, name: 'CPU负载' },
+            { path: '/container-memory1-history', component: ContainerMemory1History, name: '内存常规' },
+            { path: '/container-memory2-history', component: ContainerMemory2History, name: '内存峰值' },
+            { path: '/realtime-containers', component: RealtimeContainers, name: '实时监测' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '设备管理',
         iconCls: 'fa fa-id-card-o',
         children: [
             { path: '/locket-manager', component: LocketManager, name: '锁具管理' },
@@ -78,10 +78,10 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '系统相关',
+        name: '系统日志',
         iconCls: 'fa fa-id-card-o',
         children: [
-            { path: '/client-upload', component: ClientUpload, name: '客户端上传的信息' },
+            { path: '/client-upload', component: ClientUpload, name: '客户上传' },
         ]
     },
     {
