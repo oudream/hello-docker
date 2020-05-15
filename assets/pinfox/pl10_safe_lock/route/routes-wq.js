@@ -49,8 +49,8 @@ let routes = [
         iconCls: 'fa fa-user',
         children: [
             { path: '/users', component: Users, name: '用户管理' },
-            { path: '/bureau-manager', component: BureauManager, name: '局管理' },
-            { path: '/station-manager', component: StationManager, name: '变电站' },
+            { path: '/bureau-manager', component: BureauManager, name: '局管理' }
+            // { path: '/station-manager', component: StationManager, name: '变电站' },
         ]
     },
     {

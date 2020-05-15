@@ -11,7 +11,7 @@ let odcPathes = [
     './../../../assets/pinfox/pl10_safe_lock/config/odc_user',
     './../../../assets/pinfox/pl10_safe_lock/config/odc_bureau',
     './../../../assets/pinfox/pl10_safe_lock/config/odc_container_stat',
-    './../../../assets/pinfox/pl10_safe_lock/config/odc_locket',
+    './../../../assets/pinfox/pl10_safe_lock/config/odc_lock',
     './../../../assets/pinfox/pl10_safe_lock/config/odc_client_upload',
 ];
 // let odcPathes = [];

@@ -6,7 +6,7 @@
             'odc',
         metadata:
             {
-                name: 't_obj_lock',
+                name: 'lock',
                 namespace: 'gcl3'
             },
         spec: {
@@ -79,7 +79,7 @@
                         },
                     spec: {
                         table: {
-                            name: 'locket'
+                            name: 't_obj_lock'
                         },
                         attrs: [
                             {
