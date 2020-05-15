@@ -213,7 +213,7 @@
 				background-repeat:no-repeat;
 			}
 			.logo-collapse-width{
-				width:60px
+				width:60px;
 				background: url(../../img/app.png);
 				//background-size: 100%,100%;
 				background-size: contain;

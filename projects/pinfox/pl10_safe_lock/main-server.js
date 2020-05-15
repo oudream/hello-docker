@@ -31,7 +31,7 @@ if (path.resolve(__dirname, './master.json')) {
 
 let db = httpMysqlServer;
 let httpServer = app;
-let dockerServer = new DockerServer();
+//let dockerServer = new DockerServer();
 
 httpServer.use(express.static(__dirname));
 // let staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
@@ -39,8 +39,8 @@ httpServer.use(express.static(__dirname));
 
 unmock.init(httpServer, db);
 odlLoader.init(httpServer, db);
-dockerServer.init(httpServer, db);
-dockerServer.start();
+//dockerServer.init(httpServer, db);
+//dockerServer.start();
 
 // default port where dev server listens for incoming traffic
 let port = process.env.PORT || config.dev.port;
