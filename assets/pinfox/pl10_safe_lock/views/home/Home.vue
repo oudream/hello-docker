@@ -196,10 +196,6 @@
 				border-color: rgba(238,241,146,0.3);
 				border-right-width: 1px;
 				border-right-style: solid;
-				background: url(../../img/company.png);
-				//background-size: 100%,100%;
-				background-size: contain;
-				background-repeat:no-repeat;
 				img {
 					width: 40px;
 					float: left;
@@ -211,9 +207,17 @@
 			}
 			.logo-width{
 				width:230px;
+				background: url(../../img/company.png);
+				//background-size: 100%,100%;
+				background-size: contain;
+				background-repeat:no-repeat;
 			}
 			.logo-collapse-width{
 				width:60px
+				background: url(../../img/app.png);
+				//background-size: 100%,100%;
+				background-size: contain;
+				background-repeat:no-repeat;
 			}
 			.tools{
 				padding: 0px 23px;

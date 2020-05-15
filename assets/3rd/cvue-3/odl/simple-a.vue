@@ -119,7 +119,7 @@
                  :return-attach="uploadAReturnAttach" @submit="handleUploadASubmit"></UploadA>
 
         <!-- add -->
-        <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" top="1vh">
+        <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" v-dialog-drag top="1vh">
             <el-form :model="addForm" label-width="120px" :rules="addFormRules" ref="addForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">
@@ -161,7 +161,7 @@
         </el-dialog>
 
         <!-- edit -->
-        <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" top="1vh">
+        <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" v-dialog-drag top="1vh">
             <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">

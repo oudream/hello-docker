@@ -110,7 +110,7 @@
                    :return-attach="tableViewReturnAttach" @submit="handleTableViewSubmit"></TableView>
 
         <!-- edit -->
-        <el-dialog :title="editFormTitle" :visible.sync="editFormVisible" :close-on-click-modal="false" top="1vh">
+        <el-dialog :title="editFormTitle" :visible.sync="editFormVisible" :close-on-click-modal="false"   v-dialog-drag top="1vh">
             <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
 
                 <el-form-item v-for="(attr, index) in attrs" :key="index" :label="attr.label" :prop="attr.name">
