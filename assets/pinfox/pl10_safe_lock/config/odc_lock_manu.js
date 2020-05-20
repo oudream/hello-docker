@@ -1,174 +1,174 @@
 (function() {
     'use strict';
-    let Locket = {
+    let lock_manu = {
         apiVersion: 'v1',
         kind:
             'odc',
         metadata:
             {
-                name: 'lock',
+                name: 'lock_manu',
                 namespace: 'gcl3'
             },
         spec: {
             attrs: [
                 {
-                    name: 'id',
+                    name: 'ID',
                     model: 'int',
                     isNull: false
                 },
                 {
-                    name: 'f_id',
+                    name: 'F_ID',
                     model: 'string',
                     isNull: false
                 },
                 {
-                    name: 'f_pid',
+                    name: 'F_PID',
                     model: 'string'
                 },
                 {
-                    name: 'f_nid',
+                    name: 'F_NID',
                     model: 'int'
                 },
                 {
-                    name: 'f_name',
+                    name: 'F_NAME',
                     title: '名称',
                     model: 'string',
                     isNull: false
                 },
                 {
-                    name: 'f_class',
+                    name: 'F_CLASS',
                     title: '类别',
                     model: 'string',
                 },
                 {
-                    name: 'f_uri',
+                    name: 'F_URI',
                     title: '编号',
                     model: 'string',
                     isNull: false
                 },
                 {
-                    name: 'f_code',
+                    name: 'F_CODE',
                     title: '类型',
                     model: 'int',
                 },
                 {
-                    name: 'f_desc',
+                    name: 'D_DESC',
                     title: '描述',
                     model: 'string'
                 },
                 {
-                    name: 'f_t_crt',
+                    name: 'F_T_CRT',
                     title: '创建时间',
                     model: 'date'
                 },
                 {
-                    name: 'f_user_crt',
+                    name: 'F_USER_CRT',
                     title: '创建人',
                     model: 'string',
                 },
                 {
-                    name: 'f_t_mod',
+                    name: 'F_T_MOD',
                     title: '修改时间',
                     model: 'date'
                 },
                 {
-                    name: 'f_user_mod',
+                    name: 'F_USER_MOD',
                     title: '修改人',
                     model: 'string',
                 },
                 {
-                    name: 'f_res0',
+                    name: 'F_RES0',
                     model: 'int'
                 },
                 {
-                    name: 'f_res1',
+                    name: 'F_RES1',
                     model: 'string'
                 },
                 {
-                    name: 'f_dt_flag',
+                    name: 'F_DT_FLAG',
                     model: 'int'
                 },
                 {
-                    name: 'f_st_flag',
+                    name: 'F_ST_FLAG',
                     model: 'int'
                 },
                 {
-                    name: 'f_syn_flag',
+                    name: 'F_SYN_FLAG',
                     model: 'int'
                 }
             ],
             container: {
-                keys: ['id'],
-                sorts: ['name']
+                keys: ['ID'],
+                sorts: ['F_NAME']
             },
             ns: [
                 {
                     kind: odl.UiVueBase ? odl.UiVueBase.kind : '',
                     spec: {
                         title: {
-                            text: 'LOCKET',
+                            text: 'lock_manu',
                         },
                         attrs: [
                             {
-                                name: 'id',
+                                name: 'ID',
                                 readonly: true,
                                 visible: false
                             },
                             {
-                                name: 'f_id',
+                                name: 'F_ID',
                                 visible: false
                             },
                             {
-                                name: 'f_pid',
+                                name: 'F_PID',
                                 visible: false
                             },
                             {
-                                name: 'f_nid',
+                                name: 'F_NID',
                                 visible: false
                             },
                             {
-                                name: 'f_name',
+                                name: 'F_NAME',
                                 required: true
                             },
                             {
-                                name: 'f_t_crt',
+                                name: 'F_T_CRT',
                                 visible: false
                             },
                             {
-                                name: 'f_user_crt',
+                                name: 'F_USER_CRT',
                                 visible: false
                             },
                             {
-                                name: 'f_t_mod',
+                                name: 'F_T_MOD',
                                 visible: false
                             },
                             {
-                                name: 'f_user_mod',
+                                name: 'F_USER_MOD',
                                 visible: false
                             },
 
                             {
-                                name: 'f_res0',
+                                name: 'F_RES0',
                                 visible: false,
                                 default:0
                             },
                             {
-                                name: 'f_res1',
+                                name: 'F_RES1',
                                 visible: false,
                                 default:''
                             },
                             {
-                                name: 'f_dt_flag',
+                                name: 'F_DT_FLAG',
                                 visible: false,
                                 default:0
                             },
                             {
-                                name: 'f_st_flag',
+                                name: 'F_ST_FLAG',
                                 visible: false,
                                 default:0
                             },
                             {
-                                name: 'f_syn_flag',
+                                name: 'F_SYN_FLAG',
                                 visible: false,
                                 default:0
                             }
@@ -185,11 +185,11 @@
                         },
                     spec: {
                         table: {
-                            name: 't_obj_lock'
+                            name: 'T_LOCK_MANU'
                         },
                         attrs: [
                             {
-                                name: 'f_desc',
+                                name: 'F_DESC',
                                 field: {
                                     fieldType: 'text'
                                 }
@@ -198,10 +198,10 @@
                         log: {
                             attrs: [
                                 {
-                                    name: 'id',
+                                    name: 'ID',
                                 },
                                 {
-                                    name: 'f_name',
+                                    name: 'F_NAME',
                                 }
                             ],
                         },
@@ -210,6 +210,6 @@
             ]
         }
     };
-    odl.register(Locket);
-    return Locket;
+    odl.register(lock_manu);
+    return lock_manu;
 })();

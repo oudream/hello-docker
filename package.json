@@ -12,7 +12,11 @@
     "pl10:dev": "node projects/pinfox/pl10_safe_lock/main-debug.js",
     "pl10:server": "node projects/pinfox/pl10_safe_lock/main-server.js",
     "pl10:build": "node projects/pinfox/pl10_safe_lock/main-build.js",
-    "pl10:init": "node projects/pinfox/pl10_safe_lock/main-db-init.js"
+    "pl10:init": "node projects/pinfox/pl10_safe_lock/main-db-init.js",
+    "pfomc:dev": "node projects/pinfox/pf_omc/main-debug.js",
+    "pfomc:server": "node projects/pinfox/pf_omc/main-server.js",
+    "pfomc:build": "node projects/pinfox/pf_omc/main-build.js",
+    "pfomc:init": "node projects/pinfox/pf_omc/main-db-init.js"
   },
   "dependencies": {
     "axios": "^0.18.0",

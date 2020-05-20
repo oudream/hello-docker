@@ -1,6 +1,6 @@
 (function() {
     'use strict';
-    let Locket = {
+    let lock_reg = {
         apiVersion: 'v1',
         kind:
             'odc',
@@ -30,7 +30,7 @@
                     model: 'int'
                 },
                 {
-                    name: 'D_NAME',
+                    name: 'F_NAME',
                     title: '名称',
                     model: 'string',
                     isNull: false
@@ -106,7 +106,7 @@
                     kind: odl.UiVueBase ? odl.UiVueBase.kind : '',
                     spec: {
                         title: {
-                            text: 'LOCKET',
+                            text: 'lock_reg',
                         },
                         attrs: [
                             {
@@ -185,7 +185,7 @@
                         },
                     spec: {
                         table: {
-                            name: 'T_OBJ_LOCK'
+                            name: 'T_LOCK_REG'
                         },
                         attrs: [
                             {
@@ -210,6 +210,6 @@
             ]
         }
     };
-    odl.register(Locket);
-    return Locket;
+    odl.register(lock_reg);
+    return lock_reg;
 })();

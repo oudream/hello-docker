@@ -1,12 +1,12 @@
 (function() {
     'use strict';
-    let Locket = {
+    let lock_rt = {
         apiVersion: 'v1',
         kind:
             'odc',
         metadata:
             {
-                name: 'lock_reg',
+                name: 'lock_rt',
                 namespace: 'gcl3'
             },
         spec: {
@@ -106,7 +106,7 @@
                     kind: odl.UiVueBase ? odl.UiVueBase.kind : '',
                     spec: {
                         title: {
-                            text: 'LOCKET',
+                            text: 'lock_rt',
                         },
                         attrs: [
                             {
@@ -185,7 +185,7 @@
                         },
                     spec: {
                         table: {
-                            name: 'T_RT_LOCK'
+                            name: 'T_LOCK_RT'
                         },
                         attrs: [
                             {
@@ -210,6 +210,6 @@
             ]
         }
     };
-    odl.register(Locket);
-    return Locket;
+    odl.register(lock_rt);
+    return lock_rt;
 })();
