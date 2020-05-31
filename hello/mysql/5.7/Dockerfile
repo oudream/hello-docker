@@ -16,10 +16,16 @@ RUN yum install -y https://repo.mysql.com/mysql-community-minimal-release-el7.rp
 
 VOLUME /var/lib/mysql
 
-COPY docker-entrypoint.sh /entrypoint.sh
-COPY healthcheck.sh /healthcheck.sh
-ENTRYPOINT ["/entrypoint.sh"]
-HEALTHCHECK CMD /healthcheck.sh
+COPY docker-entrypoint.sh /opt/entrypoint.sh
+COPY healthcheck.sh /opt/healthcheck.sh
+
+RUN ["chmod", "777", "/opt/entrypoint.sh"]
+RUN ["chmod", "777", "/opt/healthcheck.sh"]
+
+ENTRYPOINT ["/opt/entrypoint.sh"]
+HEALTHCHECK CMD /opt/healthcheck.sh
+
 EXPOSE 3306 33060
+
 CMD ["mysqld"]
 
