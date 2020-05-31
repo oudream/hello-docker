@@ -19,3 +19,6 @@
 [submodule "referto/node-dockerode"]
 	path = referto/node-dockerode
 	url = https://github.com/apocas/dockerode.git
+[submodule "referto/CentOS-Dockerfiles"]
+	path = referto/CentOS-Dockerfiles
+	url = https://github.com/CentOS/CentOS-Dockerfiles.git
