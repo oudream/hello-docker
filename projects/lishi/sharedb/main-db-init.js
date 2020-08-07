@@ -277,7 +277,7 @@ async function testSqls() {
     await odcs.forEach(testSql);
 }
 
-// testSqls();
+testSqls();
 
 async function helloJpegToGuid() {
     let rows = await querySqlOnce(" SELECT ManID, ManLogo FROM Man; ");
@@ -296,5 +296,6 @@ async function helloJpegToGuid() {
     console.log(r);
 }
 
-helloJpegToGuid();
+// helloJpegToGuid();
 
+console.log('hello end.')

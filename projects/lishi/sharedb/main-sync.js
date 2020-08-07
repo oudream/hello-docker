@@ -260,3 +260,37 @@ async function loadLocalLogRecords() {
 let localLogRecords = loadLocalLogRecords();
 
 process.exit(0x01);
+
+function extractCSSURL(text) {
+    var url_str = text.replace(/.*url\((.*)\).*/, '$1');
+    if (url_str[0] === '"') {
+        return JSON.parse(url_str);
+    }
+    if (url_str[0] === "'") {
+        return JSON.parse(
+            url_str
+                .replace(/'/g, '__DOUBLE__QUOTE__HERE__')
+                .replace(/"/g, "'")
+                .replace(/__DOUBLE__QUOTE__HERE__/g, '"')
+        );
+    }
+    return url_str;
+}
+function imageResolved(url) {
+    return new $.Deferred(function (d) {
+        var img = new Image();
+        img.onload = img.onload = function () {
+            d.resolve(url + ' .................. oudream');
+        };
+        img.src = url;
+    }).promise();
+}
+var callback = arguments[arguments.length - 1];
+$.when.apply($, [].concat(
+    $('img[src]')
+        .map(function (elem) { return $(this).attr('src'); })
+        .toArray(),
+    $('[style*="url("]')
+        .map(function () { return extractCSSURL($(this).attr('style')); })
+        .toArray()
+).map(function (url) { return imageResolved(url); })).then(function () { callback(arguments); });

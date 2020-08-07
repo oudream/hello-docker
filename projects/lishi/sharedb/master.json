@@ -4,7 +4,7 @@
       "connectionLimit": 10,
       "database": "alignerchen",
       "host": "127.0.0.1",
-      "password": "123456",
+      "password": "Aa.123456",
       "type": "mysql",
       "user": "root"
     }
