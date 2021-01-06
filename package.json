@@ -19,7 +19,7 @@
     "pfomc:init": "node projects/pinfox/pf_omc/main-db-init.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "chai": "^4.2.0",
     "d3": "^5.11.0",
     "dockerode": "^3.0.2",
