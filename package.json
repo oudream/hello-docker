@@ -87,7 +87,7 @@
     "rimraf": "^2.6.0",
     "sass-loader": "^8.0.2",
     "semver": "^5.3.0",
-    "shelljs": "^0.8.3",
+    "shelljs": "^0.8.5",
     "spectron": "^3.8.0",
     "style-loader": "^0.21.0",
     "url-loader": "^3.0.0",
