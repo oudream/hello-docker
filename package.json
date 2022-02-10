@@ -79,7 +79,7 @@
     "mockjs": "^1.1.0",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
-    "node-sass": "^4.14.0",
+    "node-sass": "^7.0.0",
     "opn": "^6.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "ora": "^4.0.3",
