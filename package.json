@@ -41,7 +41,7 @@
     "vuex-electron": "^1.0.0"
   },
   "devDependencies": {
-    "ajv": "^6.5.0",
+    "ajv": "^6.12.3",
     "autoprefixer": "^6.7.2",
     "axios-mock-adapter": "^1.7.1",
     "babel-core": "^6.26.3",
